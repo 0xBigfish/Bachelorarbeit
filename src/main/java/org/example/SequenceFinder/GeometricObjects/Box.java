@@ -12,4 +12,31 @@ public abstract class Box {
         this.vertexA = vertA;
         this.vertexB = vertB;
     }
+
+    /**
+     * Calculate the center of this Box
+     *
+     * @return the center of the box
+     */
+    public Point calcCenter() {
+        double x = (vertexA.x + vertexB.x) / 2;
+        double y = (vertexA.y + vertexB.y) / 2;
+        double z = (vertexA.z + vertexB.z) / 2;
+
+        return new Point(x, y, z);
+    }
+
+    public double calcRadius() {
+        Point center = calcCenter();
+
+        // doesn't matter whether to use vertexA oder vertexB, as the center point has equal distance
+        // to both points, and therefore to sides of the
+        return Math.max(
+                Math.max(
+                        Math.abs(center.x - vertexA.x),
+                        Math.abs(center.y - vertexA.y)
+                ),
+                Math.abs(center.z - vertexA.z)
+        );
+    }
 }

@@ -5,7 +5,12 @@ package org.example.SequenceFinder.GeometricObjects;
  */
 public class Package extends Box {
 
-    public Package(Point vertA, Point vertB) {
+    private int id;
+    private int articleNo;
+
+    public Package(Point vertA, Point vertB, int id, int articleNo) {
         super(vertA, vertB);
+        this.id = id;
+        this.articleNo = articleNo;
     }
 }

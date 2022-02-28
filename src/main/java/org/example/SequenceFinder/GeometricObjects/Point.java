@@ -5,7 +5,13 @@ package org.example.SequenceFinder.GeometricObjects;
  */
 public class Point {
 
-    private int x;
-    private int y;
-    private int z;
+    public double x;
+    public double y;
+    public double z;
+
+    public Point(double x, double y, double z){
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
 }
