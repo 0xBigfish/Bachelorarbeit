@@ -56,8 +56,11 @@ public class Octree<T extends Box> {
      * @param depth the depth
      * @return the length of the bounding cubes at the given depth
      */
-    public double boundingCubeLength(int depth) {
-        return k * worldSize / (2 ^ depth);
+    public double boundingCubeLength(int depth){
+        if (depth > maxDepth) {
+            throw new IllegalArgumentException("Depth is too deep! Depth value: " + depth + ", maxDepth: " + maxDepth);
+        }
+        return k * worldSize / Math.pow(2, depth);
     }
 
     /**
