@@ -21,11 +21,8 @@ public class Octree<T extends Box> {
      * array holding all objects in the octree. <br>
      * The first dimension represents depth, the second and third dimension and fourth
      * represent the x,y,z index in the tree. <br>
-     * <b>Note:</b> generics can't be instantiated as arrays, so an ArrayList is used with offsets representing the
-     * depth and indices.
-     * @see Octree#calcIndex(Box)
      */
-    private ArrayList<T> nodes;
+    private Box[][][][] nodes;
 
     /**
      * size of the world. Large enough to fit every object into it. Should be a multiple of 2
@@ -33,7 +30,10 @@ public class Octree<T extends Box> {
     private final int worldSize;
 
     /**
-     * factor used to make the Octree loose. A value of > 1 loosens the tree.
+     * factor used to make the Octree loose. A value of > 1 loosens the tree. <br>
+     * <br>
+     * According to Ulrich Thatcher in "Game Programming Gems (2000), Loose Octrees" a value of k=2 is a good balance
+     * between loose but not too loose.
      */
     private final double k = 2;
 
@@ -41,13 +41,17 @@ public class Octree<T extends Box> {
         this.maxDepth = maxDepth;
         this.worldSize = worldSize;
 
-        int numOfNodes = 0;
-        for(int i = 1; i <= maxDepth; i++){
-            // worldSize / boundingCubeSpacing() = number of indices on this depth
+        // init array to be able to overwrite the values in the for loop
+        nodes = new Box[maxDepth][0][0][0];
+
+        // init the array correctly to hold only the maximum allowed number of nodes per depth:
+        //  depth=1 => 2 nodes per Dimension and 8 total, depth=2 => 4 nodes per dimension and 16 total, ...
+        for (int i = 0; i < maxDepth; i++) {
+            // worldSize / boundingCubeSpacing() = number of indices at this depth
             // multiply by 3 because there are x, y and z indices
-            numOfNodes = numOfNodes + 3 * worldSize / boundingCubeSpacing(i);
+            int numOfNodesPerDim = (int) Math.pow(2, i);
+            nodes[i] = new Box[numOfNodesPerDim][numOfNodesPerDim][numOfNodesPerDim];
         }
-        nodes = new ArrayList<>(numOfNodes);
     }
 
     /**
@@ -56,7 +60,7 @@ public class Octree<T extends Box> {
      * @param depth the depth
      * @return the length of the bounding cubes at the given depth
      */
-    public double boundingCubeLength(int depth){
+    public double boundingCubeLength(int depth) {
         if (depth > maxDepth) {
             throw new IllegalArgumentException("Depth is too deep! Depth value: " + depth + ", maxDepth: " + maxDepth);
         }
@@ -109,21 +113,7 @@ public class Octree<T extends Box> {
      * @return returns true if inserted successfully
      */
     public boolean insertObject(T objectToInsert) {
-        Point index = calcIndex(objectToInsert);
-        int depth = calcDepth(objectToInsert.calcRadius());
-        int indexX = (int) index.x;
-        int indexY = (int) index.y;
-        int indexZ = (int) index.z;
-
-
-        int offset = 0;
-        for(int i = 1; i < depth; i++){
-            offset += numOfNodesAtDepth(i);
-        }
-        // FIXME: collision when adding indices: 2 + 2 + 0  = 0 + 2 + 2
-        //  ArrayList is no solution to the array problem
-        nodes.add(offset, objectToInsert);
-        return true;
+        return false;
     }
 
     /**
@@ -138,10 +128,11 @@ public class Octree<T extends Box> {
 
     /**
      * Calculates the number of nodes at the given depth. Used to calculate the offset for the array list
+     *
      * @param depth the depth
      * @return the number of nodes at the given depth
      */
-    private int numOfNodesAtDepth(int depth){
+    private int numOfNodesAtDepth(int depth) {
         // worldSize / boundingCubeSpacing() = number of indices on this depth
         // multiply by 3 because there are x, y and z indices
         return 3 * worldSize / boundingCubeSpacing(depth);
