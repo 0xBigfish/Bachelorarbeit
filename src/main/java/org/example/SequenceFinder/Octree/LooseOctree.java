@@ -7,6 +7,11 @@ import java.util.ArrayList;
 
 /**
  * A Loose Octree to store each object based on its position in the world. Used to improve performance for frustum culling
+ * <br>
+ * <br>
+ * The tree implementation is based on Thatcher Ulrich's article about Loose Octrees in "Game Programming Gems" (2000)
+ * (ISBN 1-58450-049-2). <br>
+ * A first introduction can be found on his website: http://www.tulrich.com/geekstuff/partitioning.html
  *
  * @param <T> a box shaped object.
  */
@@ -19,7 +24,7 @@ public class LooseOctree<T extends Box> {
 
     /**
      * array holding all objects in the octree. <br>
-     * The first dimension represents depth, the second and third dimension and fourth
+     * The first dimension represents depth, the second, third dimension and fourth
      * represent the x,y,z index in the tree. <br>
      */
     private Box[][][][] nodes;
@@ -32,8 +37,11 @@ public class LooseOctree<T extends Box> {
     /**
      * factor used to make the Octree loose. A value of > 1 loosens the tree. <br>
      * <br>
-     * According to Ulrich Thatcher in "Game Programming Gems (2000), Loose Octrees" a value of k=2 is a good balance
-     * between loose but not too loose.
+     * According to Thatcher Ulrich in "Game Programming Gems (2000), Loose Octrees" a value of k=2 is a good balance
+     * between loose but not too loose. <br>
+     * <br>
+     * The factor of 2 is also necessary for the mathematical derivation of the insertion formula, which
+     * enables insertion in O(1)
      */
     private final double k = 2;
 
@@ -78,7 +86,11 @@ public class LooseOctree<T extends Box> {
     }
 
     /**
-     * Calculates at which depth in the object will fit in the tree , based on the object's radius
+     * Calculates at which depth in the object will fit in the tree, based on the object's radius <br>
+     * <br>
+     * A given level in the octree can accommodate any abject whose radius is less than or equal to 1/4 of the bounding
+     * cube edge length, regardless of its position. Any object with a radius <= 1/8 of the bounding cube edge length
+     * should go in the next deeper level in the tree.
      *
      * @param radius the radius of the object
      * @return the depth at which the object will be placed
@@ -107,7 +119,12 @@ public class LooseOctree<T extends Box> {
     }
 
     /**
-     * Inserts an object into the octree.
+     * Inserts an object into the octree. <br>
+     * The insertion assumes the world is centered at the coordinate system origin. <br>
+     * <br>
+     * Note: this procedure is not ideal, as it does not find the tightest possible containing node for all cases. To
+     * find the tightest possible containing node, the child nodes of the calculated node must be checked whether the
+     * object fits into one of them or not.
      *
      * @param objectToInsert the object that will be inserted
      * @return returns true if inserted successfully
