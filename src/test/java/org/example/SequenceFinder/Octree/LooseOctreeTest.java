@@ -19,7 +19,7 @@ public class LooseOctreeTest {
     /**
      * looseness value of the loose Octree. Some formulas need k=2, otherwise the mathematical transformation wouldn't
      * work and these formulas would be different.<br>
-     * According to Ulrich Thatcher in "Game Programming Gems (2000), Loose Octrees" a value of k=2 is a good balance
+     * According to Thatcher Ulrich in "Game Programming Gems (2000), Loose Octrees" a value of k=2 is a good balance
      * between loose but not too loose.
      */
     double k = 2;
