@@ -14,11 +14,11 @@ import static org.junit.jupiter.api.Assertions.*;
  * This class uses Behavior Driven testing.
  */
 @ExtendWith(MockitoExtension.class)
-public class OctreeTest {
+public class LooseOctreeTest {
 
     /**
-     * looseness value of the octree. Some formulas need k=2, otherwise the mathematical tranformation wouldn't work and
-     * these formulas would not be the same. <br>
+     * looseness value of the loose Octree. Some formulas need k=2, otherwise the mathematical transformation wouldn't
+     * work and these formulas would be different.<br>
      * According to Ulrich Thatcher in "Game Programming Gems (2000), Loose Octrees" a value of k=2 is a good balance
      * between loose but not too loose.
      */
@@ -26,17 +26,17 @@ public class OctreeTest {
 
 
     @Nested
-    @DisplayName("given an Octree with maxDepth = 3 and worldSize = 8")
-    class givenAnOctreeWithMaxDepth3AndWorldSize8 {
+    @DisplayName("given a LooseOctree with maxDepth = 3 and worldSize = 8")
+    class givenALooseOctreeWithMaxDepth3AndWorldSize8 {
 
-        Octree<Box> octree;
+        LooseOctree<Box> looseOctree;
 
         int worldSize = 8;
         int maxDepth = 3;
 
         @BeforeEach
         void setup() {
-            octree = new Octree<>(maxDepth, worldSize);
+            looseOctree = new LooseOctree<>(maxDepth, worldSize);
         }
 
         @Nested
@@ -49,31 +49,31 @@ public class OctreeTest {
             @Test
             @DisplayName("then boundingCubeLength(0) should return k * worldSize / 1")
             void thenBoundingCubeLength0ShouldThrowAnException() {
-                assertEquals(k * worldSize, octree.boundingCubeLength(0));
+                assertEquals(k * worldSize, looseOctree.boundingCubeLength(0));
             }
 
             @Test
             @DisplayName("then boundingCubeLength(1) should return k * worldSize / 2")
             void thenBoundingCubeLength1ShouldReturnKWorldSize4() {
-                assertEquals(k * worldSize / 2, octree.boundingCubeLength(1));
+                assertEquals(k * worldSize / 2, looseOctree.boundingCubeLength(1));
             }
 
             @Test
             @DisplayName("then boundingCubeLength(2) should return k * worldSize / 4")
             void thenBoundingCubeLength2ShouldReturnKWorldSize8() {
-                assertEquals(k * worldSize / 4, octree.boundingCubeLength(2));
+                assertEquals(k * worldSize / 4, looseOctree.boundingCubeLength(2));
             }
 
             @Test
             @DisplayName("then boundingCubeLength(3) should return k * worldSize / 8")
             void thenBoundingCubeLength3ShouldReturnKWorldSize16() {
-                assertEquals(k * worldSize / 8, octree.boundingCubeLength(3));
+                assertEquals(k * worldSize / 8, looseOctree.boundingCubeLength(3));
             }
 
             @Test
             @DisplayName("then boundingCubeLength(4) should throw an Exception")
             void thenBoundingCubeLength4ShouldThrowAnException() {
-                assertThrows(IllegalArgumentException.class, () -> octree.boundingCubeLength(4));
+                assertThrows(IllegalArgumentException.class, () -> looseOctree.boundingCubeLength(4));
             }
         }
 

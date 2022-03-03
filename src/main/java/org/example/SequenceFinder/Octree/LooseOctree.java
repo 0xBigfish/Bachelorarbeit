@@ -6,11 +6,11 @@ import org.example.SequenceFinder.GeometricObjects.Point;
 import java.util.ArrayList;
 
 /**
- * An Octree to store each object based on its position in the world. Used to improve performance for frustum culling
+ * A Loose Octree to store each object based on its position in the world. Used to improve performance for frustum culling
  *
  * @param <T> a box shaped object.
  */
-public class Octree<T extends Box> {
+public class LooseOctree<T extends Box> {
 
     /**
      * the maximum depth of the octree
@@ -37,7 +37,7 @@ public class Octree<T extends Box> {
      */
     private final double k = 2;
 
-    public Octree(int maxDepth, int worldSize) {
+    public LooseOctree(int maxDepth, int worldSize) {
         this.maxDepth = maxDepth;
         this.worldSize = worldSize;
 
