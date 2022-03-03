@@ -3,8 +3,6 @@ package org.example.SequenceFinder.Octree;
 import org.example.SequenceFinder.GeometricObjects.Box;
 import org.example.SequenceFinder.GeometricObjects.Point;
 
-import java.util.ArrayList;
-
 /**
  * A Loose Octree to store each object based on its position in the world. Used to improve performance for frustum culling
  * <br>
@@ -26,8 +24,13 @@ public class LooseOctree<T extends Box> {
      * array holding all objects in the octree. <br>
      * The first dimension represents depth, the second, third dimension and fourth
      * represent the x,y,z index in the tree. <br>
+     * <br>
+     * There should be no item(s) at depth 0, as items are inserted based on their radius and position. Nodes are only
+     * places at depth 0 if their radius is larger than worldSize / 2, but then the object would be bigger than the
+     * entire world, which is a paradoxon.
      */
-    private Box[][][][] nodes;
+    // protected to enable test class access to this field
+    protected Box[][][][] nodes;
 
     /**
      * size of the world. Large enough to fit every object into it. Should be a multiple of 2
@@ -50,11 +53,13 @@ public class LooseOctree<T extends Box> {
         this.worldSize = worldSize;
 
         // init array to be able to overwrite the values in the for loop
-        nodes = new Box[maxDepth][0][0][0];
+        // use maxDepth + 1 because only the imaginary root node is at level 0 and maxDepth describes the number of
+        // edges to the deepest node(s)
+        nodes = new Box[maxDepth + 1][0][0][0];
 
         // init the array correctly to hold only the maximum allowed number of nodes per depth:
         //  depth=1 => 2 nodes per Dimension and 8 total, depth=2 => 4 nodes per dimension and 16 total, ...
-        for (int i = 0; i < maxDepth; i++) {
+        for (int i = 1; i <= maxDepth; i++) {
             // worldSize / boundingCubeSpacing() = number of indices at this depth
             // multiply by 3 because there are x, y and z indices
             int numOfNodesPerDim = (int) Math.pow(2, i);
@@ -104,7 +109,7 @@ public class LooseOctree<T extends Box> {
      * Calculates the x,y,z indices of an object at which it will be stored in the octree.
      *
      * @param t the object
-     * @return the indices wrapped in an Point object. The Point is just a wrapper to store the values
+     * @return the indices wrapped in a Point object. The Point is just a wrapper to store the values
      */
     public Point calcIndex(T t) {
         double radius = t.calcRadius();
