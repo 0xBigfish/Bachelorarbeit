@@ -8,11 +8,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * This class uses Behavior Driven testing.
+ */
 @ExtendWith(MockitoExtension.class)
-public class OctreeTest{
+public class OctreeTest {
 
     /**
      * looseness value of the octree. Some formulas need k=2, otherwise the mathematical tranformation wouldn't work and
@@ -41,6 +43,38 @@ public class OctreeTest{
         @DisplayName("boundingCubeLength tests")
         class boundingCubeLengthTests {
 
+            /**
+             * Only the root node exists, which contains the whole world.
+             */
+            @Test
+            @DisplayName("then boundingCubeLength(0) should return k * worldSize / 1")
+            void thenBoundingCubeLength0ShouldThrowAnException() {
+                assertEquals(k * worldSize, octree.boundingCubeLength(0));
+            }
+
+            @Test
+            @DisplayName("then boundingCubeLength(1) should return k * worldSize / 2")
+            void thenBoundingCubeLength1ShouldReturnKWorldSize4() {
+                assertEquals(k * worldSize / 2, octree.boundingCubeLength(1));
+            }
+
+            @Test
+            @DisplayName("then boundingCubeLength(2) should return k * worldSize / 4")
+            void thenBoundingCubeLength2ShouldReturnKWorldSize8() {
+                assertEquals(k * worldSize / 4, octree.boundingCubeLength(2));
+            }
+
+            @Test
+            @DisplayName("then boundingCubeLength(3) should return k * worldSize / 8")
+            void thenBoundingCubeLength3ShouldReturnKWorldSize16() {
+                assertEquals(k * worldSize / 8, octree.boundingCubeLength(3));
+            }
+
+            @Test
+            @DisplayName("then boundingCubeLength(4) should throw an Exception")
+            void thenBoundingCubeLength4ShouldThrowAnException() {
+                assertThrows(IllegalArgumentException.class, () -> octree.boundingCubeLength(4));
+            }
         }
 
 
