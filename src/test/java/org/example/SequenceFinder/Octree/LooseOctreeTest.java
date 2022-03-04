@@ -81,6 +81,7 @@ public class LooseOctreeTest {
             return true;
         }
 
+        //TODO: add tests for depth < 0
 
         @Nested
         @DisplayName("given depth of 0")
@@ -140,6 +141,16 @@ public class LooseOctreeTest {
             @Nested
             @DisplayName("boundingCubeSpacing tests")
             class boundingCubeSpacingTests {
+
+                /**
+                 * At level 0 there only is the imaginary root node. There are no other nodes so spacing to other nodes
+                 * makes no sense here.
+                 */
+                @Test
+                @DisplayName("then an IllegalArgumentException should be thrown")
+                void thenAnIllegalArgumentExceptionShouldBeThrown() {
+                    assertThrows(IllegalArgumentException.class, () -> looseOctree.boundingCubeSpacing(givenDepth));
+                }
 
             }
 
@@ -233,6 +244,12 @@ public class LooseOctreeTest {
             @DisplayName("boundingCubeSpacing tests")
             class boundingCubeSpacingTests {
 
+                @Test
+                @DisplayName("then boundingCubeSpacing(1) should return worldSize/ 2")
+                void thenBoundingCubeSpacing1ShouldReturnWorldSize2() {
+                    assertEquals(worldSize / 2, looseOctree.boundingCubeSpacing(givenDepth));
+                }
+
             }
 
 
@@ -324,6 +341,12 @@ public class LooseOctreeTest {
             @Nested
             @DisplayName("boundingCubeSpacing tests")
             class boundingCubeSpacingTests {
+
+                @Test
+                @DisplayName("then boundingCubeSpacing(2) should return worldSize / 4")
+                void thenBoundingCubeSpacing2ShouldReturnWorldSize4() {
+                    assertEquals(worldSize / 4, looseOctree.boundingCubeSpacing(givenDepth));
+                }
 
             }
 
@@ -417,6 +440,12 @@ public class LooseOctreeTest {
             @DisplayName("boundingCubeSpacing tests")
             class boundingCubeSpacingTests {
 
+                @Test
+                @DisplayName("then boundingCubeSpacing(3) should return worldSize / 8")
+                void thenBoundingCubeSpacing3ShouldReturnWorldSize8() {
+                    assertEquals(worldSize / 8, looseOctree.boundingCubeSpacing(givenDepth));
+                }
+
             }
 
 
@@ -483,6 +512,12 @@ public class LooseOctreeTest {
             @Nested
             @DisplayName("boundingCubeSpacing tests")
             class boundingCubeSpacingTests {
+
+                @Test
+                @DisplayName("then boundingCubeSpacing(4) should throw an IllegalArgumentExceptions")
+                void thenBoundingCubeSpacing4ShouldThrowAnIllegalArgumentExceptions() {
+                    assertThrows(IllegalArgumentException.class, () -> looseOctree.boundingCubeSpacing(givenDepth));
+                }
 
             }
 

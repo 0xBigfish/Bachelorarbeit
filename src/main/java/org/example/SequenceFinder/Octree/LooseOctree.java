@@ -27,9 +27,9 @@ public class LooseOctree<T extends Box> {
      * <br>
      * There should be no item(s) at depth 0, as items are inserted based on their radius and position. Nodes are only
      * places at depth 0 if their radius is larger than worldSize / 2, but then the object would be bigger than the
-     * entire world, which is a paradoxon.
+     * entire world, which is a paradox.
      */
-    // protected to enable test class access to this field
+    // protected to enable test class access to this field<
     protected Box[][][][] nodes;
 
     /**
@@ -50,6 +50,7 @@ public class LooseOctree<T extends Box> {
 
     public LooseOctree(int maxDepth, int worldSize) {
         this.maxDepth = maxDepth;
+        //TODO: decide if useful to force worldSize to be 2^x
         this.worldSize = worldSize;
 
         // init array to be able to overwrite the values in the for loop
@@ -87,7 +88,19 @@ public class LooseOctree<T extends Box> {
      * @return the spacing between the cube centers at the given depth
      */
     public int boundingCubeSpacing(int depth) {
-        return worldSize / (2 ^ depth);
+        if (depth <= 0) {
+            throw new IllegalArgumentException("Depth was: " + depth + "\n" +
+                    "Depth must be larger than 0. There only is the imaginary root node at" +
+                    "depth 0, which has no spacing to other nodes, as there are none. \n" +
+                    "Depths below 0 make no sense as the highest node (the imaginary root node) lies at depth 0.");
+        }
+
+        if (depth > maxDepth){
+            throw new IllegalArgumentException("Depth exceeded maxDepth. \n" +
+                    "depth: "+ depth + ", maxDepth: " + maxDepth);
+        }
+
+            return worldSize / (int) Math.pow(2, depth);
     }
 
     /**
