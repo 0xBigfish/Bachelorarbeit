@@ -83,6 +83,7 @@ public class LooseOctreeTest {
 
         //TODO: add tests for depth < 0
 
+
         @Nested
         @DisplayName("given depth of 0")
         class givenDepthOf0 {
@@ -542,6 +543,135 @@ public class LooseOctreeTest {
 
             }
         }
+
+
+        @Nested
+        @DisplayName("tests based on object radius")
+        class testsBasedOnObjectRadius {
+
+            /*
+
+            A given level in the octree can accommodate any abject whose radius is less than or equal to 1/4 of the
+            bounding cube edge length, regardless of its position. Any object with a radius <= 1/8 of the bounding cube
+            edge length should go in the next deeper level in the tree.
+
+            k = 2
+
+            | depth | bounding cube edge length | maxRadius |   minRadius   |
+            |   1   |     16 = worldSize * k    |   <= 4    |     > 2       |
+            |   2   |           8               |   <= 2    |     > 1       |
+            |   3   |           4               |   <= 1    |     > 0.5     |
+            |   4   |           2               |   <= 0.5  |     > 0       |  note: 0 because there is no next level
+            |   5   |    Illegal Argument       |           |               |
+
+             */
+
+
+            @Nested
+            @DisplayName("given object radius of 0")
+            class givenObjectRadiusOf0 {
+
+                double radius = 0;
+
+
+                @Nested
+                @DisplayName("calcDepth tests")
+                class calcDepthTests {
+
+                    /**
+                     * Objects with no radius are incorrectly initialized
+                     */
+                    @Test
+                    @DisplayName("then calcDepth(0) should throw an exception")
+                    void thenCalcDepth0ShouldThrowAnException() {
+                        assertThrows(IllegalArgumentException.class, () -> looseOctree.calcDepth(radius));
+                    }
+                }
+            }
+
+
+            @Nested
+            @DisplayName("given object radius of 0.5")
+            class givenObjectRadiusOf05 {
+
+                double radius = 0.5;
+
+
+                @Nested
+                @DisplayName("calcDepth tests")
+                class calcDepthTests {
+
+                    /**
+                     * Objects with no radius are incorrectly initialized
+                     */
+                    @Test
+                    @DisplayName("then calcDepth(0.5) should return 3")
+                    void thenCalcDepth0ShouldThrowAnException() {
+                        assertEquals(3, looseOctree.calcDepth(radius));
+                    }
+                }
+            }
+
+
+            @Nested
+            @DisplayName("given object radius of 1")
+            class givenObjectRadiusOf1 {
+
+                double radius = 1.0;
+
+
+                @Nested
+                @DisplayName("calcDepth tests")
+                class calcDepthTests {
+
+                    /**
+                     * Objects with no radius are incorrectly initialized
+                     */
+                    @Test
+                    @DisplayName("then calcDepth(1.0) should return 2")
+                    void thenCalcDepth0ShouldThrowAnException() {
+                        assertEquals(3, looseOctree.calcDepth(radius));
+                    }
+                }
+            }
+
+
+            @Nested
+            @DisplayName("given object radius of 4")
+            class givenObjectRadiusOf4 {
+
+                double radius = 4.0;
+
+                /**
+                 * Object has same size as the world. It will be paced in the highest after the root, which is depth 1
+                 */
+                @Test
+                @DisplayName("then calcDepth(4) should return 1")
+                void thenCalcDepth4ShouldReturn1() {
+                    assertEquals(1, looseOctree.calcDepth(radius));
+                }
+            }
+
+
+            @Nested
+            @DisplayName("given object radius of 4.1")
+            class givenObjectRadiusOf41 {
+
+                double radius = 4.1;
+
+                /**
+                 * Object would be of size 8.2, which is larger than the world size of 8. The object would not fit in the
+                 * world which is a paradox.
+                 */
+                @Test
+                @DisplayName("then an IllegalArgumentException should be thrown")
+                void thenAnIllegalArgumentExceptionShouldBeThrown() {
+                    assertThrows(IllegalArgumentException.class, () -> looseOctree.calcDepth(radius));
+                }
+            }
+        }
+
+
     }
 
 }
