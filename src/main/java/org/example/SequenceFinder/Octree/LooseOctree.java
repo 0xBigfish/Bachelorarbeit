@@ -95,12 +95,12 @@ public class LooseOctree<T extends Box> {
                     "Depths below 0 make no sense as the highest node (the imaginary root node) lies at depth 0.");
         }
 
-        if (depth > maxDepth){
+        if (depth > maxDepth) {
             throw new IllegalArgumentException("Depth exceeded maxDepth. \n" +
-                    "depth: "+ depth + ", maxDepth: " + maxDepth);
+                    "depth: " + depth + ", maxDepth: " + maxDepth);
         }
 
-            return worldSize / (int) Math.pow(2, depth);
+        return worldSize / (int) Math.pow(2, depth);
     }
 
     /**
@@ -114,7 +114,16 @@ public class LooseOctree<T extends Box> {
      * @return the depth at which the object will be placed
      */
     public int calcDepth(double radius) {
-        // TODO: test if this method works correctly
+        if (radius <= 0) {
+            throw new IllegalArgumentException("Object radius must be >0! \n" +
+                    "Object radius was: " + radius);
+        }
+
+        if (radius > (double) worldSize / 2) {
+            throw new IllegalArgumentException("Object cannot be larger than the world itself! \n" +
+                    "Object radius was: " + radius + ", worldSize: " + worldSize);
+        }
+
         return Math.min(maxDepth, (int) Math.floor(log2(worldSize / radius)));
     }
 
