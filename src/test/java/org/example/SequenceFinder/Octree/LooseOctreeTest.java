@@ -157,28 +157,6 @@ public class LooseOctreeTest {
                     void thenAnIllegalArgumentExceptionShouldBeThrown() {
                         assertThrows(IllegalArgumentException.class, () -> looseOctree.boundingCubeSpacing(givenDepth));
                     }
-
-                }
-
-
-                @Nested
-                @DisplayName("calcDepth tests")
-                class calcDepthTests {
-
-                }
-
-
-                @Nested
-                @DisplayName("calcIndex tests")
-                class calcIndexTests {
-
-                }
-
-
-                @Nested
-                @DisplayName("insertObject tests")
-                class insertObjectTests {
-
                 }
             }
 
@@ -257,27 +235,6 @@ public class LooseOctreeTest {
                     }
 
                 }
-
-
-                @Nested
-                @DisplayName("calcDepth tests")
-                class calcDepthTests {
-
-                }
-
-
-                @Nested
-                @DisplayName("calcIndex tests")
-                class calcIndexTests {
-
-                }
-
-
-                @Nested
-                @DisplayName("insertObject tests")
-                class insertObjectTests {
-
-                }
             }
 
 
@@ -353,28 +310,6 @@ public class LooseOctreeTest {
                     void thenBoundingCubeSpacing2ShouldReturnWorldSize4() {
                         assertEquals(worldSize / 4, looseOctree.boundingCubeSpacing(givenDepth));
                     }
-
-                }
-
-
-                @Nested
-                @DisplayName("calcDepth tests")
-                class calcDepthTests {
-
-                }
-
-
-                @Nested
-                @DisplayName("calcIndex tests")
-                class calcIndexTests {
-
-                }
-
-
-                @Nested
-                @DisplayName("insertObject tests")
-                class insertObjectTests {
-
                 }
             }
 
@@ -453,27 +388,6 @@ public class LooseOctreeTest {
                     }
 
                 }
-
-
-                @Nested
-                @DisplayName("calcDepth tests")
-                class calcDepthTests {
-
-                }
-
-
-                @Nested
-                @DisplayName("calcIndex tests")
-                class calcIndexTests {
-
-                }
-
-
-                @Nested
-                @DisplayName("insertObject tests")
-                class insertObjectTests {
-
-                }
             }
 
 
@@ -526,27 +440,6 @@ public class LooseOctreeTest {
                     }
 
                 }
-
-
-                @Nested
-                @DisplayName("calcDepth tests")
-                class calcDepthTests {
-
-                }
-
-
-                @Nested
-                @DisplayName("calcIndex tests")
-                class calcIndexTests {
-
-                }
-
-
-                @Nested
-                @DisplayName("insertObject tests")
-                class insertObjectTests {
-
-                }
             }
         }
 
@@ -593,6 +486,20 @@ public class LooseOctreeTest {
                         assertThrows(IllegalArgumentException.class, () -> looseOctree.calcDepth(radius));
                     }
                 }
+
+
+                @Nested
+                @DisplayName("calcIndex tests")
+                class calcIndexTests {
+
+                }
+
+
+                @Nested
+                @DisplayName("insertObject tests")
+                class insertObjectTests {
+
+                }
             }
 
 
@@ -615,6 +522,20 @@ public class LooseOctreeTest {
                     void thenCalcDepth0ShouldThrowAnException() {
                         assertThrows(IllegalArgumentException.class, () -> looseOctree.calcDepth(radius));
                     }
+                }
+
+
+                @Nested
+                @DisplayName("calcIndex tests")
+                class calcIndexTests {
+
+                }
+
+
+                @Nested
+                @DisplayName("insertObject tests")
+                class insertObjectTests {
+
                 }
             }
 
@@ -639,6 +560,20 @@ public class LooseOctreeTest {
                         assertEquals(3, looseOctree.calcDepth(radius));
                     }
                 }
+
+
+                @Nested
+                @DisplayName("calcIndex tests")
+                class calcIndexTests {
+
+                }
+
+
+                @Nested
+                @DisplayName("insertObject tests")
+                class insertObjectTests {
+
+                }
             }
 
 
@@ -658,6 +593,20 @@ public class LooseOctreeTest {
                     void thenCalcDepth0ShouldThrowAnException() {
                         assertEquals(3, looseOctree.calcDepth(radius));
                     }
+                }
+
+
+                @Nested
+                @DisplayName("calcIndex tests")
+                class calcIndexTests {
+
+                }
+
+
+                @Nested
+                @DisplayName("insertObject tests")
+                class insertObjectTests {
+
                 }
             }
 
@@ -679,6 +628,20 @@ public class LooseOctreeTest {
                         assertEquals(2, looseOctree.calcDepth(radius));
                     }
                 }
+
+
+                @Nested
+                @DisplayName("calcIndex tests")
+                class calcIndexTests {
+
+                }
+
+
+                @Nested
+                @DisplayName("insertObject tests")
+                class insertObjectTests {
+
+                }
             }
 
 
@@ -698,6 +661,20 @@ public class LooseOctreeTest {
                     void thenCalcDepth0ShouldThrowAnException() {
                         assertEquals(2, looseOctree.calcDepth(radius));
                     }
+                }
+
+
+                @Nested
+                @DisplayName("calcIndex tests")
+                class calcIndexTests {
+
+                }
+
+
+                @Nested
+                @DisplayName("insertObject tests")
+                class insertObjectTests {
+
                 }
             }
 
@@ -719,6 +696,20 @@ public class LooseOctreeTest {
                         assertEquals(1, looseOctree.calcDepth(radius));
                     }
                 }
+
+
+                @Nested
+                @DisplayName("calcIndex tests")
+                class calcIndexTests {
+
+                }
+
+
+                @Nested
+                @DisplayName("insertObject tests")
+                class insertObjectTests {
+
+                }
             }
 
 
@@ -735,6 +726,20 @@ public class LooseOctreeTest {
                 @DisplayName("then calcDepth(4) should return 1")
                 void thenCalcDepth4ShouldReturn1() {
                     assertEquals(1, looseOctree.calcDepth(radius));
+                }
+
+
+                @Nested
+                @DisplayName("calcIndex tests")
+                class calcIndexTests {
+
+                }
+
+
+                @Nested
+                @DisplayName("insertObject tests")
+                class insertObjectTests {
+
                 }
             }
 
@@ -753,6 +758,20 @@ public class LooseOctreeTest {
                 @DisplayName("then an IllegalArgumentException should be thrown")
                 void thenAnIllegalArgumentExceptionShouldBeThrown() {
                     assertThrows(IllegalArgumentException.class, () -> looseOctree.calcDepth(radius));
+                }
+
+
+                @Nested
+                @DisplayName("calcIndex tests")
+                class calcIndexTests {
+
+                }
+
+
+                @Nested
+                @DisplayName("insertObject tests")
+                class insertObjectTests {
+
                 }
             }
         }
