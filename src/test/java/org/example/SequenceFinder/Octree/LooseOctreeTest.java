@@ -558,13 +558,36 @@ public class LooseOctreeTest {
             k = 2
 
             | depth | bounding cube edge length | maxRadius |   minRadius   |
-            |   1   |     16 = worldSize * k    |   <= 4    |     > 2       |
-            |   2   |           8               |   <= 2    |     > 1       |
-            |   3   |           4               |   <= 1    |     > 0.5     |
-            |   4   |           2               |   <= 0.5  |     > 0       |  note: 0 because there is no next level
-            |   5   |    Illegal Argument       |           |               |
+            |   0   |     16 = worldSize * k    |  Illegal  |    Illegal    |
+            |   1   |           8               |   <= 4    |     > 2       |
+            |   2   |           4               |   <= 2    |     > 1       |
+            |   3   |           2               |   <= 1    |     > 0       |  note: > 0 because there is no next level,
+            |   4   |     Illegal Argument      |           |               |   therefore maxDepth puts the object here
 
              */
+
+
+            @Nested
+            @DisplayName("given object radius of -0.1")
+            class givenObjectRadiusOfNeg01 {
+
+                double radius = -0.1;
+
+
+                @Nested
+                @DisplayName("calcDepth tests")
+                class calcDepthTests {
+
+                    /**
+                     * Objects with a negative radius are incorrectly initialized
+                     */
+                    @Test
+                    @DisplayName("then calcDepth(-0.1) should throw an exception")
+                    void thenCalcDepth0ShouldThrowAnException() {
+                        assertThrows(IllegalArgumentException.class, () -> looseOctree.calcDepth(radius));
+                    }
+                }
+            }
 
 
             @Nested
@@ -591,10 +614,10 @@ public class LooseOctreeTest {
 
 
             @Nested
-            @DisplayName("given object radius of 0.5")
-            class givenObjectRadiusOf05 {
+            @DisplayName("given object radius of 0.1")
+            class givenObjectRadiusOf01 {
 
-                double radius = 0.5;
+                double radius = 0.1;
 
 
                 @Nested
@@ -602,10 +625,10 @@ public class LooseOctreeTest {
                 class calcDepthTests {
 
                     /**
-                     * Objects with no radius are incorrectly initialized
+                     * maxDepth puts the object in depth 3, normally it would be in depth 6
                      */
                     @Test
-                    @DisplayName("then calcDepth(0.5) should return 3")
+                    @DisplayName("then calcDepth(0.1) should return 3")
                     void thenCalcDepth0ShouldThrowAnException() {
                         assertEquals(3, looseOctree.calcDepth(radius));
                     }
@@ -624,13 +647,70 @@ public class LooseOctreeTest {
                 @DisplayName("calcDepth tests")
                 class calcDepthTests {
 
-                    /**
-                     * Objects with no radius are incorrectly initialized
-                     */
                     @Test
-                    @DisplayName("then calcDepth(1.0) should return 2")
+                    @DisplayName("then calcDepth(1.0) should return 3")
                     void thenCalcDepth0ShouldThrowAnException() {
                         assertEquals(3, looseOctree.calcDepth(radius));
+                    }
+                }
+            }
+
+
+            @Nested
+            @DisplayName("given object radius of 1.1")
+            class givenObjectRadiusOf11 {
+
+                double radius = 1.1;
+
+
+                @Nested
+                @DisplayName("calcDepth tests")
+                class calcDepthTests {
+
+                    @Test
+                    @DisplayName("then calcDepth(1.1) should return 2")
+                    void thenCalcDepth0ShouldThrowAnException() {
+                        assertEquals(2, looseOctree.calcDepth(radius));
+                    }
+                }
+            }
+
+
+            @Nested
+            @DisplayName("given object radius of 2")
+            class givenObjectRadiusOf2 {
+
+                double radius = 2;
+
+
+                @Nested
+                @DisplayName("calcDepth tests")
+                class calcDepthTests {
+
+                    @Test
+                    @DisplayName("then calcDepth(2.0) should return 2")
+                    void thenCalcDepth0ShouldThrowAnException() {
+                        assertEquals(2, looseOctree.calcDepth(radius));
+                    }
+                }
+            }
+
+
+            @Nested
+            @DisplayName("given object radius of 2.1")
+            class givenObjectRadiusOf3 {
+
+                double radius = 2.1;
+
+
+                @Nested
+                @DisplayName("calcDepth tests")
+                class calcDepthTests {
+
+                    @Test
+                    @DisplayName("then calcDepth(2.1) should return 1")
+                    void thenCalcDepth0ShouldThrowAnException() {
+                        assertEquals(1, looseOctree.calcDepth(radius));
                     }
                 }
             }
