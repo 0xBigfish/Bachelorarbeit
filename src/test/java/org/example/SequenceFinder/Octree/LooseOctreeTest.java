@@ -719,13 +719,32 @@ public class LooseOctreeTest {
 
                 double radius = 4.0;
 
-                /**
-                 * Object has same size as the world. It will be paced in the highest after the root, which is depth 1
-                 */
-                @Test
-                @DisplayName("then calcDepth(4) should return 1")
-                void thenCalcDepth4ShouldReturn1() {
-                    assertEquals(1, looseOctree.calcDepth(radius));
+
+                @Nested
+                @DisplayName("calcDepth tests")
+                class calcDepthTests {
+                    /**
+                     * Object has same size as the world. It will be paced in the highest after the root, which is depth 1
+                     */
+                    @Test
+                    @DisplayName("then calcDepth(4) should return 1")
+                    void thenCalcDepth4ShouldReturn1() {
+                        assertEquals(1, looseOctree.calcDepth(radius));
+                    }
+                }
+
+
+                @Nested
+                @DisplayName("calcIndex tests")
+                class calcIndexTests {
+
+                }
+
+
+                @Nested
+                @DisplayName("insertObject tests")
+                class insertObjectTests {
+
                 }
 
 
@@ -750,14 +769,33 @@ public class LooseOctreeTest {
 
                 double radius = 4.1;
 
-                /**
-                 * Object would be of size 8.2, which is larger than the world size of 8. The object would not fit in the
-                 * world which is a paradox.
-                 */
-                @Test
-                @DisplayName("then an IllegalArgumentException should be thrown")
-                void thenAnIllegalArgumentExceptionShouldBeThrown() {
-                    assertThrows(IllegalArgumentException.class, () -> looseOctree.calcDepth(radius));
+
+                @Nested
+                @DisplayName("calcDepth tests")
+                class calcDepthTests {
+                    /**
+                     * Object would be of size 8.2, which is larger than the world size of 8. The object would not fit in the
+                     * world which is a paradox.
+                     */
+                    @Test
+                    @DisplayName("then an IllegalArgumentException should be thrown")
+                    void thenAnIllegalArgumentExceptionShouldBeThrown() {
+                        assertThrows(IllegalArgumentException.class, () -> looseOctree.calcDepth(radius));
+                    }
+                }
+
+
+                @Nested
+                @DisplayName("calcIndex tests")
+                class calcIndexTests {
+
+                }
+
+
+                @Nested
+                @DisplayName("insertObject tests")
+                class insertObjectTests {
+
                 }
 
 
