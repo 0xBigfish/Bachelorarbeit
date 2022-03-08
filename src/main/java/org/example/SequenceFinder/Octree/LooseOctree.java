@@ -4,7 +4,7 @@ import org.example.SequenceFinder.GeometricObjects.Box;
 import org.example.SequenceFinder.GeometricObjects.Point;
 
 /**
- * A Loose Octree to store each object based on its position in the world. Used to improve performance for frustum culling
+ * A Loose Octree to store each object based on its position in the world. Used to improve performance of frustum culling
  * <br>
  * <br>
  * The tree implementation is based on Thatcher Ulrich's article about Loose Octrees in "Game Programming Gems" (2000)
@@ -116,12 +116,13 @@ public class LooseOctree<T extends Box> {
     public int calcDepth(double radius) {
         if (radius <= 0) {
             throw new IllegalArgumentException("Object radius must be >0! \n" +
-                    "Object radius was: " + radius);
+                    "object radius: " + radius);
         }
 
         if (radius > (double) worldSize / 2) {
-            throw new IllegalArgumentException("Object cannot be larger than the world itself! \n" +
-                    "Object radius was: " + radius + ", worldSize: " + worldSize);
+            throw new IllegalArgumentException(
+                    "Object radius is too high! The object is larger than the world itself! \n" +
+                            "object radius: " + radius + ", worldSize: " + worldSize);
         }
 
         return Math.min(maxDepth, (int) Math.floor(log2(worldSize / radius)));
