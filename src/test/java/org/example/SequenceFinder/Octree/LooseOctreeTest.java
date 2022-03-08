@@ -81,466 +81,472 @@ public class LooseOctreeTest {
             return true;
         }
 
-        //TODO: add tests for depth < 0
-
 
         @Nested
-        @DisplayName("given depth of 0")
-        class givenDepthOf0 {
+        @DisplayName("tests based on depth")
+        class testsBasedOnDepth {
 
-            int givenDepth = 0;
+            //TODO: add tests for depth < 0
 
 
             @Nested
-            @DisplayName("accessing nodes array tests")
-            class accessingNodesArrayTests {
+            @DisplayName("given depth of 0")
+            class givenDepthOf0 {
+
+                int givenDepth = 0;
 
 
-                /**
-                 * The root node is imaginary. There could only be an object in the root if its radius was larger than
-                 * worldSize / 2, which would mean the object is bigger than the entire world, which is a paradox.
-                 */
-                @Test
-                @DisplayName("then there should be no nodes")
-                void thenThereShouldNoNodes() {
-                    assertEquals(0, looseOctree.nodes[givenDepth].length);
+                @Nested
+                @DisplayName("accessing nodes array tests")
+                class accessingNodesArrayTests {
+
+
+                    /**
+                     * The root node is imaginary. There could only be an object in the root if its radius was larger than
+                     * worldSize / 2, which would mean the object is bigger than the entire world, which is a paradox.
+                     */
+                    @Test
+                    @DisplayName("then there should be no nodes")
+                    void thenThereShouldNoNodes() {
+                        assertEquals(0, looseOctree.nodes[givenDepth].length);
+                    }
+
+                    @Test
+                    @DisplayName("then an IndexOutOfBoundsException should be thrown")
+                    void thenAnIndexOutOfBoundsExceptionShouldBeThrown() {
+                        // call any method on the array as assertThrows needs a void or consumer, not a
+                        // concrete value.
+                        // index 1 is out of bounds
+                        assertAll(
+                                () -> assertThrows(IndexOutOfBoundsException.class,
+                                        () -> looseOctree.nodes[givenDepth][0][0][1].calcCenter()),
+                                () -> assertThrows(IndexOutOfBoundsException.class,
+                                        () -> looseOctree.nodes[givenDepth][0][1][0].calcCenter()),
+                                () -> assertThrows(IndexOutOfBoundsException.class,
+                                        () -> looseOctree.nodes[givenDepth][1][0][0].calcCenter())
+                        );
+                    }
                 }
 
-                @Test
-                @DisplayName("then an IndexOutOfBoundsException should be thrown")
-                void thenAnIndexOutOfBoundsExceptionShouldBeThrown() {
-                    // call any method on the array as assertThrows needs a void or consumer, not a
-                    // concrete value.
-                    // index 1 is out of bounds
-                    assertAll(
-                            () -> assertThrows(IndexOutOfBoundsException.class,
-                                    () -> looseOctree.nodes[givenDepth][0][0][1].calcCenter()),
-                            () -> assertThrows(IndexOutOfBoundsException.class,
-                                    () -> looseOctree.nodes[givenDepth][0][1][0].calcCenter()),
-                            () -> assertThrows(IndexOutOfBoundsException.class,
-                                    () -> looseOctree.nodes[givenDepth][1][0][0].calcCenter())
-                    );
-                }
-            }
 
+                @Nested
+                @DisplayName("boundingCubeLength tests")
+                class boundingCubeLengthTests {
 
-            @Nested
-            @DisplayName("boundingCubeLength tests")
-            class boundingCubeLengthTests {
-
-                /**
-                 * Only the root node exists, which contains the whole world.
-                 */
-                @Test
-                @DisplayName("then boundingCubeLength(0) should return k * worldSize / 1")
-                void thenBoundingCubeLength0ShouldThrowAnException() {
-                    assertEquals(k * worldSize, looseOctree.boundingCubeLength(givenDepth));
-                }
-            }
-
-
-            @Nested
-            @DisplayName("boundingCubeSpacing tests")
-            class boundingCubeSpacingTests {
-
-                /**
-                 * At level 0 there only is the imaginary root node. There are no other nodes so spacing to other nodes
-                 * makes no sense here.
-                 */
-                @Test
-                @DisplayName("then an IllegalArgumentException should be thrown")
-                void thenAnIllegalArgumentExceptionShouldBeThrown() {
-                    assertThrows(IllegalArgumentException.class, () -> looseOctree.boundingCubeSpacing(givenDepth));
+                    /**
+                     * Only the root node exists, which contains the whole world.
+                     */
+                    @Test
+                    @DisplayName("then boundingCubeLength(0) should return k * worldSize / 1")
+                    void thenBoundingCubeLength0ShouldThrowAnException() {
+                        assertEquals(k * worldSize, looseOctree.boundingCubeLength(givenDepth));
+                    }
                 }
 
-            }
 
+                @Nested
+                @DisplayName("boundingCubeSpacing tests")
+                class boundingCubeSpacingTests {
 
-            @Nested
-            @DisplayName("calcDepth tests")
-            class calcDepthTests {
+                    /**
+                     * At level 0 there only is the imaginary root node. There are no other nodes so spacing to other nodes
+                     * makes no sense here.
+                     */
+                    @Test
+                    @DisplayName("then an IllegalArgumentException should be thrown")
+                    void thenAnIllegalArgumentExceptionShouldBeThrown() {
+                        assertThrows(IllegalArgumentException.class, () -> looseOctree.boundingCubeSpacing(givenDepth));
+                    }
 
-            }
-
-
-            @Nested
-            @DisplayName("calcIndex tests")
-            class calcIndexTests {
-
-            }
-
-
-            @Nested
-            @DisplayName("insertObject tests")
-            class insertObjectTests {
-
-            }
-        }
-
-
-        @Nested
-        @DisplayName("given depth of 1")
-        class givenDepthOf1 {
-
-            int givenDepth = 1;
-
-
-            @Nested
-            @DisplayName("accessing nodes array tests")
-            class accessingNodesArrayTests {
-
-                @Test
-                @DisplayName("then there should be a total of 8 nodes")
-                void thenThereShouldBeATotalOf8Nodes() {
-                    assertEquals(8, countTotalNodes(looseOctree.nodes[givenDepth]));
                 }
 
-                @Test
-                @DisplayName("then there should be exactly 2 nodes per dimension")
-                void thenThereShouldBeExactly2NodesPerDimension() {
-                    assertAll(
-                            // check x dimension
-                            () -> assertEquals(2, looseOctree.nodes[givenDepth].length),
-                            // check y dimension
-                            () -> assertEquals(2, looseOctree.nodes[givenDepth][0].length),
-                            // check z dimension
-                            () -> assertEquals(2, looseOctree.nodes[givenDepth][0][0].length),
 
-                            // check all dimensions are equally sized.
-                            () -> assertTrue(equallySizedDimensions(looseOctree.nodes[givenDepth]))
-                    );
+                @Nested
+                @DisplayName("calcDepth tests")
+                class calcDepthTests {
+
                 }
 
-                @Test
-                @DisplayName("then there should be an array out of bounds when accessing the 9th element")
-                void thenThereShouldBeAnArrayOutOfBoundsWhenAccessingThe9ThElement() {
-                    // call any method on the array as assertThrows needs a void or consumer, not a
-                    // concrete value.
-                    // index 2 is out of bounds
-                    assertAll(
-                            () -> assertThrows(IndexOutOfBoundsException.class,
-                                    () -> looseOctree.nodes[givenDepth][0][0][2].calcCenter()),
-                            () -> assertThrows(IndexOutOfBoundsException.class,
-                                    () -> looseOctree.nodes[givenDepth][0][2][0].calcCenter()),
-                            () -> assertThrows(IndexOutOfBoundsException.class,
-                                    () -> looseOctree.nodes[givenDepth][2][0][0].calcCenter())
-                    );
+
+                @Nested
+                @DisplayName("calcIndex tests")
+                class calcIndexTests {
+
+                }
+
+
+                @Nested
+                @DisplayName("insertObject tests")
+                class insertObjectTests {
+
                 }
             }
 
 
             @Nested
-            @DisplayName("boundingCubeLength tests")
-            class boundingCubeLengthTests {
+            @DisplayName("given depth of 1")
+            class givenDepthOf1 {
 
-                @Test
-                @DisplayName("then boundingCubeLength(1) should return k * worldSize / 2")
-                void thenBoundingCubeLength1ShouldReturnKWorldSize4() {
-                    assertEquals(k * worldSize / 2, looseOctree.boundingCubeLength(givenDepth));
+                int givenDepth = 1;
+
+
+                @Nested
+                @DisplayName("accessing nodes array tests")
+                class accessingNodesArrayTests {
+
+                    @Test
+                    @DisplayName("then there should be a total of 8 nodes")
+                    void thenThereShouldBeATotalOf8Nodes() {
+                        assertEquals(8, countTotalNodes(looseOctree.nodes[givenDepth]));
+                    }
+
+                    @Test
+                    @DisplayName("then there should be exactly 2 nodes per dimension")
+                    void thenThereShouldBeExactly2NodesPerDimension() {
+                        assertAll(
+                                // check x dimension
+                                () -> assertEquals(2, looseOctree.nodes[givenDepth].length),
+                                // check y dimension
+                                () -> assertEquals(2, looseOctree.nodes[givenDepth][0].length),
+                                // check z dimension
+                                () -> assertEquals(2, looseOctree.nodes[givenDepth][0][0].length),
+
+                                // check all dimensions are equally sized.
+                                () -> assertTrue(equallySizedDimensions(looseOctree.nodes[givenDepth]))
+                        );
+                    }
+
+                    @Test
+                    @DisplayName("then there should be an array out of bounds when accessing the 9th element")
+                    void thenThereShouldBeAnArrayOutOfBoundsWhenAccessingThe9ThElement() {
+                        // call any method on the array as assertThrows needs a void or consumer, not a
+                        // concrete value.
+                        // index 2 is out of bounds
+                        assertAll(
+                                () -> assertThrows(IndexOutOfBoundsException.class,
+                                        () -> looseOctree.nodes[givenDepth][0][0][2].calcCenter()),
+                                () -> assertThrows(IndexOutOfBoundsException.class,
+                                        () -> looseOctree.nodes[givenDepth][0][2][0].calcCenter()),
+                                () -> assertThrows(IndexOutOfBoundsException.class,
+                                        () -> looseOctree.nodes[givenDepth][2][0][0].calcCenter())
+                        );
+                    }
+                }
+
+
+                @Nested
+                @DisplayName("boundingCubeLength tests")
+                class boundingCubeLengthTests {
+
+                    @Test
+                    @DisplayName("then boundingCubeLength(1) should return k * worldSize / 2")
+                    void thenBoundingCubeLength1ShouldReturnKWorldSize4() {
+                        assertEquals(k * worldSize / 2, looseOctree.boundingCubeLength(givenDepth));
+                    }
+                }
+
+
+                @Nested
+                @DisplayName("boundingCubeSpacing tests")
+                class boundingCubeSpacingTests {
+
+                    @Test
+                    @DisplayName("then boundingCubeSpacing(1) should return worldSize/ 2")
+                    void thenBoundingCubeSpacing1ShouldReturnWorldSize2() {
+                        assertEquals(worldSize / 2, looseOctree.boundingCubeSpacing(givenDepth));
+                    }
+
+                }
+
+
+                @Nested
+                @DisplayName("calcDepth tests")
+                class calcDepthTests {
+
+                }
+
+
+                @Nested
+                @DisplayName("calcIndex tests")
+                class calcIndexTests {
+
+                }
+
+
+                @Nested
+                @DisplayName("insertObject tests")
+                class insertObjectTests {
+
                 }
             }
 
 
             @Nested
-            @DisplayName("boundingCubeSpacing tests")
-            class boundingCubeSpacingTests {
+            @DisplayName("given depth of 2")
+            class givenDepthOf2 {
 
-                @Test
-                @DisplayName("then boundingCubeSpacing(1) should return worldSize/ 2")
-                void thenBoundingCubeSpacing1ShouldReturnWorldSize2() {
-                    assertEquals(worldSize / 2, looseOctree.boundingCubeSpacing(givenDepth));
+                int givenDepth = 2;
+
+
+                @Nested
+                @DisplayName("accessing nodes array tests")
+                class accessingNodesArrayTests {
+
+                    @Test
+                    @DisplayName("then there should be a total of 64 nodes")
+                    void thenThereShouldBeATotalOf64Nodes() {
+                        assertEquals(64, countTotalNodes(looseOctree.nodes[givenDepth]));
+                    }
+
+                    @Test
+                    @DisplayName("then there should be exactly 4 nodes per dimension")
+                    void thenThereShouldBeExactly4NodesPerDimension() {
+                        assertAll(
+                                // check x dimension
+                                () -> assertEquals(4, looseOctree.nodes[givenDepth].length),
+                                // check y dimension
+                                () -> assertEquals(4, looseOctree.nodes[givenDepth][0].length),
+                                // check z dimension
+                                () -> assertEquals(4, looseOctree.nodes[givenDepth][0][0].length),
+
+                                // check all dimensions are equally sized.
+                                () -> assertTrue(equallySizedDimensions(looseOctree.nodes[givenDepth]))
+                        );
+                    }
+
+                    @Test
+                    @DisplayName("then there should be an array out of bounds when accessing the 65th element")
+                    void thenThereShouldBeAnArrayOutOfBoundsWhenAccessingThe65ThElement() {
+                        // call any method on the array as assertThrows needs a void or consumer, not a
+                        // concrete value.
+                        // index 4 is out of bounds
+                        assertAll(
+                                () -> assertThrows(IndexOutOfBoundsException.class,
+                                        () -> looseOctree.nodes[givenDepth][0][0][4].calcCenter()),
+                                () -> assertThrows(IndexOutOfBoundsException.class,
+                                        () -> looseOctree.nodes[givenDepth][0][4][0].calcCenter()),
+                                () -> assertThrows(IndexOutOfBoundsException.class,
+                                        () -> looseOctree.nodes[givenDepth][4][0][0].calcCenter())
+                        );
+                    }
                 }
 
-            }
 
+                @Nested
+                @DisplayName("boundingCubeLength tests")
+                class boundingCubeLengthTests {
 
-            @Nested
-            @DisplayName("calcDepth tests")
-            class calcDepthTests {
-
-            }
-
-
-            @Nested
-            @DisplayName("calcIndex tests")
-            class calcIndexTests {
-
-            }
-
-
-            @Nested
-            @DisplayName("insertObject tests")
-            class insertObjectTests {
-
-            }
-        }
-
-
-        @Nested
-        @DisplayName("given depth of 2")
-        class givenDepthOf2 {
-
-            int givenDepth = 2;
-
-
-            @Nested
-            @DisplayName("accessing nodes array tests")
-            class accessingNodesArrayTests {
-
-                @Test
-                @DisplayName("then there should be a total of 64 nodes")
-                void thenThereShouldBeATotalOf64Nodes() {
-                    assertEquals(64, countTotalNodes(looseOctree.nodes[givenDepth]));
+                    @Test
+                    @DisplayName("then boundingCubeLength(2) should return k * worldSize / 4")
+                    void thenBoundingCubeLength2ShouldReturnKWorldSize8() {
+                        assertEquals(k * worldSize / 4, looseOctree.boundingCubeLength(givenDepth));
+                    }
                 }
 
-                @Test
-                @DisplayName("then there should be exactly 4 nodes per dimension")
-                void thenThereShouldBeExactly4NodesPerDimension() {
-                    assertAll(
-                            // check x dimension
-                            () -> assertEquals(4, looseOctree.nodes[givenDepth].length),
-                            // check y dimension
-                            () -> assertEquals(4, looseOctree.nodes[givenDepth][0].length),
-                            // check z dimension
-                            () -> assertEquals(4, looseOctree.nodes[givenDepth][0][0].length),
 
-                            // check all dimensions are equally sized.
-                            () -> assertTrue(equallySizedDimensions(looseOctree.nodes[givenDepth]))
-                    );
+                @Nested
+                @DisplayName("boundingCubeSpacing tests")
+                class boundingCubeSpacingTests {
+
+                    @Test
+                    @DisplayName("then boundingCubeSpacing(2) should return worldSize / 4")
+                    void thenBoundingCubeSpacing2ShouldReturnWorldSize4() {
+                        assertEquals(worldSize / 4, looseOctree.boundingCubeSpacing(givenDepth));
+                    }
+
                 }
 
-                @Test
-                @DisplayName("then there should be an array out of bounds when accessing the 65th element")
-                void thenThereShouldBeAnArrayOutOfBoundsWhenAccessingThe65ThElement() {
-                    // call any method on the array as assertThrows needs a void or consumer, not a
-                    // concrete value.
-                    // index 4 is out of bounds
-                    assertAll(
-                            () -> assertThrows(IndexOutOfBoundsException.class,
-                                    () -> looseOctree.nodes[givenDepth][0][0][4].calcCenter()),
-                            () -> assertThrows(IndexOutOfBoundsException.class,
-                                    () -> looseOctree.nodes[givenDepth][0][4][0].calcCenter()),
-                            () -> assertThrows(IndexOutOfBoundsException.class,
-                                    () -> looseOctree.nodes[givenDepth][4][0][0].calcCenter())
-                    );
-                }
-            }
 
+                @Nested
+                @DisplayName("calcDepth tests")
+                class calcDepthTests {
 
-            @Nested
-            @DisplayName("boundingCubeLength tests")
-            class boundingCubeLengthTests {
-
-                @Test
-                @DisplayName("then boundingCubeLength(2) should return k * worldSize / 4")
-                void thenBoundingCubeLength2ShouldReturnKWorldSize8() {
-                    assertEquals(k * worldSize / 4, looseOctree.boundingCubeLength(givenDepth));
-                }
-            }
-
-
-            @Nested
-            @DisplayName("boundingCubeSpacing tests")
-            class boundingCubeSpacingTests {
-
-                @Test
-                @DisplayName("then boundingCubeSpacing(2) should return worldSize / 4")
-                void thenBoundingCubeSpacing2ShouldReturnWorldSize4() {
-                    assertEquals(worldSize / 4, looseOctree.boundingCubeSpacing(givenDepth));
                 }
 
-            }
 
+                @Nested
+                @DisplayName("calcIndex tests")
+                class calcIndexTests {
 
-            @Nested
-            @DisplayName("calcDepth tests")
-            class calcDepthTests {
-
-            }
-
-
-            @Nested
-            @DisplayName("calcIndex tests")
-            class calcIndexTests {
-
-            }
-
-
-            @Nested
-            @DisplayName("insertObject tests")
-            class insertObjectTests {
-
-            }
-        }
-
-
-        @Nested
-        @DisplayName("given depth of 3")
-        class givenDepthOf3 {
-
-            int givenDepth = 3;
-
-
-            @Nested
-            @DisplayName("accessing nodes array tests")
-            class accessingNodesArrayTests {
-
-                @Test
-                @DisplayName("then there should be a total of 512 nodes")
-                void thenThereShouldBeATotalOf512Nodes() {
-                    assertEquals(512, countTotalNodes(looseOctree.nodes[givenDepth]));
                 }
 
-                @Test
-                @DisplayName("then there should be exactly 8 nodes per dimension")
-                void thenThereShouldBeExactly8NodesPerDimension() {
-                    assertAll(
-                            // check x dimension
-                            () -> assertEquals(8, looseOctree.nodes[givenDepth].length),
-                            // check y dimension
-                            () -> assertEquals(8, looseOctree.nodes[givenDepth][0].length),
-                            // check z dimension
-                            () -> assertEquals(8, looseOctree.nodes[givenDepth][0][0].length),
 
-                            // check all dimensions are equally sized.
-                            () -> assertTrue(equallySizedDimensions(looseOctree.nodes[givenDepth]))
-                    );
-                }
+                @Nested
+                @DisplayName("insertObject tests")
+                class insertObjectTests {
 
-                @Test
-                @DisplayName("then there should be an array out of bounds when accessing the 513th element")
-                void thenThereShouldBeAnArrayOutOfBoundsWhenAccessingThe9ThElement() {
-                    // call any method on the array as assertThrows needs a void or consumer, not a
-                    // concrete value.
-                    // index 8 is out of bounds
-                    assertAll(
-                            () -> assertThrows(IndexOutOfBoundsException.class,
-                                    () -> looseOctree.nodes[givenDepth][0][0][8].calcCenter()),
-                            () -> assertThrows(IndexOutOfBoundsException.class,
-                                    () -> looseOctree.nodes[givenDepth][0][8][0].calcCenter()),
-                            () -> assertThrows(IndexOutOfBoundsException.class,
-                                    () -> looseOctree.nodes[givenDepth][8][0][0].calcCenter())
-                    );
                 }
             }
 
 
             @Nested
-            @DisplayName("boundingCubeLength tests")
-            class boundingCubeLengthTests {
+            @DisplayName("given depth of 3")
+            class givenDepthOf3 {
 
-                @Test
-                @DisplayName("then boundingCubeLength(3) should return k * worldSize / 8")
-                void thenBoundingCubeLength3ShouldReturnKWorldSize16() {
-                    assertEquals(k * worldSize / 8, looseOctree.boundingCubeLength(givenDepth));
+                int givenDepth = 3;
+
+
+                @Nested
+                @DisplayName("accessing nodes array tests")
+                class accessingNodesArrayTests {
+
+                    @Test
+                    @DisplayName("then there should be a total of 512 nodes")
+                    void thenThereShouldBeATotalOf512Nodes() {
+                        assertEquals(512, countTotalNodes(looseOctree.nodes[givenDepth]));
+                    }
+
+                    @Test
+                    @DisplayName("then there should be exactly 8 nodes per dimension")
+                    void thenThereShouldBeExactly8NodesPerDimension() {
+                        assertAll(
+                                // check x dimension
+                                () -> assertEquals(8, looseOctree.nodes[givenDepth].length),
+                                // check y dimension
+                                () -> assertEquals(8, looseOctree.nodes[givenDepth][0].length),
+                                // check z dimension
+                                () -> assertEquals(8, looseOctree.nodes[givenDepth][0][0].length),
+
+                                // check all dimensions are equally sized.
+                                () -> assertTrue(equallySizedDimensions(looseOctree.nodes[givenDepth]))
+                        );
+                    }
+
+                    @Test
+                    @DisplayName("then there should be an array out of bounds when accessing the 513th element")
+                    void thenThereShouldBeAnArrayOutOfBoundsWhenAccessingThe9ThElement() {
+                        // call any method on the array as assertThrows needs a void or consumer, not a
+                        // concrete value.
+                        // index 8 is out of bounds
+                        assertAll(
+                                () -> assertThrows(IndexOutOfBoundsException.class,
+                                        () -> looseOctree.nodes[givenDepth][0][0][8].calcCenter()),
+                                () -> assertThrows(IndexOutOfBoundsException.class,
+                                        () -> looseOctree.nodes[givenDepth][0][8][0].calcCenter()),
+                                () -> assertThrows(IndexOutOfBoundsException.class,
+                                        () -> looseOctree.nodes[givenDepth][8][0][0].calcCenter())
+                        );
+                    }
+                }
+
+
+                @Nested
+                @DisplayName("boundingCubeLength tests")
+                class boundingCubeLengthTests {
+
+                    @Test
+                    @DisplayName("then boundingCubeLength(3) should return k * worldSize / 8")
+                    void thenBoundingCubeLength3ShouldReturnKWorldSize16() {
+                        assertEquals(k * worldSize / 8, looseOctree.boundingCubeLength(givenDepth));
+                    }
+                }
+
+
+                @Nested
+                @DisplayName("boundingCubeSpacing tests")
+                class boundingCubeSpacingTests {
+
+                    @Test
+                    @DisplayName("then boundingCubeSpacing(3) should return worldSize / 8")
+                    void thenBoundingCubeSpacing3ShouldReturnWorldSize8() {
+                        assertEquals(worldSize / 8, looseOctree.boundingCubeSpacing(givenDepth));
+                    }
+
+                }
+
+
+                @Nested
+                @DisplayName("calcDepth tests")
+                class calcDepthTests {
+
+                }
+
+
+                @Nested
+                @DisplayName("calcIndex tests")
+                class calcIndexTests {
+
+                }
+
+
+                @Nested
+                @DisplayName("insertObject tests")
+                class insertObjectTests {
+
                 }
             }
 
 
+            /**
+             * Given depth > maxDepth
+             */
             @Nested
-            @DisplayName("boundingCubeSpacing tests")
-            class boundingCubeSpacingTests {
+            @DisplayName("given depth of 4")
+            class givenDepthOf4 {
 
-                @Test
-                @DisplayName("then boundingCubeSpacing(3) should return worldSize / 8")
-                void thenBoundingCubeSpacing3ShouldReturnWorldSize8() {
-                    assertEquals(worldSize / 8, looseOctree.boundingCubeSpacing(givenDepth));
+                int givenDepth = 4;
+
+
+                @Nested
+                @DisplayName("accessing nodes array tests")
+                class accessingNodesArrayTests {
+
+                    @Test
+                    @DisplayName("then an IndexOutOfBoundsException should be thrown")
+                    void thenAnIndexOutOfBoundsExceptionShouldBeThrown() {
+                        // call any method on the array as assertThrows needs a void or consumer, not a
+                        // concrete value.
+                        assertThrows(IndexOutOfBoundsException.class,
+                                () -> looseOctree.nodes[givenDepth][0][0][0].calcCenter());
+                    }
                 }
 
-            }
+
+                @Nested
+                @DisplayName("boundingCubeLength tests")
+                class boundingCubeLengthTests {
 
 
-            @Nested
-            @DisplayName("calcDepth tests")
-            class calcDepthTests {
-
-            }
-
-
-            @Nested
-            @DisplayName("calcIndex tests")
-            class calcIndexTests {
-
-            }
-
-
-            @Nested
-            @DisplayName("insertObject tests")
-            class insertObjectTests {
-
-            }
-        }
-
-
-        /**
-         * Given depth > maxDepth
-         */
-        @Nested
-        @DisplayName("given depth of 4")
-        class givenDepthOf4 {
-
-            int givenDepth = 4;
-
-
-            @Nested
-            @DisplayName("accessing nodes array tests")
-            class accessingNodesArrayTests {
-
-                @Test
-                @DisplayName("then an IndexOutOfBoundsException should be thrown")
-                void thenAnIndexOutOfBoundsExceptionShouldBeThrown() {
-                    // call any method on the array as assertThrows needs a void or consumer, not a
-                    // concrete value.
-                    assertThrows(IndexOutOfBoundsException.class,
-                            () -> looseOctree.nodes[givenDepth][0][0][0].calcCenter());
-                }
-            }
-
-
-            @Nested
-            @DisplayName("boundingCubeLength tests")
-            class boundingCubeLengthTests {
-
-
-                @Test
-                @DisplayName("then boundingCubeLength(4) should throw an Exception")
-                void thenBoundingCubeLength4ShouldThrowAnException() {
-                    assertThrows(IllegalArgumentException.class, () -> looseOctree.boundingCubeLength(givenDepth));
-                }
-            }
-
-
-            @Nested
-            @DisplayName("boundingCubeSpacing tests")
-            class boundingCubeSpacingTests {
-
-                @Test
-                @DisplayName("then boundingCubeSpacing(4) should throw an IllegalArgumentExceptions")
-                void thenBoundingCubeSpacing4ShouldThrowAnIllegalArgumentExceptions() {
-                    assertThrows(IllegalArgumentException.class, () -> looseOctree.boundingCubeSpacing(givenDepth));
+                    @Test
+                    @DisplayName("then boundingCubeLength(4) should throw an Exception")
+                    void thenBoundingCubeLength4ShouldThrowAnException() {
+                        assertThrows(IllegalArgumentException.class, () -> looseOctree.boundingCubeLength(givenDepth));
+                    }
                 }
 
-            }
+
+                @Nested
+                @DisplayName("boundingCubeSpacing tests")
+                class boundingCubeSpacingTests {
+
+                    @Test
+                    @DisplayName("then boundingCubeSpacing(4) should throw an IllegalArgumentExceptions")
+                    void thenBoundingCubeSpacing4ShouldThrowAnIllegalArgumentExceptions() {
+                        assertThrows(IllegalArgumentException.class, () -> looseOctree.boundingCubeSpacing(givenDepth));
+                    }
+
+                }
 
 
-            @Nested
-            @DisplayName("calcDepth tests")
-            class calcDepthTests {
+                @Nested
+                @DisplayName("calcDepth tests")
+                class calcDepthTests {
 
-            }
-
-
-            @Nested
-            @DisplayName("calcIndex tests")
-            class calcIndexTests {
-
-            }
+                }
 
 
-            @Nested
-            @DisplayName("insertObject tests")
-            class insertObjectTests {
+                @Nested
+                @DisplayName("calcIndex tests")
+                class calcIndexTests {
 
+                }
+
+
+                @Nested
+                @DisplayName("insertObject tests")
+                class insertObjectTests {
+
+                }
             }
         }
 
