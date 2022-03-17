@@ -129,13 +129,26 @@ public class LooseOctree<T extends Box> {
     }
 
     /**
-     * Calculates the x,y,z indices of an object at which it will be stored in the octree.
+     * Calculates the x,y,z indices of an object at which it will be stored in the octree. <br>
+     * The calculation assumes the world is centered at the coordinate system origin.
      *
      * @param t the object
      * @return the indices wrapped in a Point object. The Point is just a wrapper to store the values
      */
     public Point calcIndex(T t) {
         double radius = t.calcRadius();
+
+        // check if the object is fully enclosed in the world; the world is centered at the coordinate system origin
+        if (t.calcCenter().x < (double) -worldSize / 2 + radius ||
+                t.calcCenter().y < (double) -worldSize / 2 + radius ||
+                t.calcCenter().z < (double) -worldSize / 2 + radius ||
+                t.calcCenter().x > (double) worldSize / 2 - radius ||
+                t.calcCenter().y > (double) worldSize / 2 - radius ||
+                t.calcCenter().z > (double) worldSize / 2 - radius) {
+            throw new IllegalArgumentException("Object is not fully enclosed in the world \n" +
+                    "object radius: " + radius + ", object position: " + t.calcCenter() + ", worldSize: " + worldSize);
+        }
+
         int x = (int) Math.floor((t.calcCenter().x + (double) worldSize / 2) /
                 boundingCubeSpacing(calcDepth(radius)));
         int y = (int) Math.floor((t.calcCenter().y + (double) worldSize / 2) /
