@@ -30,7 +30,7 @@ public class LooseOctreeTest {
 
     @Nested
     @DisplayName("given a LooseOctree with maxDepth = 3 and worldSize = 8")
-    class givenALooseOctreeWithMaxDepth3AndWorldSize8 {
+    class LooseOctreeMaxDepth3WorldSize8Test {
 
         LooseOctree<Box> looseOctree;
 
@@ -52,7 +52,7 @@ public class LooseOctreeTest {
             int counter = 0;
             for (Box[][] x : nodes) {
                 for (Box[] y : x) {
-                    for (Box z : y) {
+                    for (Box ignored : y) {
                         counter++;
                     }
                 }
@@ -87,21 +87,21 @@ public class LooseOctreeTest {
 
         @Nested
         @DisplayName("tests based on depth")
-        class testsBasedOnDepth {
+        class DepthTests {
 
             //TODO: add tests for depth < 0
 
 
             @Nested
             @DisplayName("given depth of 0")
-            class givenDepthOf0 {
+            class DepthOf0 {
 
                 int givenDepth = 0;
 
 
                 @Nested
                 @DisplayName("accessing nodes array tests")
-                class accessingNodesArrayTests {
+                class ArrayNodesTests {
 
 
                     /**
@@ -134,7 +134,7 @@ public class LooseOctreeTest {
 
                 @Nested
                 @DisplayName("boundingCubeLength tests")
-                class boundingCubeLengthTests {
+                class BCLengthTests {
 
                     /**
                      * Only the root node exists, which contains the whole world.
@@ -149,7 +149,7 @@ public class LooseOctreeTest {
 
                 @Nested
                 @DisplayName("boundingCubeSpacing tests")
-                class boundingCubeSpacingTests {
+                class BCSpacingTests {
 
                     /**
                      * At level 0 there only is the imaginary root node. There are no other nodes so spacing to other nodes
@@ -166,14 +166,14 @@ public class LooseOctreeTest {
 
             @Nested
             @DisplayName("given depth of 1")
-            class givenDepthOf1 {
+            class DepthOf1 {
 
                 int givenDepth = 1;
 
 
                 @Nested
                 @DisplayName("accessing nodes array tests")
-                class accessingNodesArrayTests {
+                class ArrayNodesTests {
 
                     @Test
                     @DisplayName("then there should be a total of 8 nodes")
@@ -217,7 +217,7 @@ public class LooseOctreeTest {
 
                 @Nested
                 @DisplayName("boundingCubeLength tests")
-                class boundingCubeLengthTests {
+                class BCLengthTests {
 
                     @Test
                     @DisplayName("then boundingCubeLength(1) should return k * worldSize / 2")
@@ -229,7 +229,7 @@ public class LooseOctreeTest {
 
                 @Nested
                 @DisplayName("boundingCubeSpacing tests")
-                class boundingCubeSpacingTests {
+                class BCSpacingTests {
 
                     @Test
                     @DisplayName("then boundingCubeSpacing(1) should return worldSize/ 2")
@@ -243,14 +243,14 @@ public class LooseOctreeTest {
 
             @Nested
             @DisplayName("given depth of 2")
-            class givenDepthOf2 {
+            class DepthOf2 {
 
                 int givenDepth = 2;
 
 
                 @Nested
                 @DisplayName("accessing nodes array tests")
-                class accessingNodesArrayTests {
+                class ArrayNodesTests {
 
                     @Test
                     @DisplayName("then there should be a total of 64 nodes")
@@ -294,7 +294,7 @@ public class LooseOctreeTest {
 
                 @Nested
                 @DisplayName("boundingCubeLength tests")
-                class boundingCubeLengthTests {
+                class BCLengthTests {
 
                     @Test
                     @DisplayName("then boundingCubeLength(2) should return k * worldSize / 4")
@@ -306,7 +306,7 @@ public class LooseOctreeTest {
 
                 @Nested
                 @DisplayName("boundingCubeSpacing tests")
-                class boundingCubeSpacingTests {
+                class BCSpacingTests {
 
                     @Test
                     @DisplayName("then boundingCubeSpacing(2) should return worldSize / 4")
@@ -319,14 +319,14 @@ public class LooseOctreeTest {
 
             @Nested
             @DisplayName("given depth of 3")
-            class givenDepthOf3 {
+            class DepthOf3 {
 
                 int givenDepth = 3;
 
 
                 @Nested
                 @DisplayName("accessing nodes array tests")
-                class accessingNodesArrayTests {
+                class ArrayNodesTests {
 
                     @Test
                     @DisplayName("then there should be a total of 512 nodes")
@@ -370,7 +370,7 @@ public class LooseOctreeTest {
 
                 @Nested
                 @DisplayName("boundingCubeLength tests")
-                class boundingCubeLengthTests {
+                class BCLengthTests {
 
                     @Test
                     @DisplayName("then boundingCubeLength(3) should return k * worldSize / 8")
@@ -382,7 +382,7 @@ public class LooseOctreeTest {
 
                 @Nested
                 @DisplayName("boundingCubeSpacing tests")
-                class boundingCubeSpacingTests {
+                class BCSpacingTests {
 
                     @Test
                     @DisplayName("then boundingCubeSpacing(3) should return worldSize / 8")
@@ -399,14 +399,14 @@ public class LooseOctreeTest {
              */
             @Nested
             @DisplayName("given depth of 4")
-            class givenDepthOf4 {
+            class DepthOf4 {
 
                 int givenDepth = 4;
 
 
                 @Nested
                 @DisplayName("accessing nodes array tests")
-                class accessingNodesArrayTests {
+                class ArrayNodesTests {
 
                     @Test
                     @DisplayName("then an IndexOutOfBoundsException should be thrown")
@@ -421,7 +421,7 @@ public class LooseOctreeTest {
 
                 @Nested
                 @DisplayName("boundingCubeLength tests")
-                class boundingCubeLengthTests {
+                class BCLengthTests {
 
 
                     @Test
@@ -434,7 +434,7 @@ public class LooseOctreeTest {
 
                 @Nested
                 @DisplayName("boundingCubeSpacing tests")
-                class boundingCubeSpacingTests {
+                class BCSpacingTests {
 
                     @Test
                     @DisplayName("then boundingCubeSpacing(4) should throw an IllegalArgumentExceptions")
@@ -449,7 +449,7 @@ public class LooseOctreeTest {
 
         @Nested
         @DisplayName("tests based on object radius")
-        class testsBasedOnObjectRadius {
+        class RadiusTests {
 
             /*
 
@@ -471,14 +471,14 @@ public class LooseOctreeTest {
 
             @Nested
             @DisplayName("given object radius of -0.1")
-            class givenObjectRadiusOfNeg01 {
+            class RadiusNeg01 {
 
                 double radius = -0.1;
 
 
                 @Nested
                 @DisplayName("calcDepth tests")
-                class calcDepthTests {
+                class CalcDepthTests {
 
                     /**
                      * Objects with a negative radius are incorrectly initialized
@@ -493,7 +493,7 @@ public class LooseOctreeTest {
 
                 @Nested
                 @DisplayName("calcIndex tests")
-                class calcIndexTests {
+                class CalcIndexTests {
                     @Mock
                     Box boxMock;
 
@@ -514,7 +514,7 @@ public class LooseOctreeTest {
 
                 @Nested
                 @DisplayName("insertObject tests")
-                class insertObjectTests {
+                class InsertObjectTests {
 
                 }
             }
@@ -522,14 +522,14 @@ public class LooseOctreeTest {
 
             @Nested
             @DisplayName("given object radius of 0")
-            class givenObjectRadiusOf0 {
+            class RadiusOf0 {
 
                 double radius = 0;
 
 
                 @Nested
                 @DisplayName("calcDepth tests")
-                class calcDepthTests {
+                class CalcDepthTests {
 
                     /**
                      * Objects with no radius are incorrectly initialized
@@ -544,7 +544,7 @@ public class LooseOctreeTest {
 
                 @Nested
                 @DisplayName("calcIndex tests")
-                class calcIndexTests {
+                class CalcIndexTests {
                     @Mock
                     Box boxMock;
 
@@ -565,7 +565,7 @@ public class LooseOctreeTest {
 
                 @Nested
                 @DisplayName("insertObject tests")
-                class insertObjectTests {
+                class InsertObjectTests {
 
                 }
             }
@@ -573,14 +573,14 @@ public class LooseOctreeTest {
 
             @Nested
             @DisplayName("given object radius of 0.1")
-            class givenObjectRadiusOf01 {
+            class RadiusOf01 {
 
                 double radius = 0.1;
 
 
                 @Nested
                 @DisplayName("calcDepth tests")
-                class calcDepthTests {
+                class CalcDepthTests {
 
                     /**
                      * maxDepth puts the object in depth 3, normally it would be in depth 6
@@ -595,7 +595,7 @@ public class LooseOctreeTest {
 
                 @Nested
                 @DisplayName("calcIndex tests")
-                class calcIndexTests {
+                class CalcIndexTests {
                     @Mock
                     Box boxMock;
 
@@ -635,7 +635,7 @@ public class LooseOctreeTest {
                      */
                     @Nested
                     @DisplayName("position tests")
-                    class posTest {
+                    class PositionTest {
 
                         /**
                          * object's center is the very border of the world, only one half of the object lies in the
@@ -773,7 +773,7 @@ public class LooseOctreeTest {
 
                 @Nested
                 @DisplayName("insertObject tests")
-                class insertObjectTests {
+                class InsertObjectTests {
 
                 }
             }
@@ -781,14 +781,14 @@ public class LooseOctreeTest {
 
             @Nested
             @DisplayName("given object radius of 1")
-            class givenObjectRadiusOf1 {
+            class RadiusOf1 {
 
                 double radius = 1.0;
 
 
                 @Nested
                 @DisplayName("calcDepth tests")
-                class calcDepthTests {
+                class CalcDepthTests {
 
                     @Test
                     @DisplayName("then calcDepth(1.0) should return 3")
@@ -800,14 +800,14 @@ public class LooseOctreeTest {
 
                 @Nested
                 @DisplayName("calcIndex tests")
-                class calcIndexTests {
+                class CalcIndexTests {
 
                 }
 
 
                 @Nested
                 @DisplayName("insertObject tests")
-                class insertObjectTests {
+                class InsertObjectTests {
 
                 }
             }
@@ -815,14 +815,14 @@ public class LooseOctreeTest {
 
             @Nested
             @DisplayName("given object radius of 1.1")
-            class givenObjectRadiusOf11 {
+            class RadiusOf11 {
 
                 double radius = 1.1;
 
 
                 @Nested
                 @DisplayName("calcDepth tests")
-                class calcDepthTests {
+                class CalcDepthTests {
 
                     @Test
                     @DisplayName("then calcDepth(1.1) should return 2")
@@ -834,14 +834,14 @@ public class LooseOctreeTest {
 
                 @Nested
                 @DisplayName("calcIndex tests")
-                class calcIndexTests {
+                class CalcIndexTests {
 
                 }
 
 
                 @Nested
                 @DisplayName("insertObject tests")
-                class insertObjectTests {
+                class InsertObjectTests {
 
                 }
             }
@@ -849,14 +849,14 @@ public class LooseOctreeTest {
 
             @Nested
             @DisplayName("given object radius of 2")
-            class givenObjectRadiusOf2 {
+            class RadiusOf2 {
 
                 double radius = 2;
 
 
                 @Nested
                 @DisplayName("calcDepth tests")
-                class calcDepthTests {
+                class CalcDepthTests {
 
                     @Test
                     @DisplayName("then calcDepth(2.0) should return 2")
@@ -868,14 +868,14 @@ public class LooseOctreeTest {
 
                 @Nested
                 @DisplayName("calcIndex tests")
-                class calcIndexTests {
+                class CalcIndexTests {
 
                 }
 
 
                 @Nested
                 @DisplayName("insertObject tests")
-                class insertObjectTests {
+                class InsertObjectTests {
 
                 }
             }
@@ -883,14 +883,14 @@ public class LooseOctreeTest {
 
             @Nested
             @DisplayName("given object radius of 2.1")
-            class givenObjectRadiusOf3 {
+            class RadiusOf3 {
 
                 double radius = 2.1;
 
 
                 @Nested
                 @DisplayName("calcDepth tests")
-                class calcDepthTests {
+                class CalcDepthTests {
 
                     @Test
                     @DisplayName("then calcDepth(2.1) should return 1")
@@ -902,14 +902,14 @@ public class LooseOctreeTest {
 
                 @Nested
                 @DisplayName("calcIndex tests")
-                class calcIndexTests {
+                class CalcIndexTests {
 
                 }
 
 
                 @Nested
                 @DisplayName("insertObject tests")
-                class insertObjectTests {
+                class InsertObjectTests {
 
                 }
             }
@@ -917,14 +917,14 @@ public class LooseOctreeTest {
 
             @Nested
             @DisplayName("given object radius of 4")
-            class givenObjectRadiusOf4 {
+            class RadiusOf4 {
 
                 double radius = 4.0;
 
 
                 @Nested
                 @DisplayName("calcDepth tests")
-                class calcDepthTests {
+                class CalcDepthTests {
                     /**
                      * Object has same size as the world. It will be paced in the highest after the root, which is depth 1
                      */
@@ -938,14 +938,14 @@ public class LooseOctreeTest {
 
                 @Nested
                 @DisplayName("calcIndex tests")
-                class calcIndexTests {
+                class CalcIndexTests {
 
                 }
 
 
                 @Nested
                 @DisplayName("insertObject tests")
-                class insertObjectTests {
+                class InsertObjectTests {
 
                 }
             }
@@ -953,14 +953,14 @@ public class LooseOctreeTest {
 
             @Nested
             @DisplayName("given object radius of 4.1")
-            class givenObjectRadiusOf41 {
+            class RadiusOf41 {
 
                 double radius = 4.1;
 
 
                 @Nested
                 @DisplayName("calcDepth tests")
-                class calcDepthTests {
+                class CalcDepthTests {
                     /**
                      * Object would be of size 8.2, which is larger than the world size of 8. The object would not fit in the
                      * world which is a paradox.
@@ -975,20 +975,17 @@ public class LooseOctreeTest {
 
                 @Nested
                 @DisplayName("calcIndex tests")
-                class calcIndexTests {
+                class CalcIndexTests {
 
                 }
 
 
                 @Nested
                 @DisplayName("insertObject tests")
-                class insertObjectTests {
+                class InsertObjectTests {
 
                 }
             }
         }
-
-
     }
-
 }
