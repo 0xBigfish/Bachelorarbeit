@@ -609,7 +609,7 @@ public class LooseOctreeTest {
                     @DisplayName("then the calculation should be the same for x, y and z dimension")
                     void sameCalcAllDims() {
                         // three random but equal values from range [-worldSize/2 + radius, worldSize/2 - radius]
-                        Point center = new Point(3, 3, 3);
+                        Point center = new Point(-3.9, -3.9, -3.9);
                         when(boxMock.calcCenter()).thenReturn(center);
 
                         Point result = looseOctree.calcIndex(boxMock);
@@ -817,7 +817,7 @@ public class LooseOctreeTest {
                     @DisplayName("then the calculation should be the same for x, y and z dimension")
                     void sameCalcAllDims() {
                         // three random but equal values from range [-worldSize/2 + radius, worldSize/2 - radius]
-                        Point center = new Point(-2, -2, -2);
+                        Point center = new Point(-3, -3, -3);
                         when(boxMock.calcCenter()).thenReturn(center);
 
                         Point result = looseOctree.calcIndex(boxMock);
@@ -1002,7 +1002,7 @@ public class LooseOctreeTest {
                     @DisplayName("then the calculation should be the same for x, y and z dimension")
                     void sameCalcAllDims() {
                         // three random but equal values from range [-worldSize/2 + radius, worldSize/2 - radius]
-                        Point center = new Point(-1, -1, -1);
+                        Point center = new Point(2.9, 2.9, 2.9);
                         when(boxMock.calcCenter()).thenReturn(center);
 
                         Point result = looseOctree.calcIndex(boxMock);
@@ -1146,7 +1146,7 @@ public class LooseOctreeTest {
                     @DisplayName("then the calculation should be the same for x, y and z dimension")
                     void sameCalcAllDims() {
                         // three random but equal values from range [-worldSize/2 + radius, worldSize/2 - radius]
-                        Point center = new Point(-1, -1, -1);
+                        Point center = new Point(2, 2, 2);
                         when(boxMock.calcCenter()).thenReturn(center);
 
                         Point result = looseOctree.calcIndex(boxMock);
@@ -1267,7 +1267,7 @@ public class LooseOctreeTest {
                     @DisplayName("then the calculation should be the same for x, y and z dimension")
                     void sameCalcAllDims() {
                         // three random but equal values from range [-worldSize/2 + radius, worldSize/2 - radius]
-                        Point center = new Point(-1, -1, -1);
+                        Point center = new Point(-1.9, -1.9, -1.9);
                         when(boxMock.calcCenter()).thenReturn(center);
 
                         Point result = looseOctree.calcIndex(boxMock);
