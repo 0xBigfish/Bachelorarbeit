@@ -458,6 +458,7 @@ public class LooseOctreeTest {
             edge length should go in the next deeper level in the tree.
 
             k = 2
+            maxDepth = 3
 
             | depth | bounding cube edge length | maxRadius |   minRadius   |
             |   0   |     16 = worldSize * k    |  Illegal  |    Illegal    |
@@ -611,10 +612,11 @@ public class LooseOctreeTest {
                         Point center = new Point(3, 3, 3);
                         when(boxMock.calcCenter()).thenReturn(center);
 
+                        Point result = looseOctree.calcIndex(boxMock);
+
                         assertAll(
-                                () -> assertEquals(looseOctree.calcIndex(boxMock).x, looseOctree.calcIndex(boxMock).y),
-                                () -> assertEquals(looseOctree.calcIndex(boxMock).y, looseOctree.calcIndex(boxMock).z),
-                                () -> assertEquals(looseOctree.calcIndex(boxMock).z, looseOctree.calcIndex(boxMock).x)
+                                () -> assertEquals(result.x, result.y),
+                                () -> assertEquals(result.y, result.z)
                         );
                     }
 
@@ -622,7 +624,8 @@ public class LooseOctreeTest {
                      * radius = 0.1 => objects are stored at depth 3 (because of maxDepth).  There are 8 indices for
                      * each dimension at level 3, each index is based on an object's position: <br>
                      * <ul>
-                     *     <li> object pos  :  index</li>
+                     *     <li> object position range (for a single dimension)  :  index</li>
+                     *     <li>(-inf, -3.9): Illegal Position</li>
                      *     <li>[-3.9, -3): 0 </li>
                      *     <li>[-3, -2) : 1 </li>
                      *     <li>[-2, -1) : 2</li>
@@ -631,6 +634,7 @@ public class LooseOctreeTest {
                      *     <li>[1, 2) : 5</li>
                      *     <li>[2, 3) : 6</li>
                      *     <li>[3, 3.9] : 7 </li>
+                     *     <li>(3.9, inf): Illegal Position</li>
                      * </ul>
                      */
                     @Nested
@@ -765,7 +769,7 @@ public class LooseOctreeTest {
                         @DisplayName("then object with center (4.0, 0, 0) should thrown an exception")
                         void errorCenter4000() {
                             when(boxMock.calcCenter()).thenReturn(new Point(4.0, 0, 0));
-                            assertThrows(IllegalArgumentException.class, () ->looseOctree.calcIndex(boxMock));
+                            assertThrows(IllegalArgumentException.class, () -> looseOctree.calcIndex(boxMock));
                         }
                     }
                 }
@@ -801,7 +805,159 @@ public class LooseOctreeTest {
                 @Nested
                 @DisplayName("calcIndex tests")
                 class CalcIndexTests {
+                    @Mock
+                    Box boxMock;
 
+                    @BeforeEach
+                    void setup() {
+                        when(boxMock.calcRadius()).thenReturn(radius);
+                    }
+
+                    @Test
+                    @DisplayName("then the calculation should be the same for x, y and z dimension")
+                    void sameCalcAllDims() {
+                        // three random but equal values from range [-worldSize/2 + radius, worldSize/2 - radius]
+                        Point center = new Point(-2, -2, -2);
+                        when(boxMock.calcCenter()).thenReturn(center);
+
+                        Point result = looseOctree.calcIndex(boxMock);
+
+                        assertAll(
+                                () -> assertEquals(result.x, result.y),
+                                () -> assertEquals(result.y, result.z)
+                        );
+                    }
+
+                    /**
+                     * radius = 1.0 => objects are stored at depth 3 (because of maxDepth).  There are 8 indices for
+                     * each dimension at level 3, each index is based on an object's position: <br>
+                     * <ul>
+                     *     <li> object position range (for a single dimension)  :  index</li>
+                     *     <li>(-inf, -3.0): Illegal Position</li>
+                     *     <li>[-3, -2) : 1 </li>
+                     *     <li>[-2, -1) : 2</li>
+                     *     <li>[-1, 0) : 3 </li>
+                     *     <li>[0, 1) : 4</li>
+                     *     <li>[1, 2) : 5</li>
+                     *     <li>[2, 3) : 6</li>
+                     *     <li>[3.0, 3.0] : 7 </li>
+                     *     <li>(3.0, inf): Illegal Position</li>
+                     * </ul>
+                     */
+                    @Nested
+                    @DisplayName("position tests")
+                    class PositionTest {
+
+                        /**
+                         * object's center is the very border of the world, only one half of the object lies in the
+                         * world
+                         */
+
+                        @Test
+                        @DisplayName("then object with center (-3.1, 0, 0) should throw an exception")
+                        void centerNeg3100() {
+                            when(boxMock.calcCenter()).thenReturn(new Point(-3.1, 0, 0));
+                            assertThrows(IllegalArgumentException.class, () -> looseOctree.calcIndex(boxMock));
+                        }
+
+                        @Test
+                        @DisplayName("then object with center (-3.0, 0, 0) should return (1, 4, 4)")
+                        void centerNeg3000() {
+                            when(boxMock.calcCenter()).thenReturn(new Point(-3.0, 0, 0));
+                            assertEquals(new Point(1, 4, 4), looseOctree.calcIndex(boxMock));
+                        }
+
+                        @Test
+                        @DisplayName("then object with center (-2.1, 0, 0) should return (1, 4, 4)")
+                        void centerNeg2100() {
+                            when(boxMock.calcCenter()).thenReturn(new Point(-2.1, 0, 0));
+                            assertEquals(new Point(1, 4, 4), looseOctree.calcIndex(boxMock));
+                        }
+
+                        @Test
+                        @DisplayName("then object with center (-2.0, 0, 0) should return (2, 4, 4)")
+                        void centerNeg2000() {
+                            when(boxMock.calcCenter()).thenReturn(new Point(-2.0, 0, 0));
+                            assertEquals(new Point(2, 4, 4), looseOctree.calcIndex(boxMock));
+                        }
+
+                        @Test
+                        @DisplayName("then object with center (-1.1, 0, 0) should return (2, 4, 4)")
+                        void centerNeg1100() {
+                            when(boxMock.calcCenter()).thenReturn(new Point(-1.1, 0, 0));
+                            assertEquals(new Point(2, 4, 4), looseOctree.calcIndex(boxMock));
+                        }
+
+                        @Test
+                        @DisplayName("then object with center (-1.0, 0, 0) should return (3, 4, 4)")
+                        void centerNeg1000() {
+                            when(boxMock.calcCenter()).thenReturn(new Point(-1.0, 0, 0));
+                            assertEquals(new Point(3, 4, 4), looseOctree.calcIndex(boxMock));
+                        }
+
+                        @Test
+                        @DisplayName("then object with center (-0.1, 0, 0) should return (3, 4, 4)")
+                        void centerNeg0900() {
+                            when(boxMock.calcCenter()).thenReturn(new Point(-0.1, 0, 0));
+                            assertEquals(new Point(3, 4, 4), looseOctree.calcIndex(boxMock));
+                        }
+
+                        @Test
+                        @DisplayName("then object with center (0, 0, 0) should return (4, 4, 4)")
+                        void center000() {
+                            when(boxMock.calcCenter()).thenReturn(new Point(0, 0, 0));
+                            assertEquals(new Point(4, 4, 4), looseOctree.calcIndex(boxMock));
+                        }
+
+                        @Test
+                        @DisplayName("then object with center (0.9, 0, 0) should return (4, 4 ,4)")
+                        void center0900() {
+                            when(boxMock.calcCenter()).thenReturn(new Point(0.9, 0, 0));
+                            assertEquals(new Point(4, 4, 4), looseOctree.calcIndex(boxMock));
+                        }
+
+                        @Test
+                        @DisplayName("then object with center (1.0, 0, 0) should return (5, 4, 4)")
+                        void center1000() {
+                            when(boxMock.calcCenter()).thenReturn(new Point(1.0, 0, 0));
+                            assertEquals(new Point(5, 4, 4), looseOctree.calcIndex(boxMock));
+                        }
+
+                        @Test
+                        @DisplayName("then object with center (1.9, 0, 0) should return (5, 4, 4)")
+                        void center1900() {
+                            when(boxMock.calcCenter()).thenReturn(new Point(1.9, 0, 0));
+                            assertEquals(new Point(5, 4, 4), looseOctree.calcIndex(boxMock));
+                        }
+
+                        @Test
+                        @DisplayName("then object with center (2.0, 0, 0) should return (6, 4, 4)")
+                        void center2000() {
+                            when(boxMock.calcCenter()).thenReturn(new Point(2.0, 0, 0));
+                            assertEquals(new Point(6, 4, 4), looseOctree.calcIndex(boxMock));
+                        }
+
+                        @Test
+                        @DisplayName("then object with center (2.9, 0, 0) should return (6, 4, 4)")
+                        void center2900() {
+                            when(boxMock.calcCenter()).thenReturn(new Point(2.9, 0, 0));
+                            assertEquals(new Point(6, 4, 4), looseOctree.calcIndex(boxMock));
+                        }
+
+                        @Test
+                        @DisplayName("then object with center (3.0, 0, 0) should return (7, 4, 4)")
+                        void center3000() {
+                            when(boxMock.calcCenter()).thenReturn(new Point(3.0, 0, 0));
+                            assertEquals(new Point(7, 4, 4), looseOctree.calcIndex(boxMock));
+                        }
+
+                        @Test
+                        @DisplayName("then object with center (3.1, 0, 0) should throw an exception")
+                        void center3900() {
+                            when(boxMock.calcCenter()).thenReturn(new Point(3.1, 0, 0));
+                            assertThrows(IllegalArgumentException.class, () -> looseOctree.calcIndex(boxMock));
+                        }
+                    }
                 }
 
 
