@@ -1465,7 +1465,21 @@ public class LooseOctreeTest {
                 @Nested
                 @DisplayName("calcIndex tests")
                 class CalcIndexTests {
+                    @Mock
+                    Box boxMock;
 
+                    @BeforeEach
+                    void setup() {
+                        // position doesn't matter because the box has an illegal radius
+                        when(boxMock.calcCenter()).thenReturn(new Point(0, 0, 0));
+                        when(boxMock.calcRadius()).thenReturn(radius);
+                    }
+
+                    @Test
+                    @DisplayName("then calcIndex(boxMock) should throw an exception")
+                    void errorIllegalRadius() {
+                        assertThrows(IllegalArgumentException.class, () -> looseOctree.calcIndex(boxMock));
+                    }
                 }
 
 
