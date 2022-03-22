@@ -133,7 +133,8 @@ public class LooseOctree<T extends Box> {
      * The calculation assumes the world is centered at the coordinate system origin.
      *
      * @param t the object
-     * @return the indices wrapped in a Point object. The Point is just a wrapper to store the values
+     * @return the indices wrapped in a Point object. The Point is just a wrapper to store the values, its x, y and z
+     * values are cast to ints and are therefore usable as indices.
      */
     public Point calcIndex(T t) {
         double radius = t.calcRadius();
@@ -171,7 +172,14 @@ public class LooseOctree<T extends Box> {
      * @return returns true if inserted successfully
      */
     public boolean insertObject(T objectToInsert) {
-        return false;
+        int depth = calcDepth(objectToInsert.calcRadius());
+        Point index = calcIndex(objectToInsert);
+
+        // cast to int is no problem, as calcIndex casts the Point's x, y and z to int previously
+        this.nodes[depth][(int) index.x][(int) index.y][(int) index.z] = objectToInsert;
+
+        // check if insertion was successful
+        return this.nodes[depth][(int) index.x][(int) index.y][(int) index.z] == objectToInsert;
     }
 
     /**

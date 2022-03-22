@@ -1,6 +1,7 @@
 package org.example.SequenceFinder.Octree;
 
 import org.example.SequenceFinder.GeometricObjects.Box;
+import org.example.SequenceFinder.GeometricObjects.Package;
 import org.example.SequenceFinder.GeometricObjects.Point;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -1489,6 +1490,72 @@ public class LooseOctreeTest {
 
                 }
             }
+        }
+
+
+        /**
+         * Tests for insertObject(). <br>
+         * insertObject() heavily depends on calcDepth() and calcIndex(), which are both extensively tested. Therefore,
+         * insertObject() doesn't need to be as intensely tested as the other two methods.
+         */
+        @Nested
+        @DisplayName("insertion tests")
+        class InsertionTests {
+
+            Box box;
+            // dummy values that are not needed for insertions
+            int id = 0;
+            int artNum = 0;
+
+            @Test
+            @DisplayName("Box((1, 2, 3), (3, 2, 1)) should be inserted at [3][6][6][6]")
+            void Box123321() {
+                // center at (2, 2, 2), dimensions: 2x2x2, radius: 1.0
+                Point pointA = new Point(1, 2, 3);
+                Point pointB = new Point(3, 2, 1);
+
+                box = new Package(pointA, pointB, id, artNum);
+
+                // radius 1.0  => depth = 3
+                // center (2,2,2) => indices x: 6, y: 6, z: 6
+                assertAll(
+                        () -> assertTrue(looseOctree.insertObject(box)),
+                        () -> assertSame(looseOctree.nodes[3][6][6][6], box)
+                );
+            }
+
+            @Test
+            @DisplayName("Box((1, 2, 3)(4, 5, 6)) should throw an exception")
+            void Box123456() {
+                // center at (2.5, 3.5, 4.5), dimensions: 3x3x3, radius: 1.5
+                Point pointA = new Point(1, 2, 3);
+                Point pointB = new Point(4, 5, 6);
+
+                box = new Package(pointA, pointB, id, artNum);
+
+                // radius 1.5  => depth = 2
+                // center (2.5, 3.5, 4.5) => indices x: 6, y: error, z: error
+                assertThrows(IllegalArgumentException.class, () -> looseOctree.insertObject(box));
+            }
+
+            @Test
+            @DisplayName("Box((2, -2, 1), (-1, 3, -3)) should be inserted at [1][1][1][0]")
+            void Box2Neg21Neg13Neg3() {
+                // center at (0.5, 0.5, -1), dimensions: 3x5x4, radius: 2.5
+                Point pointA = new Point(2, -2, 1);
+                Point pointB = new Point(-1, 3, -3);
+
+                box = new Package(pointA, pointB, id, artNum);
+
+                // radius 2.5  => depth = 1
+                // center (0.5, 0.5, -1) => indices x: 1, y: 1, z: 0
+                assertAll(
+                        () -> assertTrue(looseOctree.insertObject(box)),
+                        () -> assertSame(looseOctree.nodes[1][1][1][0], box)
+                );
+            }
+
+            //TODO: test with double values like 1.424
         }
     }
 }
