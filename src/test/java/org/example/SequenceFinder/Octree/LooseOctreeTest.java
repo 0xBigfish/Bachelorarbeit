@@ -512,13 +512,6 @@ public class LooseOctreeTest {
                         assertThrows(IllegalArgumentException.class, () -> looseOctree.calcIndex(boxMock));
                     }
                 }
-
-
-                @Nested
-                @DisplayName("insertObject tests")
-                class InsertObjectTests {
-
-                }
             }
 
 
@@ -562,13 +555,6 @@ public class LooseOctreeTest {
                     void errorIllegalRadius() {
                         assertThrows(IllegalArgumentException.class, () -> looseOctree.calcIndex(boxMock));
                     }
-                }
-
-
-                @Nested
-                @DisplayName("insertObject tests")
-                class InsertObjectTests {
-
                 }
             }
 
@@ -774,13 +760,6 @@ public class LooseOctreeTest {
                         }
                     }
                 }
-
-
-                @Nested
-                @DisplayName("insertObject tests")
-                class InsertObjectTests {
-
-                }
             }
 
 
@@ -959,13 +938,6 @@ public class LooseOctreeTest {
                         }
                     }
                 }
-
-
-                @Nested
-                @DisplayName("insertObject tests")
-                class InsertObjectTests {
-
-                }
             }
 
 
@@ -1103,13 +1075,6 @@ public class LooseOctreeTest {
                         }
                     }
                 }
-
-
-                @Nested
-                @DisplayName("insertObject tests")
-                class InsertObjectTests {
-
-                }
             }
 
 
@@ -1224,13 +1189,6 @@ public class LooseOctreeTest {
                         }
                     }
                 }
-
-
-                @Nested
-                @DisplayName("insertObject tests")
-                class InsertObjectTests {
-
-                }
             }
 
 
@@ -1337,13 +1295,6 @@ public class LooseOctreeTest {
                         }
                     }
                 }
-
-
-                @Nested
-                @DisplayName("insertObject tests")
-                class InsertObjectTests {
-
-                }
             }
 
 
@@ -1431,13 +1382,6 @@ public class LooseOctreeTest {
                         }
                     }
                 }
-
-
-                @Nested
-                @DisplayName("insertObject tests")
-                class InsertObjectTests {
-
-                }
             }
 
 
@@ -1481,13 +1425,6 @@ public class LooseOctreeTest {
                     void errorIllegalRadius() {
                         assertThrows(IllegalArgumentException.class, () -> looseOctree.calcIndex(boxMock));
                     }
-                }
-
-
-                @Nested
-                @DisplayName("insertObject tests")
-                class InsertObjectTests {
-
                 }
             }
         }
