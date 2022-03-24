@@ -31,7 +31,7 @@ public class LooseOctreeTest {
 
     @Nested
     @DisplayName("given a LooseOctree with maxDepth = 3 and worldSize = 8")
-    class LooseOctreeMaxDepth3WorldSize8Test {
+    class MaxDepth3WorldSize8 {
 
         LooseOctree<Box> looseOctree;
 
@@ -1446,7 +1446,7 @@ public class LooseOctreeTest {
 
             @Test
             @DisplayName("Box((1, 2, 3), (3, 2, 1)) should be inserted at [3][6][6][6]")
-            void Box123321() {
+            void box123321() {
                 // center at (2, 2, 2), dimensions: 2x2x2, radius: 1.0
                 Point pointA = new Point(1, 2, 3);
                 Point pointB = new Point(3, 2, 1);
@@ -1461,9 +1461,12 @@ public class LooseOctreeTest {
                 );
             }
 
+            /**
+             * The object is not fully enclosed in the world
+             */
             @Test
             @DisplayName("Box((1, 2, 3)(4, 5, 6)) should throw an exception")
-            void Box123456() {
+            void box123456() {
                 // center at (2.5, 3.5, 4.5), dimensions: 3x3x3, radius: 1.5
                 Point pointA = new Point(1, 2, 3);
                 Point pointB = new Point(4, 5, 6);
@@ -1477,7 +1480,7 @@ public class LooseOctreeTest {
 
             @Test
             @DisplayName("Box((2, -2, 1), (-1, 3, -3)) should be inserted at [1][1][1][0]")
-            void Box2Neg21Neg13Neg3() {
+            void box2Neg21Neg13Neg3() {
                 // center at (0.5, 0.5, -1), dimensions: 3x5x4, radius: 2.5
                 Point pointA = new Point(2, -2, 1);
                 Point pointB = new Point(-1, 3, -3);
@@ -1492,7 +1495,23 @@ public class LooseOctreeTest {
                 );
             }
 
-            //TODO: test with double values like 1.424
+            @Test
+            @DisplayName("Box((-2.3, 2.5, 1.3), (1.0, -1.2, -0.66)) should be inserted at [3][3][4][4]")
+            void boxNeg23251310Neg12Neg066() {
+                // center at (-0.65, 0.6, 0.32), dimensions: 1.3x1.3x, radius: 0.65
+                Point pointA = new Point(-2.3, 2.5, 1.3);
+                Point pointB = new Point(1.0, -1.2, -0.66);
+
+                box = new Package(pointA, pointB, id, artNum);
+
+                // radius 0.65  => depth = 3
+                // center (-0.65, 0.6, 0.32) => indices x: 3, y: 3, z: 4
+                assertAll(
+                        () -> assertTrue(looseOctree.insertObject(box)),
+                        () -> assertSame(looseOctree.nodes[3][3][4][4], box)
+                );
+
+            }
         }
     }
 }
