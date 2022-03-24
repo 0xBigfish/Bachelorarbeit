@@ -26,6 +26,11 @@ public abstract class Box {
         return new Point(x, y, z);
     }
 
+    /**
+     * Radius of the box. <br>
+     * <b>Import note:</b> the radius does not fully enclose the box. It only touches the center of the box's borders
+     * @return the radius of the box
+     */
     public double calcRadius() {
         Point center = calcCenter();
 
