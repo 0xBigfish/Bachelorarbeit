@@ -1496,21 +1496,34 @@ public class LooseOctreeTest {
             }
 
             @Test
-            @DisplayName("Box((-2.3, 2.5, 1.3), (1.0, -1.2, -0.66)) should be inserted at [3][3][4][4]")
+            @DisplayName("Box((-2.3, 2.5, 1.3), (1.0, -1.2, -0.66)) should be inserted at [2][1][2][2]")
             void boxNeg23251310Neg12Neg066() {
-                // center at (-0.65, 0.6, 0.32), dimensions: 1.3x1.3x, radius: 0.65
+                // center at (-0.65, 0.6, 0.32), dimensions: 3.3 x 3.7 x 1.96, radius: 1.85
                 Point pointA = new Point(-2.3, 2.5, 1.3);
                 Point pointB = new Point(1.0, -1.2, -0.66);
 
                 box = new Package(pointA, pointB, id, artNum);
 
-                // radius 0.65  => depth = 3
-                // center (-0.65, 0.6, 0.32) => indices x: 3, y: 3, z: 4
+                // radius 1.85  => depth = 2
+                // center (-0.65, 0.6, 0.32) => indices x: 1, y: 2, z: 2
                 assertAll(
                         () -> assertTrue(looseOctree.insertObject(box)),
-                        () -> assertSame(looseOctree.nodes[3][3][4][4], box)
+                        () -> assertSame(looseOctree.nodes[2][1][2][2], box)
                 );
+            }
 
+            @Test
+            @DisplayName("Box(1.65,-3.4,-0.7)(2.99,3.0,0.00000001) should throw an exception")
+            void Box165Neg34Neg072993000000001() {
+                // center at (2.32, 0.2, -0.35), dimensions: 4.64 x 6.4 x 0.69999999, radius: 3.2
+                Point pointA = new Point(1.65,-3.4,-0.7);
+                Point pointB = new Point(2.99,3.0,0.00000001);
+
+                box = new Package(pointA, pointB, id, artNum);
+
+                // radius 3.2  => depth = 1
+                // center (2.32, 0.2, -0.35) => indices x: error, y: 1, z: 0
+                assertThrows(IllegalArgumentException.class, () -> looseOctree.insertObject(box));
             }
         }
     }
