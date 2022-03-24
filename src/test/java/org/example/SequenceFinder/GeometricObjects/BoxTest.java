@@ -104,13 +104,32 @@ class BoxTest {
         @Test
         @DisplayName("then the center should be at (2.8474, 960.1272, -45.74999999999995)")
         void center() {
-            assertEquals(new Point(2.8474, 960.1272, -45.74999999999995), box.calcCenter());
+            assertEquals(new Point(2.8474, 960.1272, -45.75), box.calcCenter());
         }
 
         @Test
         @DisplayName("then the radius should be 874.228")
         void calcRadius() {
             assertEquals(874.2288, box.calcRadius());
+        }
+    }
+
+
+    @Nested
+    @DisplayName("given a Box((-2.3, 2.5, 1.3), (1.0, -1.2, -0.66))")
+    class BoxNeg23251310Neg12Neg066 {
+        Box box = new ConcreteBox(new Point(-2.3, 2.5, 1.3), new Point(1.0, -1.2, -0.66));
+
+        @Test
+        @DisplayName("then the center should be at (-0.65, 0.65, 0.32)")
+        void center() {
+            assertEquals(new Point(-0.65, 0.65, 0.32), box.calcCenter());
+        }
+
+        @Test
+        @DisplayName("then the radius should be 1.6")
+        void radius() {
+            assertEquals(1.85, box.calcRadius());
         }
     }
 }
