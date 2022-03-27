@@ -1,6 +1,7 @@
-package org.example.SequenceFinder;
+package org.example.SequenceFinder.Model;
 
-import org.example.SequenceFinder.GeometricObjects.Box;
+import org.example.SequenceFinder.Model.GeometricObjects.Box;
+import org.example.SequenceFinder.OperatingDirection;
 
 /**
  * Represents the spacial relations of the objects in the octree, namely that if node v has a directed edge to

@@ -1,4 +1,4 @@
-package org.example.SequenceFinder.Octree;
+package org.example.SequenceFinder.Model.Octree;
 
 /**
  * Describes the view frustum. It is used to identify objects that lay in front or above another object in the octree.

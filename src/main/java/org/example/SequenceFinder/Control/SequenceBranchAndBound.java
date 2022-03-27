@@ -1,6 +1,8 @@
-package org.example.SequenceFinder;
+package org.example.SequenceFinder.Control;
 
-import org.example.SequenceFinder.GeometricObjects.Box;
+import org.example.SequenceFinder.Model.GeometricObjects.Box;
+import org.example.SequenceFinder.Model.Graph;
+import org.example.SequenceFinder.OperatingDirection;
 
 import java.util.Map;
 

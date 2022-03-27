@@ -1,8 +1,8 @@
 package org.example.SequenceFinder;
 
-import org.example.SequenceFinder.GeometricObjects.Package;
-import org.example.SequenceFinder.GeometricObjects.Point;
-import org.example.SequenceFinder.Octree.LooseOctree;
+import org.example.SequenceFinder.Model.GeometricObjects.Package;
+import org.example.SequenceFinder.Model.GeometricObjects.Point;
+import org.example.SequenceFinder.Model.Octree.LooseOctree;
 
 /**
  * The main class of the SequenceFinder package.

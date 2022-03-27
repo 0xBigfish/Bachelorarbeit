@@ -1,4 +1,4 @@
-package org.example.SequenceFinder.Octree;
+package org.example.SequenceFinder.Model.Octree;
 
 /**
  * A 2D plane used by the view Frustum

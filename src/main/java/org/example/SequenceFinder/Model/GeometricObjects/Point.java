@@ -1,4 +1,4 @@
-package org.example.SequenceFinder.GeometricObjects;
+package org.example.SequenceFinder.Model.GeometricObjects;
 
 /**
  * A single Point in a 3D space.

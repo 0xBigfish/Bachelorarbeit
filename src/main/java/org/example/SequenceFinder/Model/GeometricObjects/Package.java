@@ -1,4 +1,4 @@
-package org.example.SequenceFinder.GeometricObjects;
+package org.example.SequenceFinder.Model.GeometricObjects;
 
 /**
  * A package in the stack that will be sequenced.

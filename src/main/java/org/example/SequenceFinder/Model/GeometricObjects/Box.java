@@ -1,4 +1,4 @@
-package org.example.SequenceFinder.GeometricObjects;
+package org.example.SequenceFinder.Model.GeometricObjects;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
