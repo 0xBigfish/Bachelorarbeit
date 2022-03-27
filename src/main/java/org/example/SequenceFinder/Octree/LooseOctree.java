@@ -191,16 +191,4 @@ public class LooseOctree<T extends Box> {
     private double log2(double x) {
         return Math.log(x) / Math.log(2);
     }
-
-    /**
-     * Calculates the number of nodes at the given depth. Used to calculate the offset for the array list
-     *
-     * @param depth the depth
-     * @return the number of nodes at the given depth
-     */
-    private int numOfNodesAtDepth(int depth) {
-        // worldSize / boundingCubeSpacing() = number of indices on this depth
-        // multiply by 3 because there are x, y and z indices
-        return 3 * worldSize / boundingCubeSpacing(depth);
-    }
 }
