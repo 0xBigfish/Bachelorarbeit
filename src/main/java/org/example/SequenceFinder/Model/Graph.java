@@ -6,7 +6,9 @@ import org.example.SequenceFinder.OperatingDirection;
 /**
  * Represents the spacial relations of the objects in the octree, namely that if node v has a directed edge to
  * node w, node v is either somewhere in front or above node w. <br>
- * This means the object described by object v needs to be removed before object w can be removed. <br>
+ * This means, the object described by object v needs to be removed, before object w can be removed. <br>
+ * Therefore, only nodes with no incoming edges can be removed. When removing a node, all of its outgoing edges are
+ * removed as well. <br>
  * <br>
  * The weight of the edges represents the cost of taking object v after object w. A metric to calculate weight could be
  * the height difference of both objects, or a constant value when ht e
