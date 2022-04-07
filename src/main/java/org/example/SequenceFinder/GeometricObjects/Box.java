@@ -3,6 +3,7 @@ package org.example.SequenceFinder.GeometricObjects;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+//TODO: rename to AABBox (axis aligned bounding box) and write test to ensure it is axis aligned
 /**
  * A box-shaped object described by two vertices.
  */
