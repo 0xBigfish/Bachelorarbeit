@@ -13,4 +13,20 @@ public class Package extends Box {
         this.id = id;
         this.articleNo = articleNo;
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getArticleNo() {
+        return articleNo;
+    }
+
+    public void setArticleNo(int articleNo) {
+        this.articleNo = articleNo;
+    }
 }
