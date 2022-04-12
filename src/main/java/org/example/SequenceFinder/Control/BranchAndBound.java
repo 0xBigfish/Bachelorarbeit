@@ -1,8 +1,10 @@
 package org.example.SequenceFinder.Control;
 
+import org.example.SequenceFinder.Control.Cost.CostFunction;
 import org.example.SequenceFinder.Model.GeometricObjects.Box;
 import org.example.SequenceFinder.Model.Graph;
 
+import java.util.Collection;
 import java.util.LinkedHashSet;
 
 /**
@@ -23,6 +25,7 @@ import java.util.LinkedHashSet;
 public class BranchAndBound<T extends Box> {
 
     Graph<T> graph;
+    CostAssigner<T> costAssigner;
 
     /**
      * Branch And Bound algorithm to find the global optimum sequence. <br>
@@ -39,8 +42,9 @@ public class BranchAndBound<T extends Box> {
      *
      * @param graph the graph defines the order in which the boxes can be removed
      */
-    public BranchAndBound(Graph<T> graph) {
+    public BranchAndBound(Graph<T> graph, Collection<CostFunction<T>> costFunctions) {
         this.graph = graph;
+        this.costAssigner = new CostAssigner<>(costFunctions);
     }
 
     /**
