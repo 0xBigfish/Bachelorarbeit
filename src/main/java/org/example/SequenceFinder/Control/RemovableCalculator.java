@@ -16,12 +16,12 @@ import java.util.Collection;
  *
  * @see Graph
  */
-public class RemovableCalculator {
+public class RemovableCalculator<T extends Box> {
 
     /**
      * the octree where the boxes are stored
      */
-    LooseOctree<Box> octree;
+    LooseOctree<T> octree;
     /**
      * the operating directions from where the boxes can be placed or removed
      */
@@ -34,7 +34,7 @@ public class RemovableCalculator {
      *
      * @see Graph
      */
-    public RemovableCalculator(LooseOctree<Box> octree, Collection<OperatingDirection> operatingDirections) {
+    public RemovableCalculator(LooseOctree<T> octree, Collection<OperatingDirection> operatingDirections) {
         this.octree = octree;
         this.opDirs = operatingDirections;
     }
@@ -46,7 +46,7 @@ public class RemovableCalculator {
      * @param opDir the direction from where the Boxes can be removed.
      * @return the graph as described above
      */
-    public Graph<Box> createGraph(OperatingDirection opDir) {
+    public Graph<T> createGraph(OperatingDirection opDir) {
         // to be implemented
         return null;
     }
@@ -69,8 +69,8 @@ public class RemovableCalculator {
      *                           the left direction and then remove BoxB from the right direction.
      * @return a merged graph as described above
      */
-    public Graph<Box> createMergedGraph(boolean opDirsCanAlternate) {
-        // to be implemted
+    public Graph<T> createMergedGraph(boolean opDirsCanAlternate) {
+        // to be implemented
         return null;
     }
 
@@ -90,13 +90,15 @@ public class RemovableCalculator {
     }
 
     //TODO: check if the return value is correct
+
     /**
      * Calculates the collection of Boxes that lie in the frustum, and therefore need to be removed, before the Box,
      * that lies at the very tip of the frustum, can be removed.
+     *
      * @param f the frustum
      * @param v the visibility
      */
-    private Collection<Box> cullFrustum(Frustum f, Visibility v){
+    private Collection<Box> cullFrustum(Frustum f, Visibility v) {
         // to be implemented
         return null;
     }

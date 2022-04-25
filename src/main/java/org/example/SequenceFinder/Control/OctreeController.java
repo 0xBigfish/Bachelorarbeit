@@ -8,16 +8,16 @@ import java.util.Collection;
 /**
  * Controller for the LooseOctree. It is used to insert a collection of Box objects into the LooseOctree.
  */
-public class OctreeController {
+public class OctreeController<T extends Box> {
     /**
      * The octree where the Boxes will be inserted into
      */
-    private final LooseOctree<Box> octree;
+    private final LooseOctree<T> octree;
 
     /**
      * Controller for the LooseOctree. It is used to insert a collection of Box objects into the LooseOctree.
      */
-    public OctreeController(LooseOctree<Box> octree) {
+    public OctreeController(LooseOctree<T> octree) {
         this.octree = octree;
     }
 
@@ -27,8 +27,8 @@ public class OctreeController {
      * @param c the collection of boxes
      * @return true when all boxes have been inserted, false when one or more boxes could not be inserted
      */
-    public boolean insertAll(Collection<Box> c) {
-        for (Box box : c) {
+    public boolean insertAll(Collection<T> c) {
+        for (T box : c) {
             if (!octree.insertObject(box)) {
                 return false;
             }
