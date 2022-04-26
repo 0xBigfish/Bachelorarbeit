@@ -20,7 +20,10 @@ import java.util.Map;
  */
 public class Frustum {
 
-    private enum FrustumSides{
+    /**
+     * All six sides of the frustum
+     */
+    private enum FrustumSides {
         FRONT,
         BOTTOM,
         TOP,
@@ -40,22 +43,26 @@ public class Frustum {
      * be removed. <br>
      * <br>
      * The frustum's planes' normals' all point toward the center of the frustum.
-     * @param front the side of the box that points towards the operating directions
+     *
+     * @param front  the side of the box that points towards the operating directions
      * @param bottom bottom plane
-     * @param top top plane
-     * @param back the border of the world at the operating direction
-     * @param left left plane
-     * @param right right plane
+     * @param top    top plane
+     * @param back   the border of the world at the operating direction
+     * @param left   left plane
+     * @param right  right plane
      */
     public Frustum(Plane front, Plane bottom, Plane top, Plane back, Plane left, Plane right) {
         // use Hashtable because neither key=null nor value=null are allowed.
-        this.planes = new Hashtable<>();
-        this.planes.put(FrustumSides.FRONT, front);
-        this.planes.put(FrustumSides.BOTTOM, bottom);
-        this.planes.put(FrustumSides.TOP, top);
-        this.planes.put(FrustumSides.BACK, back);
-        this.planes.put(FrustumSides.LEFT, left);
-        this.planes.put(FrustumSides.RIGHT, right);
+        Map<FrustumSides, Plane> temp = new Hashtable<>();
+        temp.put(FrustumSides.FRONT, front);
+        temp.put(FrustumSides.BOTTOM, bottom);
+        temp.put(FrustumSides.TOP, top);
+        temp.put(FrustumSides.BACK, back);
+        temp.put(FrustumSides.LEFT, left);
+        temp.put(FrustumSides.RIGHT, right);
+
+        // the frustum should not be altered after creation
+        this.planes = Collections.unmodifiableMap(temp);
     }
 
     /**
