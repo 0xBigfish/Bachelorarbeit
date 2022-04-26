@@ -1,9 +1,10 @@
 package org.example.SequenceFinder.Octree;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Plane;
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.example.SequenceFinder.GeometricObjects.Box;
-import org.example.SequenceFinder.GeometricObjects.Point;
 
+import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -32,7 +33,9 @@ public class Frustum {
         RIGHT
     }
 
-    private Map<FrustumSides, Plane> planes;
+
+    private final Vector3D worldOrigin;
+    private final Map<FrustumSides, Plane> planes;
 
     /**
      * Describes the view frustum. It is used to identify objects that lay in front or above another object in the octree.
@@ -51,7 +54,9 @@ public class Frustum {
      * @param left   left plane
      * @param right  right plane
      */
-    public Frustum(Plane front, Plane bottom, Plane top, Plane back, Plane left, Plane right) {
+    public Frustum(Vector3D worldOrigin, Plane front, Plane bottom, Plane top, Plane back, Plane left, Plane right) {
+        this.worldOrigin = worldOrigin;
+
         // use Hashtable because neither key=null nor value=null are allowed.
         Map<FrustumSides, Plane> temp = new Hashtable<>();
         temp.put(FrustumSides.FRONT, front);
@@ -66,12 +71,53 @@ public class Frustum {
     }
 
     /**
-     * Calculates whether any part of the given box lies in the frustum and is therefore visible.
+     * Calculates whether the given box lies in or intersects the frustum. <br>
+     * <br>
+     * Based on <i>Ned Greene</i>'s algorithm in chapter 'Box-Plane and Rectangle-Line Intersection' of his puplication
+     * <i>Detecting Intersection of a Rectangular Solid and a Convex Polyhedron</i>, published in
+     * <i>Graphics Gems (1994) by Paul S. Heckbert</i>.
+     *
      * @param b the given box
      * @return true when any part of the box is visible in this frustum, false otherwise
      */
-    public boolean boxInFrustum(Box b){
-        return false;
+    public boolean boxInFrustum(Box b) {
+        boolean intersects = false;
+
+        // The planes are at such an angle to each other, that if a box is outside one plane, the box is outside all
+        // planes, and therefore outside the frustum.
+        // A 2D illustration with a trapezoid could be useful for a visualization.
+        for (Plane p : planes.values()) {
+            // p_<name> represents a Point,
+            // v_<name> represents an actual vector.
+            //
+            // Plane formula:
+            // normal = (A, B, C)
+            // plane p : normal * (x, y, z) + d = 0        or       p : Ax + By + Cz + d = 0
+
+            // FIXME: more efficient calculation available. The paper says for AABB the n- and p-vertex are always the
+            //  same for a given plane and need not be calculated more than once.
+            Vector3D p_nVertex = calcNVertex(b);
+            Vector3D p_pVertex = calcPVertex(b);
+            Vector3D v_normal = p.getNormal().normalize();
+            double d = p.getOffset(worldOrigin);
+
+            // FIXME: check if the entire if-chain is correct -> Illustrate it. What if a box is intersecting one plane,
+            //  but is behind another?
+            if (v_normal.dotProduct(p_pVertex) + d < 0) {
+                // b lies entirely in p's negative half-space, and is therefore behind the plane and outside the frustum
+                return false;
+
+            } else if (v_normal.dotProduct(p_nVertex) + d > 0) {
+                // b lies entirely in p's positive half-space, and is therefore in front of the plane and potentially
+                // inside the frustum
+
+            } else {
+                // b intersects p
+                intersects = true;
+            }
+        }
+        // box is inside all planes and therefore entirely inside the frustum
+        return true;
     }
 
     /**
@@ -84,10 +130,11 @@ public class Frustum {
      * <br>
      * See https://www.lighthouse3d.com/tutorials/view-frustum-culling/geometric-approach-testing-boxes-ii/ for a
      * visualization
+     *
      * @param b the given box
      * @return the p vertex of the box
      */
-    private Point calcPVertex(Box b){
+    private Vector3D calcPVertex(Box b) {
         return null;
     }
 
@@ -103,10 +150,11 @@ public class Frustum {
      * <br>
      * See https://www.lighthouse3d.com/tutorials/view-frustum-culling/geometric-approach-testing-boxes-ii/ for a
      * visualization
+     *
      * @param b the given box
      * @return the n vertex of the box
      */
-    private Point calcNVertex(Box b){
+    private Vector3D calcNVertex(Box b) {
         return null;
     }
 }
