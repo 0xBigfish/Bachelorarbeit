@@ -1,7 +1,6 @@
 package org.example.SequenceFinder.Octree;
 
 import org.example.SequenceFinder.GeometricObjects.Box;
-import org.example.SequenceFinder.GeometricObjects.Package;
 import org.example.SequenceFinder.GeometricObjects.Point;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -10,6 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.HashSet;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
@@ -49,11 +50,11 @@ public class LooseOctreeTest {
          * @param nodes the nodes at the given height
          * @return the total number of nodes over all dimensions
          */
-        int countTotalNodes(Box[][][] nodes) {
+        int countTotalNodes(OctreeNode<Box>[][][] nodes) {
             int counter = 0;
-            for (Box[][] x : nodes) {
-                for (Box[] y : x) {
-                    for (Box ignored : y) {
+            for (OctreeNode<Box>[][] x : nodes) {
+                for (OctreeNode<Box>[] y : x) {
+                    for (OctreeNode<Box> ignored : y) {
                         counter++;
                     }
                 }
@@ -67,16 +68,16 @@ public class LooseOctreeTest {
          * @param nodes the nodes of the loose octree
          * @return true when all three dimensions are equally sized, false otherwise
          */
-        boolean equallySizedDimensions(Box[][][] nodes) {
+        boolean equallySizedDimensions(OctreeNode<Box>[][][] nodes) {
             // all dimensions must be equally sized, doesn't matter which one is chosen to be compared against.
             // here the x dimension is chosen.
             int referenceDimension = nodes.length;
 
-            for (Box[][] y : nodes) {
+            for (OctreeNode<Box>[][] y : nodes) {
                 if (y.length != referenceDimension) {
                     return false;
                 }
-                for (Box[] z : y) {
+                for (OctreeNode<Box>[] z : y) {
                     if (z.length != referenceDimension) {
                         return false;
                     }
@@ -106,8 +107,9 @@ public class LooseOctreeTest {
 
 
                     /**
-                     * The root node is imaginary. There could only be an object in the root if its radius was larger than
-                     * worldSize / 2, which would mean the object is bigger than the entire world, which is a paradox.
+                     * The root node is imaginary. There could only be an object in the root if its radius was larger
+                     * than worldSize / 2, which would mean the object is bigger than the entire world, which is a
+                     * paradox.
                      */
                     @Test
                     @DisplayName("then there should be no nodes")
@@ -123,11 +125,11 @@ public class LooseOctreeTest {
                         // index 1 is out of bounds
                         assertAll(
                                 () -> assertThrows(IndexOutOfBoundsException.class,
-                                        () -> looseOctree.nodes[givenDepth][0][0][1].calcCenter()),
+                                        () -> looseOctree.nodes[givenDepth][0][0][1].insertObject(null)),
                                 () -> assertThrows(IndexOutOfBoundsException.class,
-                                        () -> looseOctree.nodes[givenDepth][0][1][0].calcCenter()),
+                                        () -> looseOctree.nodes[givenDepth][0][1][0].insertObject(null)),
                                 () -> assertThrows(IndexOutOfBoundsException.class,
-                                        () -> looseOctree.nodes[givenDepth][1][0][0].calcCenter())
+                                        () -> looseOctree.nodes[givenDepth][1][0][0].insertObject(null))
                         );
                     }
                 }
@@ -153,8 +155,8 @@ public class LooseOctreeTest {
                 class BCSpacingTests {
 
                     /**
-                     * At level 0 there only is the imaginary root node. There are no other nodes so spacing to other nodes
-                     * makes no sense here.
+                     * At level 0 there only is the imaginary root node. There are no other nodes so spacing to other
+                     * nodes makes no sense here.
                      */
                     @Test
                     @DisplayName("then an IllegalArgumentException should be thrown")
@@ -206,11 +208,11 @@ public class LooseOctreeTest {
                         // index 2 is out of bounds
                         assertAll(
                                 () -> assertThrows(IndexOutOfBoundsException.class,
-                                        () -> looseOctree.nodes[givenDepth][0][0][2].calcCenter()),
+                                        () -> looseOctree.nodes[givenDepth][0][0][2].insertObject(null)),
                                 () -> assertThrows(IndexOutOfBoundsException.class,
-                                        () -> looseOctree.nodes[givenDepth][0][2][0].calcCenter()),
+                                        () -> looseOctree.nodes[givenDepth][0][2][0].insertObject(null)),
                                 () -> assertThrows(IndexOutOfBoundsException.class,
-                                        () -> looseOctree.nodes[givenDepth][2][0][0].calcCenter())
+                                        () -> looseOctree.nodes[givenDepth][2][0][0].insertObject(null))
                         );
                     }
                 }
@@ -283,11 +285,11 @@ public class LooseOctreeTest {
                         // index 4 is out of bounds
                         assertAll(
                                 () -> assertThrows(IndexOutOfBoundsException.class,
-                                        () -> looseOctree.nodes[givenDepth][0][0][4].calcCenter()),
+                                        () -> looseOctree.nodes[givenDepth][0][0][4].insertObject(null)),
                                 () -> assertThrows(IndexOutOfBoundsException.class,
-                                        () -> looseOctree.nodes[givenDepth][0][4][0].calcCenter()),
+                                        () -> looseOctree.nodes[givenDepth][0][4][0].insertObject(null)),
                                 () -> assertThrows(IndexOutOfBoundsException.class,
-                                        () -> looseOctree.nodes[givenDepth][4][0][0].calcCenter())
+                                        () -> looseOctree.nodes[givenDepth][4][0][0].insertObject(null))
                         );
                     }
                 }
@@ -359,11 +361,11 @@ public class LooseOctreeTest {
                         // index 8 is out of bounds
                         assertAll(
                                 () -> assertThrows(IndexOutOfBoundsException.class,
-                                        () -> looseOctree.nodes[givenDepth][0][0][8].calcCenter()),
+                                        () -> looseOctree.nodes[givenDepth][0][0][8].insertObject(null)),
                                 () -> assertThrows(IndexOutOfBoundsException.class,
-                                        () -> looseOctree.nodes[givenDepth][0][8][0].calcCenter()),
+                                        () -> looseOctree.nodes[givenDepth][0][8][0].insertObject(null)),
                                 () -> assertThrows(IndexOutOfBoundsException.class,
-                                        () -> looseOctree.nodes[givenDepth][8][0][0].calcCenter())
+                                        () -> looseOctree.nodes[givenDepth][8][0][0].insertObject(null))
                         );
                     }
                 }
@@ -415,7 +417,7 @@ public class LooseOctreeTest {
                         // call any method on the array as assertThrows needs a void or consumer, not a
                         // concrete value.
                         assertThrows(IndexOutOfBoundsException.class,
-                                () -> looseOctree.nodes[givenDepth][0][0][0].calcCenter());
+                                () -> looseOctree.nodes[givenDepth][0][0][0].insertObject(null));
                     }
                 }
 
@@ -1396,8 +1398,8 @@ public class LooseOctreeTest {
                 @DisplayName("calcDepth tests")
                 class CalcDepthTests {
                     /**
-                     * Object would be of size 8.2, which is larger than the world size of 8. The object would not fit in the
-                     * world which is a paradox.
+                     * Object would be of size 8.2, which is larger than the world size of 8. The object would not fit
+                     * in the world which is a paradox.
                      */
                     @Test
                     @DisplayName("then an IllegalArgumentException should be thrown")
@@ -1439,91 +1441,265 @@ public class LooseOctreeTest {
         @DisplayName("insertion tests")
         class InsertionTests {
 
-            Box box;
-            // dummy values that are not needed for insertions
-            int id = 0;
-            int artNum = 0;
-
-            @Test
-            @DisplayName("Box((1, 2, 3), (3, 2, 1)) should be inserted at [3][6][6][6]")
-            void box123321() {
-                // center at (2, 2, 2), dimensions: 2x2x2, radius: 1.0
-                Point pointA = new Point(1, 2, 3);
-                Point pointB = new Point(3, 2, 1);
-
-                box = new Package(pointA, pointB, id, artNum);
-
-                // radius 1.0  => depth = 3
-                // center (2,2,2) => indices x: 6, y: 6, z: 6
-                assertAll(
-                        () -> assertTrue(looseOctree.insertObject(box)),
-                        () -> assertSame(looseOctree.nodes[3][6][6][6], box)
-                );
-            }
-
             /**
-             * The object is not fully enclosed in the world
+             * Concrete implementation of the abstract {@linkplain Box} class
              */
-            @Test
-            @DisplayName("Box((1, 2, 3)(4, 5, 6)) should throw an exception")
-            void box123456() {
-                // center at (2.5, 3.5, 4.5), dimensions: 3x3x3, radius: 1.5
-                Point pointA = new Point(1, 2, 3);
-                Point pointB = new Point(4, 5, 6);
-
-                box = new Package(pointA, pointB, id, artNum);
-
-                // radius 1.5  => depth = 2
-                // center (2.5, 3.5, 4.5) => indices x: 6, y: error, z: error
-                assertThrows(IllegalArgumentException.class, () -> looseOctree.insertObject(box));
+            class ConcreteBox extends Box {
+                ConcreteBox(Point vertA, Point vertB) {
+                    super(vertA, vertB);
+                }
             }
 
-            @Test
-            @DisplayName("Box((2, -2, 1), (-1, 3, -3)) should be inserted at [1][1][1][0]")
-            void box2Neg21Neg13Neg3() {
-                // center at (0.5, 0.5, -1), dimensions: 3x5x4, radius: 2.5
-                Point pointA = new Point(2, -2, 1);
-                Point pointB = new Point(-1, 3, -3);
 
-                box = new Package(pointA, pointB, id, artNum);
+            Box box;
 
-                // radius 2.5  => depth = 1
-                // center (0.5, 0.5, -1) => indices x: 1, y: 1, z: 0
-                assertAll(
-                        () -> assertTrue(looseOctree.insertObject(box)),
-                        () -> assertSame(looseOctree.nodes[1][1][1][0], box)
-                );
+
+            @Nested
+            @DisplayName("One Box")
+            class OneBoxTests {
+
+                HashSet<Box> nodeContent = new HashSet<>();
+
+                @Test
+                @DisplayName("Box((1, 2, 3), (3, 2, 1)) should be inserted at [3][6][6][6]")
+                void box123321() {
+                    // center at (2, 2, 2), dimensions: 2x2x2, radius: 1.0
+                    Point pointA = new Point(1, 2, 3);
+                    Point pointB = new Point(3, 2, 1);
+
+                    box = new ConcreteBox(pointA, pointB);
+                    nodeContent.add(box);
+
+                    // radius 1.0  => depth = 3
+                    // center (2,2,2) => indices x: 6, y: 6, z: 6
+                    assertAll(
+                            () -> assertTrue(looseOctree.insertObject(box)),
+                            () -> assertEquals(looseOctree.nodes[3][6][6][6].getContent(), nodeContent)
+                    );
+                }
+
+                /**
+                 * The object is not fully enclosed in the world
+                 */
+                @Test
+                @DisplayName("Box((1, 2, 3)(4, 5, 6)) should throw an exception")
+                void box123456() {
+                    // center at (2.5, 3.5, 4.5), dimensions: 3x3x3, radius: 1.5
+                    Point pointA = new Point(1, 2, 3);
+                    Point pointB = new Point(4, 5, 6);
+
+                    box = new ConcreteBox(pointA, pointB);
+
+                    // radius 1.5  => depth = 2
+                    // center (2.5, 3.5, 4.5) => indices x: 6, y: error, z: error
+                    assertThrows(IllegalArgumentException.class, () -> looseOctree.insertObject(box));
+                }
+
+                @Test
+                @DisplayName("Box((2, -2, 1), (-1, 3, -3)) should be inserted at [1][1][1][0]")
+                void box2Neg21Neg13Neg3() {
+                    // center at (0.5, 0.5, -1), dimensions: 3x5x4, radius: 2.5
+                    Point pointA = new Point(2, -2, 1);
+                    Point pointB = new Point(-1, 3, -3);
+
+                    box = new ConcreteBox(pointA, pointB);
+                    nodeContent.add(box);
+
+                    // radius 2.5  => depth = 1
+                    // center (0.5, 0.5, -1) => indices x: 1, y: 1, z: 0
+                    assertAll(
+                            () -> assertTrue(looseOctree.insertObject(box)),
+                            () -> assertEquals(looseOctree.nodes[1][1][1][0].getContent(), nodeContent)
+                    );
+                }
+
+                @Test
+                @DisplayName("Box((-2.3, 2.5, 1.3), (1.0, -1.2, -0.66)) should be inserted at [2][1][2][2]")
+                void boxNeg23251310Neg12Neg066() {
+                    // center at (-0.65, 0.6, 0.32), dimensions: 3.3 x 3.7 x 1.96, radius: 1.85
+                    Point pointA = new Point(-2.3, 2.5, 1.3);
+                    Point pointB = new Point(1.0, -1.2, -0.66);
+
+                    box = new ConcreteBox(pointA, pointB);
+                    nodeContent.add(box);
+
+                    // radius 1.85  => depth = 2
+                    // center (-0.65, 0.6, 0.32) => indices x: 1, y: 2, z: 2
+                    assertAll(
+                            () -> assertTrue(looseOctree.insertObject(box)),
+                            () -> assertEquals(looseOctree.nodes[2][1][2][2].getContent(), nodeContent)
+                    );
+                }
+
+                @Test
+                @DisplayName("Box(1.65,-3.4,-0.7)(2.99,3.0,0.00000001) should throw an exception")
+                void Box165Neg34Neg072993000000001() {
+                    // center at (2.32, 0.2, -0.35), dimensions: 4.64 x 6.4 x 0.69999999, radius: 3.2
+                    Point pointA = new Point(1.65, -3.4, -0.7);
+                    Point pointB = new Point(2.99, 3.0, 0.00000001);
+
+                    box = new ConcreteBox(pointA, pointB);
+
+                    // radius 3.2  => depth = 1
+                    // center (2.32, 0.2, -0.35) => indices x: error, y: 1, z: 0
+                    assertThrows(IllegalArgumentException.class, () -> looseOctree.insertObject(box));
+                }
             }
 
-            @Test
-            @DisplayName("Box((-2.3, 2.5, 1.3), (1.0, -1.2, -0.66)) should be inserted at [2][1][2][2]")
-            void boxNeg23251310Neg12Neg066() {
-                // center at (-0.65, 0.6, 0.32), dimensions: 3.3 x 3.7 x 1.96, radius: 1.85
-                Point pointA = new Point(-2.3, 2.5, 1.3);
-                Point pointB = new Point(1.0, -1.2, -0.66);
 
-                box = new Package(pointA, pointB, id, artNum);
+            @Nested
+            @DisplayName("Two Boxes")
+            class TwoBoxesTests {
 
-                // radius 1.85  => depth = 2
-                // center (-0.65, 0.6, 0.32) => indices x: 1, y: 2, z: 2
-                assertAll(
-                        () -> assertTrue(looseOctree.insertObject(box)),
-                        () -> assertSame(looseOctree.nodes[2][1][2][2], box)
-                );
-            }
+                Box box2;
+                HashSet<Box> contentNode1 = new HashSet<>();
+                HashSet<Box> contentNode2 = new HashSet<>();
 
-            @Test
-            @DisplayName("Box(1.65,-3.4,-0.7)(2.99,3.0,0.00000001) should throw an exception")
-            void Box165Neg34Neg072993000000001() {
-                // center at (2.32, 0.2, -0.35), dimensions: 4.64 x 6.4 x 0.69999999, radius: 3.2
-                Point pointA = new Point(1.65,-3.4,-0.7);
-                Point pointB = new Point(2.99,3.0,0.00000001);
+                @Test
+                @DisplayName("Insert two boxes in the same node")
+                void twoBoxesOneNode() {
+                    // Hint: The boxes do not touch
+                    // center at (1.0, 0.6, 0.32), dimensions: 1.0 x 1.0 x 1.0, radius: 0.5
+                    Point pointA1 = new Point(0.5, 2.5, 1.3);
+                    Point pointB1 = new Point(1.5, 1.5, 0.3);
 
-                box = new Package(pointA, pointB, id, artNum);
+                    // center at (1.98, 0.6, 0.32), dimensions: 1.0 x 1.0 x 1.0, radius: 0.5
+                    Point pointA2 = new Point(1.51, 2.5, 1.3);
+                    Point pointB2 = new Point(2.45, 1.5, 0.3);
 
-                // radius 3.2  => depth = 1
-                // center (2.32, 0.2, -0.35) => indices x: error, y: 1, z: 0
-                assertThrows(IllegalArgumentException.class, () -> looseOctree.insertObject(box));
+                    // radius 0.5 => depth = 3
+                    // center (1.0, 2.0, 0.8) => indices x: 5, y: 6, z: 4
+                    box = new ConcreteBox(pointA1, pointB1);
+                    // radius 0.5  => depth = 3
+                    // center (1.98, 2.0, 0.8) => indices x: 5, y: 6, z: 4
+                    box2 = new ConcreteBox(pointA2, pointB2);
+
+                    contentNode1.add(box);
+                    contentNode2.add(box);
+                    contentNode2.add(box2);
+
+                    assertAll(
+                            () -> assertTrue(looseOctree.insertObject(box)),
+                            () -> assertEquals(looseOctree.nodes[3][5][6][4].getContent(), contentNode1),
+                            () -> assertTrue(looseOctree.insertObject(box2)),
+                            () -> assertEquals(looseOctree.nodes[3][5][6][4].getContent(), contentNode2)
+                    );
+                }
+
+                @Test
+                @DisplayName("Insert two boxes which have the very same position")
+                void twoBoxesSamePosition() {
+                    // center at (-0.65, 0.6, 0.32), dimensions: 3.3 x 3.7 x 1.96, radius: 1.85
+                    Point pointA1 = new Point(-2.3, 2.5, 1.3);
+                    Point pointB1 = new Point(1.0, -1.2, -0.66);
+
+                    // center at (-0.65, 0.6, 0.32), dimensions: 3.3 x 3.7 x 1.96, radius: 1.85
+                    Point pointA2 = new Point(-2.3, 2.5, 1.3);
+                    Point pointB2 = new Point(1.0, -1.2, -0.66);
+
+                    box = new ConcreteBox(pointA1, pointB1);
+                    box2 = new ConcreteBox(pointA2, pointB2);
+
+                    contentNode1.add(box);
+                    contentNode2.add(box);
+                    contentNode2.add(box2);
+
+                    // radius 1.85  => depth = 2
+                    // center (-0.65, 0.6, 0.32) => indices x: 1, y: 2, z: 2
+                    assertAll(
+                            () -> assertTrue(looseOctree.insertObject(box)),
+                            () -> assertEquals(looseOctree.nodes[2][1][2][2].getContent(), contentNode1),
+                            () -> assertTrue(looseOctree.insertObject(box2)),
+                            () -> assertEquals(looseOctree.nodes[2][1][2][2].getContent(), contentNode2)
+                    );
+                }
+
+                @Test
+                @DisplayName("Insert two boxes, same depth, each at a different node")
+                void twoBoxesSameDepthDifferentNodes() {
+                    // center at (0.14485, 2.6, -2.0811), dimensions: 0.0237 x 2.2 x 0.2822, radius: 1.1
+                    Point pointA1 = new Point(0.133, 3.7, -2.2222);
+                    Point pointB1 = new Point(0.1567, 1.5, -1.94);
+
+                    // center at (2.0583, 1.7005, 0.16), dimensions: 0.7834 x 3.399 x 0.32, radius: 1.6995
+                    Point pointA2 = new Point(1.6666, 0.001, 1.3);
+                    Point pointB2 = new Point(2.45, 3.4, 0.98);
+
+                    // radius 1.1 => depth = 2
+                    // center (0.14485, 2.6, -2.0811) => indices x: 2, y: 3, z: 0
+                    box = new ConcreteBox(pointA1, pointB1);
+                    // radius 1.6995  => depth = 2
+                    // center (2.0583, 1.7005, 0.16) => indices x: 3, y: 2, z: 2
+                    box2 = new ConcreteBox(pointA2, pointB2);
+
+                    contentNode1.add(box);
+                    contentNode2.add(box2);
+
+                    assertAll(
+                            () -> assertTrue(looseOctree.insertObject(box)),
+                            () -> assertEquals(looseOctree.nodes[2][2][3][0].getContent(), contentNode1),
+                            () -> assertTrue(looseOctree.insertObject(box2)),
+                            () -> assertEquals(looseOctree.nodes[2][3][2][2].getContent(), contentNode2)
+                    );
+                }
+
+                @Test
+                @DisplayName("Insert two boxes, different depth, same node indices")
+                void twoBoxesDiffDepthSameNodeIndices() {
+                    // center at (-2.5, -0.5, 0.5), dimensions: 3.0 x 3.0 x 3.0, radius: 1.5
+                    Point pointA1 = new Point(-4.0, -2.0, -1.0);
+                    Point pointB1 = new Point(-1.0, 1.0, 2.0);
+
+                    // center at (-3.5, -2.5, -1.5), dimensions: 1.0 x 1.0 x 1.0, radius: 0.5
+                    Point pointA2 = new Point(-4.0, -3.0, -2.0);
+                    Point pointB2 = new Point(-3.0, -2.0, -1.0);
+
+                    // radius 1.5 => depth = 2
+                    // center (-2.5, -0.5, 0.5) => indices x: 0, y: 1, z: 2
+                    box = new ConcreteBox(pointA1, pointB1);
+                    // radius 0.5  => depth = 3
+                    // center (-3.5, -2.5, -1.5) => indices x: 0, y: 1, z: 2
+                    box2 = new ConcreteBox(pointA2, pointB2);
+
+                    contentNode1.add(box);
+                    contentNode2.add(box2);
+
+                    assertAll(
+                            () -> assertTrue(looseOctree.insertObject(box)),
+                            () -> assertEquals(looseOctree.nodes[2][0][1][2].getContent(), contentNode1),
+                            () -> assertTrue(looseOctree.insertObject(box2)),
+                            () -> assertEquals(looseOctree.nodes[3][0][1][2].getContent(), contentNode2)
+                    );
+                }
+
+                @Test
+                @DisplayName("insert two boxes, different depths, each at a different node")
+                void twoBoxesDiffDepthsDiffNodes() {
+                    // center at (-2.5, -0.5, 0.5), dimensions: 3.0 x 3.0 x 3.0, radius: 1.5
+                    Point pointA1 = new Point(-4.0, -2.0, -1.0);
+                    Point pointB1 = new Point(-1.0, 1.0, 2.0);
+
+                    // center at (3.5, 2.5, 1.5), dimensions: 1.0 x 1.0 x 1.0, radius: 0.5
+                    Point pointA2 = new Point(4.0, 3.0, 2.0);
+                    Point pointB2 = new Point(3.0, 2.0, 1.0);
+
+                    // radius 1.5 => depth = 2
+                    // center (-2.5, -0.5, 0.5) => indices x: 0, y: 1, z: 2
+                    box = new ConcreteBox(pointA1, pointB1);
+                    // radius 0.5  => depth = 3
+                    // center (3.5, 2.5, 1.5) => indices x: 7 y: 6, z: 5
+                    box2 = new ConcreteBox(pointA2, pointB2);
+
+                    contentNode1.add(box);
+                    contentNode2.add(box2);
+
+                    assertAll(
+                            () -> assertTrue(looseOctree.insertObject(box)),
+                            () -> assertEquals(looseOctree.nodes[2][0][1][2].getContent(), contentNode1),
+                            () -> assertTrue(looseOctree.insertObject(box2)),
+                            () -> assertEquals(looseOctree.nodes[3][7][6][5].getContent(), contentNode2)
+                    );
+                }
             }
         }
     }
