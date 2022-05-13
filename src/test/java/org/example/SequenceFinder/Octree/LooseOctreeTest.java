@@ -86,6 +86,55 @@ public class LooseOctreeTest {
             return true;
         }
 
+        /**
+         * Add the given box to the octree and assert that it has been added. Also assert that the box only contains
+         * the expected content
+         *
+         * @param boxToAdd                         the box that will be added to the LooseOctree
+         * @param nodeWhereItShouldHaveBeenAddedTo the node in the octree where the box should have been added to
+         * @param expectedContent                  the expected content of the specified node
+         */
+        void addBoxAndAssertBoxAddedToOctree(Box boxToAdd, OctreeNode<Box> nodeWhereItShouldHaveBeenAddedTo,
+                                             HashSet<Box> expectedContent) {
+            assertAll(
+                    () -> assertTrue(looseOctree.insertObject(boxToAdd)),
+                    () -> assertEquals(expectedContent, nodeWhereItShouldHaveBeenAddedTo.getContent())
+            );
+        }
+
+        /**
+         * Assert that each dimension at the given depth has the same number of nodes in the x, y and z dimension.
+         *
+         * @param givenDepth          the depth where the check is performed
+         * @param numberOfNodesPerDim the expected number of nodes per dimension at the given depth
+         */
+        private void assertNumberOfNodesPerDimension(int givenDepth, int numberOfNodesPerDim) {
+            assertAll(
+                    // check x dimension
+                    () -> assertEquals(numberOfNodesPerDim, looseOctree.nodes[givenDepth].length),
+                    // check y dimension
+                    () -> assertEquals(numberOfNodesPerDim, looseOctree.nodes[givenDepth][0].length),
+                    // check z dimension
+                    () -> assertEquals(numberOfNodesPerDim, looseOctree.nodes[givenDepth][0][0].length),
+
+                    // check all dimensions are equally sized.
+                    () -> assertTrue(equallySizedDimensions(looseOctree.nodes[givenDepth]))
+            );
+        }
+
+        
+        /**
+         * Assert the result has the same value in the x, y and z dimensions
+         *
+         * @param result the result that will be checked
+         */
+        void assertXYAndZAreTheSame(Point result) {
+            assertAll(
+                    () -> assertEquals(result.x, result.y),
+                    () -> assertEquals(result.y, result.z)
+            );
+        }
+
 
         @Nested
         @DisplayName("tests based on depth")
@@ -187,17 +236,7 @@ public class LooseOctreeTest {
                     @Test
                     @DisplayName("then there should be exactly 2 nodes per dimension")
                     void thenThereShouldBeExactly2NodesPerDimension() {
-                        assertAll(
-                                // check x dimension
-                                () -> assertEquals(2, looseOctree.nodes[givenDepth].length),
-                                // check y dimension
-                                () -> assertEquals(2, looseOctree.nodes[givenDepth][0].length),
-                                // check z dimension
-                                () -> assertEquals(2, looseOctree.nodes[givenDepth][0][0].length),
-
-                                // check all dimensions are equally sized.
-                                () -> assertTrue(equallySizedDimensions(looseOctree.nodes[givenDepth]))
-                        );
+                        assertNumberOfNodesPerDimension(givenDepth, 2);
                     }
 
                     @Test
@@ -264,17 +303,7 @@ public class LooseOctreeTest {
                     @Test
                     @DisplayName("then there should be exactly 4 nodes per dimension")
                     void thenThereShouldBeExactly4NodesPerDimension() {
-                        assertAll(
-                                // check x dimension
-                                () -> assertEquals(4, looseOctree.nodes[givenDepth].length),
-                                // check y dimension
-                                () -> assertEquals(4, looseOctree.nodes[givenDepth][0].length),
-                                // check z dimension
-                                () -> assertEquals(4, looseOctree.nodes[givenDepth][0][0].length),
-
-                                // check all dimensions are equally sized.
-                                () -> assertTrue(equallySizedDimensions(looseOctree.nodes[givenDepth]))
-                        );
+                        assertNumberOfNodesPerDimension(givenDepth, 4);
                     }
 
                     @Test
@@ -340,17 +369,7 @@ public class LooseOctreeTest {
                     @Test
                     @DisplayName("then there should be exactly 8 nodes per dimension")
                     void thenThereShouldBeExactly8NodesPerDimension() {
-                        assertAll(
-                                // check x dimension
-                                () -> assertEquals(8, looseOctree.nodes[givenDepth].length),
-                                // check y dimension
-                                () -> assertEquals(8, looseOctree.nodes[givenDepth][0].length),
-                                // check z dimension
-                                () -> assertEquals(8, looseOctree.nodes[givenDepth][0][0].length),
-
-                                // check all dimensions are equally sized.
-                                () -> assertTrue(equallySizedDimensions(looseOctree.nodes[givenDepth]))
-                        );
+                        assertNumberOfNodesPerDimension(givenDepth, 8);
                     }
 
                     @Test
@@ -603,10 +622,7 @@ public class LooseOctreeTest {
 
                         Point result = looseOctree.calcIndex(boxMock);
 
-                        assertAll(
-                                () -> assertEquals(result.x, result.y),
-                                () -> assertEquals(result.y, result.z)
-                        );
+                        assertXYAndZAreTheSame(result);
                     }
 
                     /**
@@ -804,10 +820,7 @@ public class LooseOctreeTest {
 
                         Point result = looseOctree.calcIndex(boxMock);
 
-                        assertAll(
-                                () -> assertEquals(result.x, result.y),
-                                () -> assertEquals(result.y, result.z)
-                        );
+                        assertXYAndZAreTheSame(result);
                     }
 
                     /**
@@ -982,10 +995,7 @@ public class LooseOctreeTest {
 
                         Point result = looseOctree.calcIndex(boxMock);
 
-                        assertAll(
-                                () -> assertEquals(result.x, result.y),
-                                () -> assertEquals(result.y, result.z)
-                        );
+                        assertXYAndZAreTheSame(result);
                     }
 
                     /**
@@ -1119,10 +1129,7 @@ public class LooseOctreeTest {
 
                         Point result = looseOctree.calcIndex(boxMock);
 
-                        assertAll(
-                                () -> assertEquals(result.x, result.y),
-                                () -> assertEquals(result.y, result.z)
-                        );
+                        assertXYAndZAreTheSame(result);
                     }
 
                     /**
@@ -1233,10 +1240,7 @@ public class LooseOctreeTest {
 
                         Point result = looseOctree.calcIndex(boxMock);
 
-                        assertAll(
-                                () -> assertEquals(result.x, result.y),
-                                () -> assertEquals(result.y, result.z)
-                        );
+                        assertXYAndZAreTheSame(result);
                     }
 
                     /**
@@ -1342,10 +1346,7 @@ public class LooseOctreeTest {
 
                         Point result = looseOctree.calcIndex(boxMock);
 
-                        assertAll(
-                                () -> assertEquals(result.x, result.y),
-                                () -> assertEquals(result.y, result.z)
-                        );
+                        assertXYAndZAreTheSame(result);
                     }
 
                     /**
@@ -1472,10 +1473,7 @@ public class LooseOctreeTest {
 
                     // radius 1.0  => depth = 3
                     // center (2,2,2) => indices x: 6, y: 6, z: 6
-                    assertAll(
-                            () -> assertTrue(looseOctree.insertObject(box)),
-                            () -> assertEquals(looseOctree.nodes[3][6][6][6].getContent(), nodeContent)
-                    );
+                    addBoxAndAssertBoxAddedToOctree(box, looseOctree.nodes[3][6][6][6], nodeContent);
                 }
 
                 /**
@@ -1507,10 +1505,7 @@ public class LooseOctreeTest {
 
                     // radius 2.5  => depth = 1
                     // center (0.5, 0.5, -1) => indices x: 1, y: 1, z: 0
-                    assertAll(
-                            () -> assertTrue(looseOctree.insertObject(box)),
-                            () -> assertEquals(looseOctree.nodes[1][1][1][0].getContent(), nodeContent)
-                    );
+                    addBoxAndAssertBoxAddedToOctree(box, looseOctree.nodes[1][1][1][0], nodeContent);
                 }
 
                 @Test
@@ -1525,10 +1520,7 @@ public class LooseOctreeTest {
 
                     // radius 1.85  => depth = 2
                     // center (-0.65, 0.6, 0.32) => indices x: 1, y: 2, z: 2
-                    assertAll(
-                            () -> assertTrue(looseOctree.insertObject(box)),
-                            () -> assertEquals(looseOctree.nodes[2][1][2][2].getContent(), nodeContent)
-                    );
+                    addBoxAndAssertBoxAddedToOctree(box, looseOctree.nodes[2][1][2][2], nodeContent);
                 }
 
                 @Test
@@ -1579,10 +1571,8 @@ public class LooseOctreeTest {
                     contentNode2.add(box2);
 
                     assertAll(
-                            () -> assertTrue(looseOctree.insertObject(box)),
-                            () -> assertEquals(looseOctree.nodes[3][5][6][4].getContent(), contentNode1),
-                            () -> assertTrue(looseOctree.insertObject(box2)),
-                            () -> assertEquals(looseOctree.nodes[3][5][6][4].getContent(), contentNode2)
+                            () -> addBoxAndAssertBoxAddedToOctree(box, looseOctree.nodes[3][5][6][4], contentNode1),
+                            () -> addBoxAndAssertBoxAddedToOctree(box2, looseOctree.nodes[3][5][6][4], contentNode2)
                     );
                 }
 
@@ -1607,10 +1597,8 @@ public class LooseOctreeTest {
                     // radius 1.85  => depth = 2
                     // center (-0.65, 0.6, 0.32) => indices x: 1, y: 2, z: 2
                     assertAll(
-                            () -> assertTrue(looseOctree.insertObject(box)),
-                            () -> assertEquals(looseOctree.nodes[2][1][2][2].getContent(), contentNode1),
-                            () -> assertTrue(looseOctree.insertObject(box2)),
-                            () -> assertEquals(looseOctree.nodes[2][1][2][2].getContent(), contentNode2)
+                            () -> addBoxAndAssertBoxAddedToOctree(box, looseOctree.nodes[2][1][2][2], contentNode1),
+                            () -> addBoxAndAssertBoxAddedToOctree(box2, looseOctree.nodes[2][1][2][2], contentNode2)
                     );
                 }
 
@@ -1636,10 +1624,8 @@ public class LooseOctreeTest {
                     contentNode2.add(box2);
 
                     assertAll(
-                            () -> assertTrue(looseOctree.insertObject(box)),
-                            () -> assertEquals(looseOctree.nodes[2][2][3][0].getContent(), contentNode1),
-                            () -> assertTrue(looseOctree.insertObject(box2)),
-                            () -> assertEquals(looseOctree.nodes[2][3][2][2].getContent(), contentNode2)
+                            () -> addBoxAndAssertBoxAddedToOctree(box, looseOctree.nodes[2][2][3][0], contentNode1),
+                            () -> addBoxAndAssertBoxAddedToOctree(box2, looseOctree.nodes[2][3][2][2], contentNode2)
                     );
                 }
 
@@ -1665,10 +1651,8 @@ public class LooseOctreeTest {
                     contentNode2.add(box2);
 
                     assertAll(
-                            () -> assertTrue(looseOctree.insertObject(box)),
-                            () -> assertEquals(looseOctree.nodes[2][0][1][2].getContent(), contentNode1),
-                            () -> assertTrue(looseOctree.insertObject(box2)),
-                            () -> assertEquals(looseOctree.nodes[3][0][1][2].getContent(), contentNode2)
+                            () -> addBoxAndAssertBoxAddedToOctree(box, looseOctree.nodes[2][0][1][2], contentNode1),
+                            () -> addBoxAndAssertBoxAddedToOctree(box2, looseOctree.nodes[3][0][1][2], contentNode2)
                     );
                 }
 
@@ -1694,10 +1678,8 @@ public class LooseOctreeTest {
                     contentNode2.add(box2);
 
                     assertAll(
-                            () -> assertTrue(looseOctree.insertObject(box)),
-                            () -> assertEquals(looseOctree.nodes[2][0][1][2].getContent(), contentNode1),
-                            () -> assertTrue(looseOctree.insertObject(box2)),
-                            () -> assertEquals(looseOctree.nodes[3][7][6][5].getContent(), contentNode2)
+                            () -> addBoxAndAssertBoxAddedToOctree(box, looseOctree.nodes[2][0][1][2], contentNode1),
+                            () -> addBoxAndAssertBoxAddedToOctree(box2, looseOctree.nodes[3][7][6][5], contentNode2)
                     );
                 }
             }
