@@ -95,6 +95,10 @@ public class LooseOctree<T extends Box> {
      * @return the length of the bounding cubes at the given depth
      */
     public double boundingCubeLength(int depth) {
+        if (depth < 0) {
+            throw new IllegalArgumentException("Depth can not be less than 0! Depth value: " + depth);
+        }
+
         if (depth > maxDepth) {
             throw new IllegalArgumentException("Depth is too deep! Depth value: " + depth + ", maxDepth: " + maxDepth);
         }

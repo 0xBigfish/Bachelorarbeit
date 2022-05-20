@@ -122,7 +122,7 @@ public class LooseOctreeTest {
             );
         }
 
-        
+
         /**
          * Assert the result has the same value in the x, y and z dimensions
          *
@@ -140,7 +140,51 @@ public class LooseOctreeTest {
         @DisplayName("tests based on depth")
         class DepthTests {
 
-            //TODO: add tests for depth < 0
+            @Nested
+            @DisplayName("given depth of -1")
+            class DepthOfNeg1 {
+
+                int givenDepth = -1;
+
+
+                @Nested
+                @DisplayName("accessing nodes array tests")
+                class ArrayNodesTests {
+
+                    @Test
+                    @DisplayName("then an IndexOutOfBoundsException should be thrown when trying to interact with " +
+                            "any node")
+                    void thenAnIndexOutOfBoundsShouldBeThrown() {
+                        // access any node, as the givenDepth will result in an IndexOutOfBounds
+                        assertThrows(IndexOutOfBoundsException.class,
+                                () -> looseOctree.nodes[givenDepth][0][0][0].insertObject(null));
+                    }
+                }
+
+
+                @Nested
+                @DisplayName("boundingCubeLength tests")
+                class BCLengthTests {
+
+                    @Test
+                    @DisplayName("then boundingCubeLength(-1) should throw an IllegalArgumentException")
+                    void thenBoundingCubeLength0ShouldThrowAnException() {
+                        assertThrows(IllegalArgumentException.class, () -> looseOctree.boundingCubeLength(givenDepth));
+                    }
+                }
+
+
+                @Nested
+                @DisplayName("boundingCubeSpacing tests")
+                class BCSpacingTests {
+
+                    @Test
+                    @DisplayName("then an IllegalArgumentException should be thrown")
+                    void thenAnIllegalArgumentExceptionShouldBeThrown() {
+                        assertThrows(IllegalArgumentException.class, () -> looseOctree.boundingCubeSpacing(givenDepth));
+                    }
+                }
+            }
 
 
             @Nested
@@ -167,7 +211,7 @@ public class LooseOctreeTest {
                     }
 
                     @Test
-                    @DisplayName("then an IndexOutOfBoundsException should be thrown")
+                    @DisplayName("then an IndexOutOfBoundsException should be thrown when trying to access any node")
                     void thenAnIndexOutOfBoundsExceptionShouldBeThrown() {
                         // call any method on the array as assertThrows needs a void or consumer, not a
                         // concrete value.
@@ -1525,7 +1569,7 @@ public class LooseOctreeTest {
 
                 @Test
                 @DisplayName("Box(1.65,-3.4,-0.7)(2.99,3.0,0.00000001) should throw an exception")
-                void Box165Neg34Neg072993000000001() {
+                void box165Neg34Neg072993000000001() {
                     // center at (2.32, 0.2, -0.35), dimensions: 4.64 x 6.4 x 0.69999999, radius: 3.2
                     Point pointA = new Point(1.65, -3.4, -0.7);
                     Point pointB = new Point(2.99, 3.0, 0.00000001);
