@@ -1,7 +1,5 @@
 package org.example.SequenceFinder.Octree;
 
-import org.example.SequenceFinder.GeometricObjects.Box;
-
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -11,9 +9,9 @@ import java.util.HashSet;
  * Constructor and methods are package protected because they are only used within the {@linkplain LooseOctree}'s
  * package
  *
- * @param <T> a box shaped object
+ * @param <T> the type of objects that will be stored in the node
  */
-class OctreeNode<T extends Box> {
+class OctreeNode<T> {
 
     private final HashSet<T> content;
 
