@@ -4,10 +4,11 @@ import org.example.SequenceFinder.Model.GeometricObjects.Box;
 import org.example.SequenceFinder.Model.GeometricObjects.Point;
 
 /**
- * A Loose Octree to store each object based on its position in the world. Used to improve performance of frustum culling
+ * A Loose Octree to store each object based on its position in the world. Used to improve performance of frustum
+ * culling <br>
  * <br>
- * <br>
- * The tree implementation is based on Thatcher Ulrich's article about Loose Octrees in "Game Programming Gems" (2000)
+ * The tree implementation is based on <i>Thatcher Ulrich</i>'s article about Loose Octrees in <i>Game Programming
+ * Gems </i>(2000)
  * (ISBN 1-58450-049-2). <br>
  * A first introduction can be found on his website: http://www.tulrich.com/geekstuff/partitioning.html
  *
@@ -29,8 +30,8 @@ public class LooseOctree<T extends Box> {
      * places at depth 0 if their radius is larger than worldSize / 2, but then the object would be bigger than the
      * entire world, which is a paradox.
      */
-    // protected to enable test class access to this field<
-    protected Box[][][][] nodes;
+    // protected to enable test class access to this field
+    protected OctreeNode<Box>[][][][] nodes;
 
     /**
      * size of the world. Large enough to fit every object into it. Should be a multiple of 2
@@ -48,6 +49,16 @@ public class LooseOctree<T extends Box> {
      */
     private final double k = 2;
 
+    /**
+     * Create a Loose Octree, with a maximum depth, to store each object based on its position in the world. Used to
+     * improve performance of frustum culling <br>
+     *
+     * @param maxDepth  the maximum depth of the LooseOctree
+     * @param worldSize the size of the world, must be big enough to including all objects.
+     */
+    // suppresses unchecked assigned from OctreeNode to OctreeNode<Box>.
+    // No problem because the array is only used internally
+    @SuppressWarnings("unchecked")
     public LooseOctree(int maxDepth, int worldSize) {
         this.maxDepth = maxDepth;
         //TODO: decide if useful to force worldSize to be 2^x
@@ -56,15 +67,24 @@ public class LooseOctree<T extends Box> {
         // init array to be able to overwrite the values in the for loop
         // use maxDepth + 1 because only the imaginary root node is at level 0 and maxDepth describes the number of
         // edges to the deepest node(s)
-        nodes = new Box[maxDepth + 1][0][0][0];
+        // --- ignore unchecked warning because the array is only used inside this class ---
+        nodes = new OctreeNode[maxDepth + 1][0][0][0];
 
         // init the array correctly to hold only the maximum allowed number of nodes per depth:
         //  depth=1 => 2 nodes per Dimension and 8 total, depth=2 => 4 nodes per dimension and 16 total, ...
         for (int i = 1; i <= maxDepth; i++) {
-            // worldSize / boundingCubeSpacing() = number of indices at this depth
-            // multiply by 3 because there are x, y and z indices
             int numOfNodesPerDim = (int) Math.pow(2, i);
-            nodes[i] = new Box[numOfNodesPerDim][numOfNodesPerDim][numOfNodesPerDim];
+            // --- ignore unchecked warning because the array is only used inside this class ---
+            nodes[i] = new OctreeNode[numOfNodesPerDim][numOfNodesPerDim][numOfNodesPerDim];
+
+            // each node is bound to a OctreeNode which saves the node's content
+            for (int x = 0; x < numOfNodesPerDim; x++) {
+                for (int y = 0; y < numOfNodesPerDim; y++) {
+                    for (int z = 0; z < numOfNodesPerDim; z++) {
+                        nodes[i][x][y][z] = new OctreeNode<>();
+                    }
+                }
+            }
         }
     }
 
@@ -75,6 +95,10 @@ public class LooseOctree<T extends Box> {
      * @return the length of the bounding cubes at the given depth
      */
     public double boundingCubeLength(int depth) {
+        if (depth < 0) {
+            throw new IllegalArgumentException("Depth can not be less than 0! Depth value: " + depth);
+        }
+
         if (depth > maxDepth) {
             throw new IllegalArgumentException("Depth is too deep! Depth value: " + depth + ", maxDepth: " + maxDepth);
         }
@@ -176,10 +200,10 @@ public class LooseOctree<T extends Box> {
         Point index = calcIndex(objectToInsert);
 
         // cast to int is no problem, as calcIndex casts the Point's x, y and z to int previously
-        this.nodes[depth][(int) index.x][(int) index.y][(int) index.z] = objectToInsert;
+        this.nodes[depth][(int) index.x][(int) index.y][(int) index.z].insertObject(objectToInsert);
 
         // check if insertion was successful
-        return this.nodes[depth][(int) index.x][(int) index.y][(int) index.z] == objectToInsert;
+        return this.nodes[depth][(int) index.x][(int) index.y][(int) index.z].getContent().contains(objectToInsert);
     }
 
     /**
@@ -190,17 +214,5 @@ public class LooseOctree<T extends Box> {
      */
     private double log2(double x) {
         return Math.log(x) / Math.log(2);
-    }
-
-    /**
-     * Calculates the number of nodes at the given depth. Used to calculate the offset for the array list
-     *
-     * @param depth the depth
-     * @return the number of nodes at the given depth
-     */
-    private int numOfNodesAtDepth(int depth) {
-        // worldSize / boundingCubeSpacing() = number of indices on this depth
-        // multiply by 3 because there are x, y and z indices
-        return 3 * worldSize / boundingCubeSpacing(depth);
     }
 }
