@@ -1,4 +1,4 @@
-package org.example.SequenceFinder.Octree;
+package org.example.SequenceFinder.Model.Octree;
 
 import java.util.Collection;
 import java.util.HashSet;

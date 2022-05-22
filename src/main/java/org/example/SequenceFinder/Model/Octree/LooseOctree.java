@@ -1,7 +1,7 @@
-package org.example.SequenceFinder.Octree;
+package org.example.SequenceFinder.Model.Octree;
 
-import org.example.SequenceFinder.GeometricObjects.Box;
-import org.example.SequenceFinder.GeometricObjects.Point;
+import org.example.SequenceFinder.Model.GeometricObjects.Box;
+import org.example.SequenceFinder.Model.GeometricObjects.Point;
 
 /**
  * A Loose Octree to store each object based on its position in the world. Used to improve performance of frustum

@@ -1,7 +1,7 @@
-package org.example.SequenceFinder.Octree;
+package org.example.SequenceFinder.Model.Octree;
 
-import org.example.SequenceFinder.GeometricObjects.Box;
-import org.example.SequenceFinder.GeometricObjects.Point;
+import org.example.SequenceFinder.Model.GeometricObjects.Box;
+import org.example.SequenceFinder.Model.GeometricObjects.Point;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
