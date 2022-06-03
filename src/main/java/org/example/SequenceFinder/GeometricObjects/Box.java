@@ -2,6 +2,7 @@ package org.example.SequenceFinder.GeometricObjects;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 
 //TODO: rename to AABBox (axis aligned bounding box) and write test to ensure it is axis aligned
 /**
@@ -55,6 +56,35 @@ public abstract class Box {
                 );
 
         return round(result, decimalPlaces);
+    }
+
+    /**
+     * Get the corner vertices of the box
+     *
+     * @return the corner vertices of this box
+     */
+    public ArrayList<Point> getVertices() {
+        new Point(vertexA.x + vertexB.x, vertexA.y + vertexB.y, vertexA.z + vertexB.z);
+        Point frontLowerLeft = vertexA;
+        Point frontLowerRight = new Point(vertexB.x, vertexA.y, vertexA.z);
+        Point frontUpperLeft = new Point(vertexA.x, vertexB.y, vertexA.z);
+        Point frontUpperRight = new Point(vertexB.x, vertexB.y, vertexA.z);
+        Point backLowerLeft = new Point(vertexA.x, vertexA.y, vertexB.z);
+        Point backLowerRight = new Point(vertexB.x, vertexA.y, vertexB.z);
+        Point backUpperLeft = new Point(vertexA.x, vertexB.y, vertexB.z);
+        Point backUpperRight = vertexB;
+
+        ArrayList<Point> vertices = new ArrayList<>();
+        vertices.add(frontLowerLeft);
+        vertices.add(frontLowerRight);
+        vertices.add(frontUpperLeft);
+        vertices.add(frontUpperRight);
+        vertices.add(backLowerLeft);
+        vertices.add(backLowerRight);
+        vertices.add(backUpperLeft);
+        vertices.add(backUpperRight);
+
+        return vertices;
     }
 
     /**
