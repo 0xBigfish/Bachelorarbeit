@@ -3,7 +3,9 @@ package org.example.SequenceFinder.Octree;
 import org.apache.commons.math3.geometry.euclidean.threed.Plane;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.example.SequenceFinder.GeometricObjects.Box;
+import org.example.SequenceFinder.GeometricObjects.Point;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Map;
@@ -35,7 +37,7 @@ public class Frustum {
 
 
     private final Vector3D worldOrigin;
-    private final Map<FrustumSides, Plane> planes;
+    private final Map<FrustumSides, Plane> planesMap;
 
     /**
      * Describes the view frustum. It is used to identify objects that lay in front or above another object in the
@@ -67,7 +69,7 @@ public class Frustum {
         temp.put(FrustumSides.BOTTOM, bottom);
 
         // the frustum should not be altered after creation
-        this.planes = Collections.unmodifiableMap(temp);
+        this.planesMap = Collections.unmodifiableMap(temp);
     }
 
     /**
@@ -83,7 +85,7 @@ public class Frustum {
     public Visibility calcVisibility(Box b) {
         boolean intersects = false;
 
-        for (Plane p : planes.values()) {
+        for (Plane p : planesMap.values()) {
             /*
             Plane formula:
             The normal of each plane points inside the frustum.
@@ -95,8 +97,8 @@ public class Frustum {
 
             // FIXME: more efficient calculation available. The paper says for AABB the n- and p-vertex are always the
             //  same for a given plane and need not be calculated more than once.
-            Vector3D pVertex = calcPVertex(b); // is a point
-            Vector3D nVertex = calcNVertex(b); // is a point
+            Vector3D pVertex = calcPVertex(b, p); // is a point
+            Vector3D nVertex = calcNVertex(b, p); // is a point
             Vector3D normalVector = p.getNormal().normalize(); // is a vector
             double d = p.getOffset(worldOrigin);
 
@@ -138,11 +140,28 @@ public class Frustum {
      * See https://www.lighthouse3d.com/tutorials/view-frustum-culling/geometric-approach-testing-boxes-ii/ for a
      * visualization
      *
-     * @param b the given box
+     * @param box   the given box
+     * @param plane the plane
      * @return the p vertex of the box
      */
-    private Vector3D calcPVertex(Box b) {
-        return null;
+    private Vector3D calcPVertex(Box box, Plane plane) {
+        ArrayList<Point> vertices = box.getVertices();
+        Vector3D normal = plane.getNormal();
+        double d = plane.getOffset(worldOrigin);
+
+        // get a start value to compare against
+        Point pVertex = vertices.remove(0);
+        double distanceAlongNormal = normal.dotProduct(new Vector3D(pVertex.x, pVertex.y, pVertex.z)) + d;
+
+        for (Point vertex : vertices) {
+            // if the current vertex is further ALONG the plane's normal than the current pVertex, the pVertex
+            // is updated
+            if (normal.dotProduct(new Vector3D(vertex.x, vertex.y, vertex.z)) + d > distanceAlongNormal) {
+                pVertex = vertex;
+            }
+        }
+
+        return new Vector3D(pVertex.x, pVertex.y, pVertex.z);
     }
 
     /**
@@ -155,10 +174,27 @@ public class Frustum {
      * See https://www.lighthouse3d.com/tutorials/view-frustum-culling/geometric-approach-testing-boxes-ii/ for a
      * visualization
      *
-     * @param b the given box
+     * @param box   the given box
+     * @param plane the plane
      * @return the n vertex of the box
      */
-    private Vector3D calcNVertex(Box b) {
-        return null;
+    private Vector3D calcNVertex(Box box, Plane plane) {
+        ArrayList<Point> vertices = box.getVertices();
+        Vector3D normal = plane.getNormal();
+        double d = plane.getOffset(worldOrigin);
+
+        // get a start value to compare against
+        Point nVertex = vertices.remove(0);
+        double distanceAlongNormal = normal.dotProduct(new Vector3D(nVertex.x, nVertex.y, nVertex.z)) + d;
+
+        for (Point vertex : vertices) {
+            // if the current vertex is further AGAINST the plane's normal than the current nVertex, the nVertex
+            // is updated
+            if (normal.dotProduct(new Vector3D(vertex.x, vertex.y, vertex.z)) + d < distanceAlongNormal) {
+                nVertex = vertex;
+            }
+        }
+
+        return new Vector3D(nVertex.x, nVertex.y, nVertex.z);
     }
 }
