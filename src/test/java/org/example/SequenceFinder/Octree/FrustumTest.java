@@ -39,7 +39,6 @@ class FrustumTest {
 
         @BeforeEach
         void setup() {
-            Vector3D worldOrigin = new Vector3D(0, 0, 0);
 
             // new Plane(Point, normalVector, tolerance)
             Plane top = new Plane(new Vector3D(0, 0, 2), new Vector3D(0, 0, -1), TOLERANCE);
@@ -53,7 +52,7 @@ class FrustumTest {
             Plane front = new Plane(new Vector3D(10, 0, 0), new Vector3D(-1, 0, 0), TOLERANCE);
             Plane back = new Plane(new Vector3D(0, 0, 0), new Vector3D(1, 0, 0), TOLERANCE);
 
-            frustum = new Frustum(worldOrigin, front, back, left, right, top, bottom);
+            frustum = new Frustum(front, back, left, right, top, bottom);
         }
 
         @Nested
@@ -170,7 +169,6 @@ class FrustumTest {
 
         @BeforeEach
         void setup() {
-            Vector3D worldOrigin = new Vector3D(0, 0, 0);
 
             // new Plane(Point, normalVector, tolerance)
             Plane top = new Plane(new Vector3D(0, 0, 3), new Vector3D(0, 0, -1), TOLERANCE);
@@ -183,7 +181,7 @@ class FrustumTest {
             Plane front = new Plane(new Vector3D(4, 0, 0), new Vector3D(-1, 0, 0), TOLERANCE);
             Plane back = new Plane(new Vector3D(0, 0, 0), new Vector3D(1, 0, 0), TOLERANCE);
 
-            frustum = new Frustum(worldOrigin, front, back, left, right, top, bottom);
+            frustum = new Frustum(front, back, left, right, top, bottom);
         }
 
 
@@ -255,7 +253,6 @@ class FrustumTest {
             void partlyVisible() {
                 assertEquals(PARTLY_VISIBLE, frustum.calcVisibility(box));
             }
-
         }
 
 

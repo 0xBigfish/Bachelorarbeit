@@ -56,8 +56,9 @@ public class Frustum {
      * @param left   left plane
      * @param right  right plane
      */
-    public Frustum(Vector3D worldOrigin, Plane front, Plane back, Plane left, Plane right, Plane top, Plane bottom) {
-        this.worldOrigin = worldOrigin;
+    public Frustum(Plane front, Plane back, Plane left, Plane right, Plane top, Plane bottom) {
+        // the LooseOctree assumes the world is centered at the coordinate system's origin, which is (0, 0, 0).
+        this.worldOrigin = new Vector3D(0, 0, 0);
 
         // use Hashtable because neither key=null nor value=null are allowed.
         Map<FrustumSides, Plane> temp = new Hashtable<>();
