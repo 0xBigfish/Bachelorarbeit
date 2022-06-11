@@ -4,8 +4,10 @@ import org.example.SequenceFinder.GeometricObjects.Box;
 import org.example.SequenceFinder.GeometricObjects.Point;
 
 /**
- * A Loose Octree to store each object based on its position in the world. Used to improve performance of frustum culling
- * <br>
+ * A Loose Octree, with a maximum depth, to store each object based on its position in the world. Used to improve
+ * performance of frustum culling <br>
+ * The tree's coordinate system is centered at (0, 0, 0) and expands to (worldSize/2) and -(worldSize/2) in all
+ * dimensions <br>
  * <br>
  * The tree implementation is based on Thatcher Ulrich's article about Loose Octrees in "Game Programming Gems" (2000)
  * (ISBN 1-58450-049-2). <br>
@@ -48,6 +50,16 @@ public class LooseOctree<T extends Box> {
      */
     private final double k = 2;
 
+    /**
+     * Create a Loose Octree, with a maximum depth, to store each object based on its position in the world. Used to
+     * improve performance of frustum culling <br>
+     * The tree's coordinate system is centered at (0, 0, 0) and expands to (worldSize/2) and -(worldSize/2) in all
+     * dimensions <br>
+     * <br>
+     *
+     * @param maxDepth  the maximum depth of the LooseOctree
+     * @param worldSize the size of the world, must be big enough to including all objects.
+     */
     public LooseOctree(int maxDepth, int worldSize) {
         this.maxDepth = maxDepth;
         //TODO: decide if useful to force worldSize to be 2^x
