@@ -834,9 +834,44 @@ class FrustumTest {
 
 
     @Nested
-    @DisplayName("given a Frustum which planes' normals point outwards instead of inwards")
-    class GivenFrustumNormalOutwards {
+    @DisplayName("Frusta which planes' normals point outwards instead of inwards")
+    class FrustumNormalOutwards {
 
+        Plane top;
+        Plane bottom;
+        Plane left;
+        Plane right;
+        Plane front;
+        Plane back;
+
+
+        @Nested
+        @DisplayName("given a rectangular shaped frustum looking in X-direction")
+        class GivenRectangularFrustumXDir {
+
+            @BeforeEach
+            void setup() {
+
+                // new Plane(Point, normalVector, tolerance)
+                // normal of the top plane points outwards
+                top = new Plane(new Vector3D(0, 0, 3), new Vector3D(0, 0, 1), TOLERANCE);
+                bottom = new Plane(new Vector3D(0, 0, 0.5), new Vector3D(0, 0, 1), TOLERANCE);
+
+                // left and right plane are parallel
+                left = new Plane(new Vector3D(0, 2, 0), new Vector3D(0, -1, 0), TOLERANCE);
+                right = new Plane(new Vector3D(0, -2, 0), new Vector3D(0, 1, 0), TOLERANCE);
+
+                front = new Plane(new Vector3D(4, 0, 0), new Vector3D(-1, 0, 0), TOLERANCE);
+                back = new Plane(new Vector3D(0, 0, 0), new Vector3D(1, 0, 0), TOLERANCE);
+            }
+
+            @Test
+            @DisplayName("then an IllegalArgumentException should be thrown")
+            void illegalArgument() {
+                assertThrows(IllegalArgumentException.class,
+                        () -> new Frustum(front, back, left, right, top, bottom));
+            }
+        }
     }
 
     // TODO: look up edge case of VFCart paper and decide if it can happen in this implementation

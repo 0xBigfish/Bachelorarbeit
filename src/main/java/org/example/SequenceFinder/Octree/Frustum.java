@@ -28,11 +28,11 @@ public class Frustum {
      */
     private enum FrustumSides {
         FRONT,
-        BOTTOM,
-        TOP,
         BACK,
         LEFT,
-        RIGHT
+        RIGHT,
+        TOP,
+        BOTTOM
     }
 
 
@@ -71,6 +71,93 @@ public class Frustum {
 
         // the frustum should not be altered after creation
         this.planesMap = Collections.unmodifiableMap(temp);
+
+        // FIXME: checkout
+        //  https://math.stackexchange.com/questions/3114932/determine-direction-of-normal-vector-of-convex-polyhedron-in-3d
+        if (!allNormalsPointInside()) {
+            throw new IllegalArgumentException("All plane normals must point inside the frustum!");
+        }
+    }
+
+    /**
+     * Checks if all plane normals point inside the frustum. This is a necessary condition for this frustum
+     * implementation
+     *
+     * @return true when all plane normals point inside the frustum, false otherwise
+     */
+    private boolean allNormalsPointInside() {
+        // FIXME: just an idea, doesn't work when frustum is looing in any other direction than x
+        // front and back
+        Vector3D pointOnFront = planesMap.get(FrustumSides.FRONT).getOrigin();
+        Vector3D pointOnBack = planesMap.get(FrustumSides.BOTTOM).getOrigin();
+
+        // left and right
+        Vector3D pointOnLeft = planesMap.get(FrustumSides.LEFT).getOrigin();
+        Vector3D pointOnRight = planesMap.get(FrustumSides.RIGHT).getOrigin();
+
+        // top and bottom
+        Vector3D pointOnTop = planesMap.get(FrustumSides.TOP).getOrigin();
+        Vector3D pointOnBottom = planesMap.get(FrustumSides.BOTTOM).getOrigin();
+
+        // the middle of the frustum (does not need to be 100% accurate)
+        Vector3D pointMiddleOfFrustum = new Vector3D(
+                (pointOnFront.getX() + pointOnBack.getX()) / 2,
+                (pointOnLeft.getY() + pointOnRight.getY()) / 2,
+                (pointOnBottom.getZ() + pointOnTop.getZ()) / 2
+        );
+
+        // pointMiddleOfFrustum should be in front of all planes, otherwise there is at least one plane normal that
+        // is not pointing inside the frustum
+        for (Plane plane : planesMap.values()) {
+            if (plane.getNormal().dotProduct(pointMiddleOfFrustum) + plane.getOffset(worldOrigin) < 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean allNormalsPointInwards() {
+        // FIXME: just an idea
+        for (int i = 0; i < 6; i++) {
+            // the opposite plane is one index ahead: 0=front, 1=back, 2=left, 3=right; ...
+            Plane firstPlane = planesMap.get(FrustumSides.values()[i]);
+            Plane oppositePlane = planesMap.get(FrustumSides.values()[i + 1]);
+
+            Vector3D normalFirstPlane = firstPlane.getNormal();
+            Vector3D normalOppositePlane = oppositePlane.getNormal();
+            double dotProduct = normalFirstPlane.dotProduct(normalOppositePlane);
+
+            // planes are parallel
+            if (dotProduct == 0) {
+                Vector3D originFirstPlane = firstPlane.getOrigin();
+                Vector3D originOppositePlane = oppositePlane.getOrigin();
+                double dFirstPlane = firstPlane.getOffset(worldOrigin);
+                double dOppositePlane = oppositePlane.getOffset(worldOrigin);
+
+                if (normalFirstPlane.dotProduct(originOppositePlane) + dFirstPlane < 0 ||
+                        normalOppositePlane.dotProduct(originFirstPlane) + dOppositePlane < 0) {
+                    // one or both planes are behind the other => one or both normals point outside the frustum
+                    return false;
+                }
+            }
+            i++;
+        }
+        // if parallel:
+        //      check if origin of each plane is in front of the other plane
+        // if not parallel:
+        //      c
+        return true;
+    }
+
+    private Vector3D centerBetweenPlanes(Plane planeA, Plane planeB) {
+        Vector3D originA = planeA.getOrigin();
+        Vector3D originB = planeB.getOrigin();
+
+        return new Vector3D(
+                (originA.getX() + originB.getX()) / 2,
+                (originA.getY() + originB.getY()) / 2,
+                (originA.getZ() + originB.getZ()) / 2
+        );
     }
 
     /**
