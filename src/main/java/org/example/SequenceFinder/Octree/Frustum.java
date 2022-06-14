@@ -1,5 +1,6 @@
 package org.example.SequenceFinder.Octree;
 
+import org.apache.commons.math3.geometry.euclidean.threed.Line;
 import org.apache.commons.math3.geometry.euclidean.threed.Plane;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.example.SequenceFinder.GeometricObjects.Box;
@@ -72,8 +73,6 @@ public class Frustum {
         // the frustum should not be altered after creation
         this.planesMap = Collections.unmodifiableMap(temp);
 
-        // FIXME: checkout
-        //  https://math.stackexchange.com/questions/3114932/determine-direction-of-normal-vector-of-convex-polyhedron-in-3d
         if (!allNormalsPointInside()) {
             throw new IllegalArgumentException("All plane normals must point inside the frustum!");
         }
@@ -86,84 +85,46 @@ public class Frustum {
      * @return true when all plane normals point inside the frustum, false otherwise
      */
     private boolean allNormalsPointInside() {
-        // FIXME: just an idea, doesn't work when frustum is looing in any other direction than x
-        // front and back
-        Vector3D pointOnFront = planesMap.get(FrustumSides.FRONT).getOrigin();
-        Vector3D pointOnBack = planesMap.get(FrustumSides.BOTTOM).getOrigin();
+        /*
+        The frustum is a convex polyhedron. All the Frustum's vertices not on a plane will lie on the inward side.
+        So if vertex V lies on the plane in question and vertex W does not lie on the plane, then the vector from W
+        to V will point in the general direction of the interior (not necessarily normal to the plane).
+        If n is the normal vector of the plane, then using the dot product can determine whether the normal is
+        pointing inwards or outside the Frustum:
+         - n * (V - W) > 0  =>  n and (V - W) point to the same side of the plane, towards the inside of the polyhedron
+         - n * (V - W) < 0  =>  n and (V - W) point to opposite side of the plane, therefore n is pointing outside
 
-        // left and right
-        Vector3D pointOnLeft = planesMap.get(FrustumSides.LEFT).getOrigin();
-        Vector3D pointOnRight = planesMap.get(FrustumSides.RIGHT).getOrigin();
+        https://math.stackexchange.com/questions/3114932/determine-direction-of-normal-vector-of-convex-polyhedron-in-3d
+         */
 
-        // top and bottom
-        Vector3D pointOnTop = planesMap.get(FrustumSides.TOP).getOrigin();
-        Vector3D pointOnBottom = planesMap.get(FrustumSides.BOTTOM).getOrigin();
+        // calculate the vertices
+        Line upperFront = planesMap.get(FrustumSides.FRONT).intersection(planesMap.get(FrustumSides.TOP));
+        Line lowerFront = planesMap.get(FrustumSides.FRONT).intersection(planesMap.get(FrustumSides.BOTTOM));
+        Line upperBack = planesMap.get(FrustumSides.BACK).intersection(planesMap.get(FrustumSides.TOP));
+        Line lowerBack = planesMap.get(FrustumSides.BACK).intersection(planesMap.get(FrustumSides.BOTTOM));
 
-        // the middle of the frustum (does not need to be 100% accurate)
-        Vector3D pointMiddleOfFrustum = new Vector3D(
-                (pointOnFront.getX() + pointOnBack.getX()) / 2,
-                (pointOnLeft.getY() + pointOnRight.getY()) / 2,
-                (pointOnBottom.getZ() + pointOnTop.getZ()) / 2
-        );
+        Vector3D frontLowerLeft = planesMap.get(FrustumSides.LEFT).intersection(lowerFront);
+        Vector3D frontLowerRight = planesMap.get(FrustumSides.RIGHT).intersection(lowerFront);
+        Vector3D frontUpperLeft = planesMap.get(FrustumSides.LEFT).intersection(upperFront);
+        Vector3D frontUpperRight = planesMap.get(FrustumSides.RIGHT).intersection(upperFront);
+        Vector3D backLowerLeft = planesMap.get(FrustumSides.LEFT).intersection(lowerBack);
+        Vector3D backLowerRight = planesMap.get(FrustumSides.RIGHT).intersection(lowerBack);
+        Vector3D backUpperLeft = planesMap.get(FrustumSides.LEFT).intersection(upperBack);
+        Vector3D backUpperRight = planesMap.get(FrustumSides.RIGHT).intersection(upperBack);
 
-        // pointMiddleOfFrustum should be in front of all planes, otherwise there is at least one plane normal that
-        // is not pointing inside the frustum
-        for (Plane plane : planesMap.values()) {
-            if (plane.getNormal().dotProduct(pointMiddleOfFrustum) + plane.getOffset(worldOrigin) < 0) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private boolean allNormalsPointInwards() {
-        // FIXME: just an idea
-        for (int i = 0; i < 6; i++) {
-            // the opposite plane is one index ahead: 0=front, 1=back, 2=left, 3=right; ...
-            Plane firstPlane = planesMap.get(FrustumSides.values()[i]);
-            Plane oppositePlane = planesMap.get(FrustumSides.values()[i + 1]);
-
-            Vector3D normalFirstPlane = firstPlane.getNormal();
-            Vector3D normalOppositePlane = oppositePlane.getNormal();
-            double dotProduct = normalFirstPlane.dotProduct(normalOppositePlane);
-
-            // planes are parallel
-            if (dotProduct == 0) {
-                Vector3D originFirstPlane = firstPlane.getOrigin();
-                Vector3D originOppositePlane = oppositePlane.getOrigin();
-                double dFirstPlane = firstPlane.getOffset(worldOrigin);
-                double dOppositePlane = oppositePlane.getOffset(worldOrigin);
-
-                if (normalFirstPlane.dotProduct(originOppositePlane) + dFirstPlane < 0 ||
-                        normalOppositePlane.dotProduct(originFirstPlane) + dOppositePlane < 0) {
-                    // one or both planes are behind the other => one or both normals point outside the frustum
-                    return false;
-                }
-            }
-            i++;
-        }
-        // if parallel:
-        //      check if origin of each plane is in front of the other plane
-        // if not parallel:
-        //      c
-        return true;
-    }
-
-    private Vector3D centerBetweenPlanes(Plane planeA, Plane planeB) {
-        Vector3D originA = planeA.getOrigin();
-        Vector3D originB = planeB.getOrigin();
-
-        return new Vector3D(
-                (originA.getX() + originB.getX()) / 2,
-                (originA.getY() + originB.getY()) / 2,
-                (originA.getZ() + originB.getZ()) / 2
-        );
+        // check the normals        n * (V - W)
+        return planesMap.get(FrustumSides.FRONT).getNormal().dotProduct(backLowerLeft.subtract(frontLowerLeft)) > 0 &&
+                planesMap.get(FrustumSides.BACK).getNormal().dotProduct(frontLowerLeft.subtract(backLowerLeft)) > 0 &&
+                planesMap.get(FrustumSides.LEFT).getNormal().dotProduct(backLowerRight.subtract(backLowerLeft)) > 0 &&
+                planesMap.get(FrustumSides.RIGHT).getNormal().dotProduct(backLowerLeft.subtract(backLowerRight)) > 0 &&
+                planesMap.get(FrustumSides.TOP).getNormal().dotProduct(backLowerLeft.subtract(backUpperLeft)) > 0 &&
+                planesMap.get(FrustumSides.BOTTOM).getNormal().dotProduct(backUpperLeft.subtract(frontLowerLeft)) > 0;
     }
 
     /**
      * Calculate the {@linkplain Visibility} of the given box with this view frustum <br>
      * <br>
-     * Based on <i>Ned Greene</i>'s algorithm in chapter 'Box-Plane and Rectangle-Line Intersection' of his puplication
+     * Based on <i>Ned Greene</i>'s algorithm in chapter 'Box-Plane and Rectangle-Line Intersection' of his publication
      * <i>Detecting Intersection of a Rectangular Solid and a Convex Polyhedron</i>, published in
      * <i>Graphics Gems (1994) by Paul S. Heckbert</i>.
      *
