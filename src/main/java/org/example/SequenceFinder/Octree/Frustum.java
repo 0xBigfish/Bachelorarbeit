@@ -16,7 +16,7 @@ import java.util.Map;
  * Describes the view frustum. It is used to identify objects that lay in front or above another object in the octree.
  * <br>
  * <br>
- * A box shaped view frustum is created which looks to the {@link org.example.SequenceFinder.OperatingDirection},
+ * A view frustum is created which looks to the {@linkplain org.example.SequenceFinder.OperatingDirection},
  * any objects that fully or partially lay within an objects view frustum must be removed before the object itself can
  * be removed. <br>
  * <br>
@@ -44,7 +44,7 @@ public class Frustum {
      * Describes the view frustum. It is used to identify objects that lay in front or above another object in the
      * octree. <br>
      * <br>
-     * A box shaped view frustum is created which looks to the {@link org.example.SequenceFinder.OperatingDirection},
+     * A view frustum is created which looks to the {@link org.example.SequenceFinder.OperatingDirection},
      * any objects that fully or partially lay within an objects view frustum must be removed before the object
      * itself can be removed. <br>
      * <br>
@@ -87,12 +87,12 @@ public class Frustum {
     private boolean allNormalsPointInside() {
         /*
         The frustum is a convex polyhedron. All the Frustum's vertices not on a plane will lie on the inward side.
-        So if vertex V lies on the plane in question and vertex W does not lie on the plane, then the vector from W
-        to V will point in the general direction of the interior (not necessarily normal to the plane).
+        So if vertex V lies on the plane in question and vertex W does not lie on the plane, then the vector from V
+        to W will point in the general direction of the interior (not necessarily normal to the plane).
         If n is the normal vector of the plane, then using the dot product can determine whether the normal is
         pointing inwards or outside the Frustum:
-         - n * (V - W) > 0  =>  n and (V - W) point to the same side of the plane, towards the inside of the polyhedron
-         - n * (V - W) < 0  =>  n and (V - W) point to opposite side of the plane, therefore n is pointing outside
+         - n * (W - V) > 0  =>  n and (W - V) point to the same side of the plane, towards the inside of the polyhedron
+         - n * (W - V) < 0  =>  n and (W - V) point to opposite side of the plane, therefore n is pointing outside
 
         https://math.stackexchange.com/questions/3114932/determine-direction-of-normal-vector-of-convex-polyhedron-in-3d
          */
@@ -112,7 +112,7 @@ public class Frustum {
         Vector3D backUpperLeft = planesMap.get(FrustumSides.LEFT).intersection(upperBack);
         Vector3D backUpperRight = planesMap.get(FrustumSides.RIGHT).intersection(upperBack);
 
-        // check the normals        n * (V - W)
+        // check the normals        n * (W - V)
         return planesMap.get(FrustumSides.FRONT).getNormal().dotProduct(backLowerLeft.subtract(frontLowerLeft)) > 0 &&
                 planesMap.get(FrustumSides.BACK).getNormal().dotProduct(frontLowerLeft.subtract(backLowerLeft)) > 0 &&
                 planesMap.get(FrustumSides.LEFT).getNormal().dotProduct(backLowerRight.subtract(backLowerLeft)) > 0 &&
