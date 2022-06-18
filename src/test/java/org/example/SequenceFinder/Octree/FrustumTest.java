@@ -846,19 +846,23 @@ class FrustumTest {
 
 
         @Nested
-        @DisplayName("given a rectangular shaped frustum looking in X-direction")
-        class GivenRectangularFrustumXDir {
+        @DisplayName("Frusta looking in X-Dir")
+        class XDirection {
 
             @Nested
-            @DisplayName("normal of the top plane points outwards")
-            class TopOutwards {
+            @DisplayName("given a rectangular shaped frustum looking in X-direction")
+            class GivenRectangularFrustum {
 
+                /**
+                 * Set up the frustum correctly with all normals pointing inside. The plane values are overwritten to
+                 * error values in the corresponding sub-classes
+                 * values
+                 */
                 @BeforeEach
                 void setup() {
-
+                    // correctly instantiated Frustum with all normals pointing inwards
                     // new Plane(Point, normalVector, tolerance)
-                    // normal of the top plane points outwards
-                    top = new Plane(new Vector3D(0, 0, 3), new Vector3D(0, 0, 1), TOLERANCE);
+                    top = new Plane(new Vector3D(0, 0, 3), new Vector3D(0, 0, -1), TOLERANCE);
                     bottom = new Plane(new Vector3D(0, 0, 0.5), new Vector3D(0, 0, 1), TOLERANCE);
 
                     // left and right plane are parallel
@@ -869,162 +873,833 @@ class FrustumTest {
                     back = new Plane(new Vector3D(0, 0, 0), new Vector3D(1, 0, 0), TOLERANCE);
                 }
 
-                @Test
-                @DisplayName("then an IllegalArgumentException should be thrown")
-                void illegalArgument() {
-                    assertThrows(IllegalArgumentException.class,
-                            () -> new Frustum(front, back, left, right, top, bottom));
+                @Nested
+                @DisplayName("normal of the top plane points outwards")
+                class TopOutwards {
+
+                    @BeforeEach
+                    void setup() {
+                        // normal of the top plane points outwards
+                        top = new Plane(new Vector3D(0, 0, 3), new Vector3D(0, 0, 1), TOLERANCE);
+                    }
+
+                    @Test
+                    @DisplayName("then an IllegalArgumentException should be thrown")
+                    void illegalArgument() {
+                        assertThrows(IllegalArgumentException.class,
+                                () -> new Frustum(front, back, left, right, top, bottom));
+                    }
+                }
+
+
+                @Nested
+                @DisplayName("normal of the bottom plane points outwards")
+                class BottomOutwards {
+
+                    @BeforeEach
+                    void setup() {
+                        // normal of the bottom plane points outwards
+                        bottom = new Plane(new Vector3D(0, 0, 0.5), new Vector3D(0, 0, -1), TOLERANCE);
+                    }
+
+                    @Test
+                    @DisplayName("then an IllegalArgumentException should be thrown")
+                    void illegalArgument() {
+                        assertThrows(IllegalArgumentException.class,
+                                () -> new Frustum(front, back, left, right, top, bottom));
+                    }
+                }
+
+
+                @Nested
+                @DisplayName("normal of the left plane points outwards")
+                class LeftOutwards {
+
+                    @BeforeEach
+                    void setup() {
+                        // left and right plane are parallel
+                        // normal of the left plane points outwards
+                        left = new Plane(new Vector3D(0, 2, 0), new Vector3D(0, 1, 0), TOLERANCE);
+                    }
+
+                    @Test
+                    @DisplayName("then an IllegalArgumentException should be thrown")
+                    void illegalArgument() {
+                        assertThrows(IllegalArgumentException.class,
+                                () -> new Frustum(front, back, left, right, top, bottom));
+                    }
+                }
+
+
+                @Nested
+                @DisplayName("normal of the right plane points outwards")
+                class RightOutwards {
+
+                    @BeforeEach
+                    void setup() {
+                        // left and right plane are parallel
+                        // normal of the right plane points outwards
+                        right = new Plane(new Vector3D(0, -2, 0), new Vector3D(0, -1, 0), TOLERANCE);
+                    }
+
+                    @Test
+                    @DisplayName("then an IllegalArgumentException should be thrown")
+                    void illegalArgument() {
+                        assertThrows(IllegalArgumentException.class,
+                                () -> new Frustum(front, back, left, right, top, bottom));
+                    }
+                }
+
+
+                @Nested
+                @DisplayName("normal of the front plane points outwards")
+                class FrontOutwards {
+
+                    @BeforeEach
+                    void setup() {
+                        // normal of the front plane points outwards
+                        front = new Plane(new Vector3D(4, 0, 0), new Vector3D(1, 0, 0), TOLERANCE);
+                    }
+
+                    @Test
+                    @DisplayName("then an IllegalArgumentException should be thrown")
+                    void illegalArgument() {
+                        assertThrows(IllegalArgumentException.class,
+                                () -> new Frustum(front, back, left, right, top, bottom));
+                    }
+                }
+
+
+                @Nested
+                @DisplayName("normal of the back plane points outwards")
+                class BackOutwards {
+
+                    @BeforeEach
+                    void setup() {
+                        // normal of the back plane points outwards
+                        back = new Plane(new Vector3D(0, 0, 0), new Vector3D(-1, 0, 0), TOLERANCE);
+                    }
+
+                    @Test
+                    @DisplayName("then an IllegalArgumentException should be thrown")
+                    void illegalArgument() {
+                        assertThrows(IllegalArgumentException.class,
+                                () -> new Frustum(front, back, left, right, top, bottom));
+                    }
                 }
             }
 
 
             @Nested
-            @DisplayName("normal of the bottom plane points outwards")
-            class BottomOutwards {
+            @DisplayName("given a 90 degree Frustum looking in X-direction")
+            class GivenFrustum {
 
+                /**
+                 * Set up the frustum correctly with all normals pointing inside. The plane values are overwritten to
+                 * error values in the corresponding sub-classes
+                 * values
+                 */
                 @BeforeEach
                 void setup() {
 
                     // new Plane(Point, normalVector, tolerance)
-                    // normal of the bottom plane points outwards
-                    top = new Plane(new Vector3D(0, 0, 3), new Vector3D(0, 0, -1), TOLERANCE);
-                    bottom = new Plane(new Vector3D(0, 0, 0.5), new Vector3D(0, 0, -1), TOLERANCE);
+                    top = new Plane(new Vector3D(0, 0, 2), new Vector3D(0, 0, -1), TOLERANCE);
+                    bottom = new Plane(new Vector3D(0, 0, -1), new Vector3D(0, 0, 1), TOLERANCE);
 
-                    // left and right plane are parallel
-                    left = new Plane(new Vector3D(0, 2, 0), new Vector3D(0, -1, 0), TOLERANCE);
-                    right = new Plane(new Vector3D(0, -2, 0), new Vector3D(0, 1, 0), TOLERANCE);
+                    // 45° angle
+                    left = new Plane(new Vector3D(0, 2, 0), new Vector3D(1, -1, 0), TOLERANCE);
+                    // 45° angle
+                    right = new Plane(new Vector3D(0, -2, 0), new Vector3D(1, 1, 0), TOLERANCE);
 
-                    front = new Plane(new Vector3D(4, 0, 0), new Vector3D(-1, 0, 0), TOLERANCE);
+                    front = new Plane(new Vector3D(10, 0, 0), new Vector3D(-1, 0, 0), TOLERANCE);
                     back = new Plane(new Vector3D(0, 0, 0), new Vector3D(1, 0, 0), TOLERANCE);
                 }
 
-                @Test
-                @DisplayName("then an IllegalArgumentException should be thrown")
-                void illegalArgument() {
-                    assertThrows(IllegalArgumentException.class,
-                            () -> new Frustum(front, back, left, right, top, bottom));
+
+                @Nested
+                @DisplayName("normal of the top plane points outwards")
+                class TopOutwards {
+
+                    @BeforeEach
+                    void setup() {
+                        // normal of the top plane points outwards
+                        top = new Plane(new Vector3D(0, 0, 2), new Vector3D(0, 0, 1), TOLERANCE);
+                    }
+
+                    @Test
+                    @DisplayName("then an IllegalArgumentException should be thrown")
+                    void illegalArgument() {
+                        assertThrows(IllegalArgumentException.class,
+                                () -> new Frustum(front, back, left, right, top, bottom));
+                    }
+                }
+
+
+                @Nested
+                @DisplayName("normal of the bottom plane points outwards")
+                class BottomOutwards {
+
+                    @BeforeEach
+                    void setup() {
+                        // normal of the bottom plane points outwards
+                        bottom = new Plane(new Vector3D(0, 0, -1), new Vector3D(0, 0, -1), TOLERANCE);
+                    }
+
+                    @Test
+                    @DisplayName("then an IllegalArgumentException should be thrown")
+                    void illegalArgument() {
+                        assertThrows(IllegalArgumentException.class,
+                                () -> new Frustum(front, back, left, right, top, bottom));
+                    }
+                }
+
+
+                @Nested
+                @DisplayName("normal of the left plane points outwards")
+                class LeftOutwards {
+
+                    @BeforeEach
+                    void setup() {
+                        // left and right plane are parallel
+                        // normal of the left plane points outwards
+                        left = new Plane(new Vector3D(0, 2, 0), new Vector3D(1, 1, 0), TOLERANCE);
+                    }
+
+                    @Test
+                    @DisplayName("then an IllegalArgumentException should be thrown")
+                    void illegalArgument() {
+                        assertThrows(IllegalArgumentException.class,
+                                () -> new Frustum(front, back, left, right, top, bottom));
+                    }
+                }
+
+
+                @Nested
+                @DisplayName("normal of the right plane points outwards")
+                class RightOutwards {
+
+                    @BeforeEach
+                    void setup() {
+                        // left and right plane are parallel
+                        // normal of the right plane points outwards
+                        right = new Plane(new Vector3D(0, -2, 0), new Vector3D(1, -1, 0), TOLERANCE);
+                    }
+
+                    @Test
+                    @DisplayName("then an IllegalArgumentException should be thrown")
+                    void illegalArgument() {
+                        assertThrows(IllegalArgumentException.class,
+                                () -> new Frustum(front, back, left, right, top, bottom));
+                    }
+                }
+
+
+                @Nested
+                @DisplayName("normal of the front plane points outwards")
+                class FrontOutwards {
+
+                    @BeforeEach
+                    void setup() {
+                        // normal of the front plane points outwards
+                        front = new Plane(new Vector3D(10, 0, 0), new Vector3D(1, 0, 0), TOLERANCE);
+                    }
+
+                    @Test
+                    @DisplayName("then an IllegalArgumentException should be thrown")
+                    void illegalArgument() {
+                        assertThrows(IllegalArgumentException.class,
+                                () -> new Frustum(front, back, left, right, top, bottom));
+                    }
+                }
+
+
+                @Nested
+                @DisplayName("normal of the back plane points outwards")
+                class BackOutwards {
+
+                    @BeforeEach
+                    void setup() {
+                        // normal of the back plane points outwards
+                        back = new Plane(new Vector3D(0, 0, 0), new Vector3D(-1, 0, 0), TOLERANCE);
+                    }
+
+                    @Test
+                    @DisplayName("then an IllegalArgumentException should be thrown")
+                    void illegalArgument() {
+                        assertThrows(IllegalArgumentException.class,
+                                () -> new Frustum(front, back, left, right, top, bottom));
+                    }
                 }
             }
+        }
 
+
+        @Nested
+        @DisplayName("Frusta looking in Y-direction")
+        class YDirection {
 
             @Nested
-            @DisplayName("normal of the left plane points outwards")
-            class LeftOutwards {
+            @DisplayName("given a rectangular shaped frustum")
+            class GivenRectangularFrustum {
 
+                /**
+                 * Set up the frustum correctly with all normals pointing inside. The plane values are overwritten to
+                 * error values in the corresponding sub-classes
+                 */
                 @BeforeEach
                 void setup() {
-
                     // new Plane(Point, normalVector, tolerance)
                     top = new Plane(new Vector3D(0, 0, 3), new Vector3D(0, 0, -1), TOLERANCE);
                     bottom = new Plane(new Vector3D(0, 0, 0.5), new Vector3D(0, 0, 1), TOLERANCE);
 
                     // left and right plane are parallel
-                    // normal of the left plane points outwards
-                    left = new Plane(new Vector3D(0, 2, 0), new Vector3D(0, 1, 0), TOLERANCE);
-                    right = new Plane(new Vector3D(0, -2, 0), new Vector3D(0, 1, 0), TOLERANCE);
+                    left = new Plane(new Vector3D(2, 0, 0), new Vector3D(-1, 0, 0), TOLERANCE);
+                    right = new Plane(new Vector3D(-2, 0, 0), new Vector3D(1, 0, 0), TOLERANCE);
 
-                    front = new Plane(new Vector3D(4, 0, 0), new Vector3D(-1, 0, 0), TOLERANCE);
-                    back = new Plane(new Vector3D(0, 0, 0), new Vector3D(1, 0, 0), TOLERANCE);
+                    front = new Plane(new Vector3D(0, 4, 0), new Vector3D(0, -1, 0), TOLERANCE);
+                    back = new Plane(new Vector3D(0, 0, 0), new Vector3D(0, 1, 0), TOLERANCE);
                 }
 
-                @Test
-                @DisplayName("then an IllegalArgumentException should be thrown")
-                void illegalArgument() {
-                    assertThrows(IllegalArgumentException.class,
-                            () -> new Frustum(front, back, left, right, top, bottom));
+                @Nested
+                @DisplayName("normal of the top plane points outwards")
+                class TopOutwards {
+
+                    @BeforeEach
+                    void setup() {
+                        // normal of the top plane points outwards
+                        top = new Plane(new Vector3D(0, 0, 3), new Vector3D(0, 0, 1), TOLERANCE);
+                    }
+
+                    @Test
+                    @DisplayName("then an IllegalArgumentException should be thrown")
+                    void illegalArgument() {
+                        assertThrows(IllegalArgumentException.class,
+                                () -> new Frustum(front, back, left, right, top, bottom));
+                    }
+                }
+
+
+                @Nested
+                @DisplayName("normal of the bottom plane points outwards")
+                class BottomOutwards {
+
+                    @BeforeEach
+                    void setup() {
+                        // normal of the bottom plane points outwards
+                        bottom = new Plane(new Vector3D(0, 0, 0.5), new Vector3D(0, 0, -1), TOLERANCE);
+                    }
+
+                    @Test
+                    @DisplayName("then an IllegalArgumentException should be thrown")
+                    void illegalArgument() {
+                        assertThrows(IllegalArgumentException.class,
+                                () -> new Frustum(front, back, left, right, top, bottom));
+                    }
+                }
+
+
+                @Nested
+                @DisplayName("normal of the left plane points outwards")
+                class LeftOutwards {
+
+                    @BeforeEach
+                    void setup() {
+                        // normal of the left plane points outwards
+                        left = new Plane(new Vector3D(2, 0, 0), new Vector3D(1, 0, 0), TOLERANCE);
+                    }
+
+                    @Test
+                    @DisplayName("then an IllegalArgumentException should be thrown")
+                    void illegalArgument() {
+                        assertThrows(IllegalArgumentException.class,
+                                () -> new Frustum(front, back, left, right, top, bottom));
+                    }
+                }
+
+
+                @Nested
+                @DisplayName("normal of the right plane points outwards")
+                class RightOutwards {
+
+                    @BeforeEach
+                    void setup() {
+                        // normal of the right plane points outwards
+                        right = new Plane(new Vector3D(-2, 0, 0), new Vector3D(-1, 0, 0), TOLERANCE);
+                    }
+
+                    @Test
+                    @DisplayName("then an IllegalArgumentException should be thrown")
+                    void illegalArgument() {
+                        assertThrows(IllegalArgumentException.class,
+                                () -> new Frustum(front, back, left, right, top, bottom));
+                    }
+                }
+
+
+                @Nested
+                @DisplayName("normal of the front plane points outwards")
+                class FrontOutwards {
+
+                    @BeforeEach
+                    void setup() {
+                        // normal of the front plane points outwards
+                        front = new Plane(new Vector3D(0, 4, 0), new Vector3D(0, 1, 0), TOLERANCE);
+                    }
+
+                    @Test
+                    @DisplayName("then an IllegalArgumentException should be thrown")
+                    void illegalArgument() {
+                        assertThrows(IllegalArgumentException.class,
+                                () -> new Frustum(front, back, left, right, top, bottom));
+                    }
+                }
+
+
+                @Nested
+                @DisplayName("normal of the back plane points outwards")
+                class BackOutwards {
+
+                    @BeforeEach
+                    void setup() {
+                        // normal of the back plane points outwards
+                        back = new Plane(new Vector3D(0, 0, 0), new Vector3D(0, -1, 0), TOLERANCE);
+                    }
+
+                    @Test
+                    @DisplayName("then an IllegalArgumentException should be thrown")
+                    void illegalArgument() {
+                        assertThrows(IllegalArgumentException.class,
+                                () -> new Frustum(front, back, left, right, top, bottom));
+                    }
                 }
             }
 
 
             @Nested
-            @DisplayName("normal of the right plane points outwards")
-            class RightOutwards {
+            @DisplayName("given a 90 degree Frustum looking in X-direction")
+            class GivenFrustum {
 
+                /**
+                 * Set up the frustum correctly with all normals pointing inside. The plane values are overwritten to
+                 * error values in the corresponding sub-classes
+                 */
                 @BeforeEach
                 void setup() {
 
                     // new Plane(Point, normalVector, tolerance)
-                    top = new Plane(new Vector3D(0, 0, 3), new Vector3D(0, 0, -1), TOLERANCE);
-                    bottom = new Plane(new Vector3D(0, 0, 0.5), new Vector3D(0, 0, 1), TOLERANCE);
+                    top = new Plane(new Vector3D(0, 0, 2), new Vector3D(0, 0, -1), TOLERANCE);
+                    bottom = new Plane(new Vector3D(0, 0, -1), new Vector3D(0, 0, 1), TOLERANCE);
 
-                    // left and right plane are parallel
-                    // normal of the right plane points outwards
-                    left = new Plane(new Vector3D(0, 2, 0), new Vector3D(0, -1, 0), TOLERANCE);
-                    right = new Plane(new Vector3D(0, -2, 0), new Vector3D(0, -1, 0), TOLERANCE);
+                    // 45° angle
+                    left = new Plane(new Vector3D(-2, 0, 0), new Vector3D(1, 1, 0), TOLERANCE);
+                    // 45° angle
+                    right = new Plane(new Vector3D(2, 0, 0), new Vector3D(-1, 1, 0), TOLERANCE);
 
-                    front = new Plane(new Vector3D(4, 0, 0), new Vector3D(-1, 0, 0), TOLERANCE);
-                    back = new Plane(new Vector3D(0, 0, 0), new Vector3D(1, 0, 0), TOLERANCE);
+                    front = new Plane(new Vector3D(0, 10, 0), new Vector3D(0, -1, 0), TOLERANCE);
+                    back = new Plane(new Vector3D(0, 0, 0), new Vector3D(0, 1, 0), TOLERANCE);
                 }
 
-                @Test
-                @DisplayName("then an IllegalArgumentException should be thrown")
-                void illegalArgument() {
-                    assertThrows(IllegalArgumentException.class,
-                            () -> new Frustum(front, back, left, right, top, bottom));
+
+                @Nested
+                @DisplayName("normal of the top plane points outwards")
+                class TopOutwards {
+
+                    @BeforeEach
+                    void setup() {
+                        // normal of the top plane points outwards
+                        top = new Plane(new Vector3D(0, 0, 2), new Vector3D(0, 0, 1), TOLERANCE);
+                    }
+
+                    @Test
+                    @DisplayName("then an IllegalArgumentException should be thrown")
+                    void illegalArgument() {
+                        assertThrows(IllegalArgumentException.class,
+                                () -> new Frustum(front, back, left, right, top, bottom));
+                    }
+                }
+
+
+                @Nested
+                @DisplayName("normal of the bottom plane points outwards")
+                class BottomOutwards {
+
+                    @BeforeEach
+                    void setup() {
+                        // normal of the bottom plane points outwards
+                        bottom = new Plane(new Vector3D(0, 0, -1), new Vector3D(0, 0, -1), TOLERANCE);
+                    }
+
+                    @Test
+                    @DisplayName("then an IllegalArgumentException should be thrown")
+                    void illegalArgument() {
+                        assertThrows(IllegalArgumentException.class,
+                                () -> new Frustum(front, back, left, right, top, bottom));
+                    }
+                }
+
+
+                @Nested
+                @DisplayName("normal of the left plane points outwards")
+                class LeftOutwards {
+
+                    @BeforeEach
+                    void setup() {
+                        // left and right plane are parallel
+                        // normal of the left plane points outwards
+                        left = new Plane(new Vector3D(-2, 0, 0), new Vector3D(-1, -1, 0), TOLERANCE);
+                    }
+
+                    @Test
+                    @DisplayName("then an IllegalArgumentException should be thrown")
+                    void illegalArgument() {
+                        assertThrows(IllegalArgumentException.class,
+                                () -> new Frustum(front, back, left, right, top, bottom));
+                    }
+                }
+
+
+                @Nested
+                @DisplayName("normal of the right plane points outwards")
+                class RightOutwards {
+
+                    @BeforeEach
+                    void setup() {
+                        // left and right plane are parallel
+                        // normal of the right plane points outwards
+                        right = new Plane(new Vector3D(2, 0, 0), new Vector3D(1, -1, 0), TOLERANCE);
+                    }
+
+                    @Test
+                    @DisplayName("then an IllegalArgumentException should be thrown")
+                    void illegalArgument() {
+                        assertThrows(IllegalArgumentException.class,
+                                () -> new Frustum(front, back, left, right, top, bottom));
+                    }
+                }
+
+
+                @Nested
+                @DisplayName("normal of the front plane points outwards")
+                class FrontOutwards {
+
+                    @BeforeEach
+                    void setup() {
+                        // normal of the front plane points outwards
+                        front = new Plane(new Vector3D(0, 10, 0), new Vector3D(0, 1, 0), TOLERANCE);
+                    }
+
+                    @Test
+                    @DisplayName("then an IllegalArgumentException should be thrown")
+                    void illegalArgument() {
+                        assertThrows(IllegalArgumentException.class,
+                                () -> new Frustum(front, back, left, right, top, bottom));
+                    }
+                }
+
+
+                @Nested
+                @DisplayName("normal of the back plane points outwards")
+                class BackOutwards {
+
+                    @BeforeEach
+                    void setup() {
+                        // normal of the back plane points outwards
+                        back = new Plane(new Vector3D(0, 0, 0), new Vector3D(0, -1, 0), TOLERANCE);
+                    }
+
+                    @Test
+                    @DisplayName("then an IllegalArgumentException should be thrown")
+                    void illegalArgument() {
+                        assertThrows(IllegalArgumentException.class,
+                                () -> new Frustum(front, back, left, right, top, bottom));
+                    }
+                }
+            }
+        }
+
+
+        @Nested
+        @DisplayName("Frusta looking in Z-direction")
+        class ZDirection {
+
+            @Nested
+            @DisplayName("given a rectangular shaped frustum")
+            class GivenRectangularFrustum {
+
+                /**
+                 * Set up the frustum correctly with all normals pointing inside. The plane values are overwritten to
+                 * error values in the corresponding sub-classes
+                 */
+                @BeforeEach
+                void setup() {
+                    // new Plane(Point, normalVector, tolerance)
+                    top = new Plane(new Vector3D(0, 3, 0), new Vector3D(0, -1, 0), TOLERANCE);
+                    bottom = new Plane(new Vector3D(0, 0.5, 0), new Vector3D(0, 1, 0), TOLERANCE);
+
+                    // left and right plane are parallel
+                    left = new Plane(new Vector3D(2, 0, 0), new Vector3D(-1, 0, 0), TOLERANCE);
+                    right = new Plane(new Vector3D(-2, 0, 0), new Vector3D(1, 0, 0), TOLERANCE);
+
+                    front = new Plane(new Vector3D(0, 0, 4), new Vector3D(0, 0, -1), TOLERANCE);
+                    back = new Plane(new Vector3D(0, 0, 0), new Vector3D(0, 0, 1), TOLERANCE);
+                }
+
+                @Nested
+                @DisplayName("normal of the top plane points outwards")
+                class TopOutwards {
+
+                    @BeforeEach
+                    void setup() {
+                        // normal of the top plane points outwards
+                        top = new Plane(new Vector3D(0, 3, 0), new Vector3D(0, 1, 0), TOLERANCE);
+                    }
+
+                    @Test
+                    @DisplayName("then an IllegalArgumentException should be thrown")
+                    void illegalArgument() {
+                        assertThrows(IllegalArgumentException.class,
+                                () -> new Frustum(front, back, left, right, top, bottom));
+                    }
+                }
+
+
+                @Nested
+                @DisplayName("normal of the bottom plane points outwards")
+                class BottomOutwards {
+
+                    @BeforeEach
+                    void setup() {
+                        // normal of the bottom plane points outwards
+                        bottom = new Plane(new Vector3D(0, 0.5, 0), new Vector3D(0, -1, 0), TOLERANCE);
+                    }
+
+                    @Test
+                    @DisplayName("then an IllegalArgumentException should be thrown")
+                    void illegalArgument() {
+                        assertThrows(IllegalArgumentException.class,
+                                () -> new Frustum(front, back, left, right, top, bottom));
+                    }
+                }
+
+
+                @Nested
+                @DisplayName("normal of the left plane points outwards")
+                class LeftOutwards {
+
+                    @BeforeEach
+                    void setup() {
+                        // normal of the left plane points outwards
+                        left = new Plane(new Vector3D(2, 0, 0), new Vector3D(1, 0, 0), TOLERANCE);
+                    }
+
+                    @Test
+                    @DisplayName("then an IllegalArgumentException should be thrown")
+                    void illegalArgument() {
+                        assertThrows(IllegalArgumentException.class,
+                                () -> new Frustum(front, back, left, right, top, bottom));
+                    }
+                }
+
+
+                @Nested
+                @DisplayName("normal of the right plane points outwards")
+                class RightOutwards {
+
+                    @BeforeEach
+                    void setup() {
+                        // normal of the right plane points outwards
+                        right = new Plane(new Vector3D(-2, 0, 0), new Vector3D(-1, 0, 0), TOLERANCE);
+                    }
+
+                    @Test
+                    @DisplayName("then an IllegalArgumentException should be thrown")
+                    void illegalArgument() {
+                        assertThrows(IllegalArgumentException.class,
+                                () -> new Frustum(front, back, left, right, top, bottom));
+                    }
+                }
+
+
+                @Nested
+                @DisplayName("normal of the front plane points outwards")
+                class FrontOutwards {
+
+                    @BeforeEach
+                    void setup() {
+                        // normal of the front plane points outwards
+                        front = new Plane(new Vector3D(0, 0, 4), new Vector3D(0, 0, 1), TOLERANCE);
+                    }
+
+                    @Test
+                    @DisplayName("then an IllegalArgumentException should be thrown")
+                    void illegalArgument() {
+                        assertThrows(IllegalArgumentException.class,
+                                () -> new Frustum(front, back, left, right, top, bottom));
+                    }
+                }
+
+
+                @Nested
+                @DisplayName("normal of the back plane points outwards")
+                class BackOutwards {
+
+                    @BeforeEach
+                    void setup() {
+                        // normal of the back plane points outwards
+                        back = new Plane(new Vector3D(0, 0, 0), new Vector3D(0, 0, -1), TOLERANCE);
+                    }
+
+                    @Test
+                    @DisplayName("then an IllegalArgumentException should be thrown")
+                    void illegalArgument() {
+                        assertThrows(IllegalArgumentException.class,
+                                () -> new Frustum(front, back, left, right, top, bottom));
+                    }
                 }
             }
 
 
             @Nested
-            @DisplayName("normal of the front plane points outwards")
-            class FrontOutwards {
+            @DisplayName("given a 90 degree Frustum looking in X-direction")
+            class GivenFrustum {
 
+                /**
+                 * Set up the frustum correctly with all normals pointing inside. The plane values are overwritten to
+                 * error values in the corresponding sub-classes
+                 */
                 @BeforeEach
                 void setup() {
-
                     // new Plane(Point, normalVector, tolerance)
-                    top = new Plane(new Vector3D(0, 0, 3), new Vector3D(0, 0, -1), TOLERANCE);
-                    bottom = new Plane(new Vector3D(0, 0, 0.5), new Vector3D(0, 0, 1), TOLERANCE);
+                    top = new Plane(new Vector3D(0, 2, 0), new Vector3D(0, -1, 0), TOLERANCE);
+                    bottom = new Plane(new Vector3D(0, -1, 0), new Vector3D(0, 1, 0), TOLERANCE);
 
-                    // left and right plane are parallel
-                    left = new Plane(new Vector3D(0, 2, 0), new Vector3D(0, -1, 0), TOLERANCE);
-                    right = new Plane(new Vector3D(0, -2, 0), new Vector3D(0, 1, 0), TOLERANCE);
+                    // 45° angle
+                    left = new Plane(new Vector3D(2, 0, 0), new Vector3D(-1, 0, 1), TOLERANCE);
+                    // 45° angle
+                    right = new Plane(new Vector3D(-2, 0, 0), new Vector3D(1, 0, 1), TOLERANCE);
 
-                    // normal of the front plane points outwards
-                    front = new Plane(new Vector3D(4, 0, 0), new Vector3D(1, 0, 0), TOLERANCE);
-                    back = new Plane(new Vector3D(0, 0, 0), new Vector3D(1, 0, 0), TOLERANCE);
+                    front = new Plane(new Vector3D(0, 0, 10), new Vector3D(0, 0, -1), TOLERANCE);
+                    back = new Plane(new Vector3D(0, 0, -3), new Vector3D(0, 0, 1), TOLERANCE);
                 }
 
-                @Test
-                @DisplayName("then an IllegalArgumentException should be thrown")
-                void illegalArgument() {
-                    assertThrows(IllegalArgumentException.class,
-                            () -> new Frustum(front, back, left, right, top, bottom));
-                }
-            }
 
+                @Nested
+                @DisplayName("normal of the top plane points outwards")
+                class TopOutwards {
 
-            @Nested
-            @DisplayName("normal of the back plane points outwards")
-            class BackOutwards {
+                    @BeforeEach
+                    void setup() {
+                        // normal of the top plane points outwards
+                        top = new Plane(new Vector3D(0, 2, 0), new Vector3D(0, 1, 0), TOLERANCE);
+                    }
 
-                @BeforeEach
-                void setup() {
-
-                    // new Plane(Point, normalVector, tolerance)
-                    top = new Plane(new Vector3D(0, 0, 3), new Vector3D(0, 0, -1), TOLERANCE);
-                    bottom = new Plane(new Vector3D(0, 0, 0.5), new Vector3D(0, 0, 1), TOLERANCE);
-
-                    // left and right plane are parallel
-                    left = new Plane(new Vector3D(0, 2, 0), new Vector3D(0, -1, 0), TOLERANCE);
-                    right = new Plane(new Vector3D(0, -2, 0), new Vector3D(0, 1, 0), TOLERANCE);
-
-                    // normal of the front plane points outwards
-                    front = new Plane(new Vector3D(4, 0, 0), new Vector3D(-1, 0, 0), TOLERANCE);
-                    back = new Plane(new Vector3D(0, 0, 0), new Vector3D(-1, 0, 0), TOLERANCE);
+                    @Test
+                    @DisplayName("then an IllegalArgumentException should be thrown")
+                    void illegalArgument() {
+                        assertThrows(IllegalArgumentException.class,
+                                () -> new Frustum(front, back, left, right, top, bottom));
+                    }
                 }
 
-                @Test
-                @DisplayName("then an IllegalArgumentException should be thrown")
-                void illegalArgument() {
-                    assertThrows(IllegalArgumentException.class,
-                            () -> new Frustum(front, back, left, right, top, bottom));
+
+                @Nested
+                @DisplayName("normal of the bottom plane points outwards")
+                class BottomOutwards {
+
+                    @BeforeEach
+                    void setup() {
+                        // normal of the bottom plane points outwards
+                        bottom = new Plane(new Vector3D(0, -1, 0), new Vector3D(0, -1, 0), TOLERANCE);
+                    }
+
+                    @Test
+                    @DisplayName("then an IllegalArgumentException should be thrown")
+                    void illegalArgument() {
+                        assertThrows(IllegalArgumentException.class,
+                                () -> new Frustum(front, back, left, right, top, bottom));
+                    }
+                }
+
+
+                @Nested
+                @DisplayName("normal of the left plane points outwards")
+                class LeftOutwards {
+
+                    @BeforeEach
+                    void setup() {
+                        // normal of the left plane points outwards
+                        left = new Plane(new Vector3D(2, 0, 0), new Vector3D(1, 0, -1), TOLERANCE);
+                    }
+
+                    @Test
+                    @DisplayName("then an IllegalArgumentException should be thrown")
+                    void illegalArgument() {
+                        assertThrows(IllegalArgumentException.class,
+                                () -> new Frustum(front, back, left, right, top, bottom));
+                    }
+                }
+
+
+                @Nested
+                @DisplayName("normal of the right plane points outwards")
+                class RightOutwards {
+
+                    @BeforeEach
+                    void setup() {
+                        // left and right plane are parallel
+                        // normal of the right plane points outwards
+                        right = new Plane(new Vector3D(2, 0, 0), new Vector3D(-1, 0, -1), TOLERANCE);
+                    }
+
+                    @Test
+                    @DisplayName("then an IllegalArgumentException should be thrown")
+                    void illegalArgument() {
+                        assertThrows(IllegalArgumentException.class,
+                                () -> new Frustum(front, back, left, right, top, bottom));
+                    }
+                }
+
+
+                @Nested
+                @DisplayName("normal of the front plane points outwards")
+                class FrontOutwards {
+
+                    @BeforeEach
+                    void setup() {
+                        // normal of the front plane points outwards
+                        front = new Plane(new Vector3D(0, 0, 10), new Vector3D(0, 0, 1), TOLERANCE);
+                    }
+
+                    @Test
+                    @DisplayName("then an IllegalArgumentException should be thrown")
+                    void illegalArgument() {
+                        assertThrows(IllegalArgumentException.class,
+                                () -> new Frustum(front, back, left, right, top, bottom));
+                    }
+                }
+
+
+                @Nested
+                @DisplayName("normal of the back plane points outwards")
+                class BackOutwards {
+
+                    @BeforeEach
+                    void setup() {
+                        // normal of the back plane points outwards
+                        back = new Plane(new Vector3D(0, 0, -3), new Vector3D(0, 0, -1), TOLERANCE);
+                    }
+
+                    @Test
+                    @DisplayName("then an IllegalArgumentException should be thrown")
+                    void illegalArgument() {
+                        assertThrows(IllegalArgumentException.class,
+                                () -> new Frustum(front, back, left, right, top, bottom));
+                    }
                 }
             }
         }
     }
 
     // TODO: look up edge case of VFCart paper and decide if it can happen in this implementation
-
 
 }
