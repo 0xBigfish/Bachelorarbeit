@@ -830,7 +830,6 @@ class FrustumTest {
     class GivenFrustumLeftRightSwitched {
 
     }
-    // TODO: more tests for top bottom switch, front back switch, front left switch, ... ?
 
 
     @Nested
@@ -855,7 +854,7 @@ class FrustumTest {
 
                 /**
                  * Set up the frustum correctly with all normals pointing inside. The plane values are overwritten to
-                 * error values in the corresponding sub-classes
+                 * error values in the corresponding subclasses
                  * values
                  */
                 @BeforeEach
@@ -996,7 +995,7 @@ class FrustumTest {
 
                 /**
                  * Set up the frustum correctly with all normals pointing inside. The plane values are overwritten to
-                 * error values in the corresponding sub-classes
+                 * error values in the corresponding subclasses
                  * values
                  */
                 @BeforeEach
@@ -1144,7 +1143,7 @@ class FrustumTest {
 
                 /**
                  * Set up the frustum correctly with all normals pointing inside. The plane values are overwritten to
-                 * error values in the corresponding sub-classes
+                 * error values in the corresponding subclasses
                  */
                 @BeforeEach
                 void setup() {
@@ -1281,7 +1280,7 @@ class FrustumTest {
 
                 /**
                  * Set up the frustum correctly with all normals pointing inside. The plane values are overwritten to
-                 * error values in the corresponding sub-classes
+                 * error values in the corresponding subclasses
                  */
                 @BeforeEach
                 void setup() {
@@ -1428,7 +1427,7 @@ class FrustumTest {
 
                 /**
                  * Set up the frustum correctly with all normals pointing inside. The plane values are overwritten to
-                 * error values in the corresponding sub-classes
+                 * error values in the corresponding subclasses
                  */
                 @BeforeEach
                 void setup() {
@@ -1565,7 +1564,7 @@ class FrustumTest {
 
                 /**
                  * Set up the frustum correctly with all normals pointing inside. The plane values are overwritten to
-                 * error values in the corresponding sub-classes
+                 * error values in the corresponding subclasses
                  */
                 @BeforeEach
                 void setup() {
@@ -1699,7 +1698,4 @@ class FrustumTest {
             }
         }
     }
-
-    // TODO: look up edge case of VFCart paper and decide if it can happen in this implementation
-
 }
