@@ -98,27 +98,54 @@ public class Frustum {
          */
 
         // calculate the vertices
-        Line upperFront = planesMap.get(FrustumSides.FRONT).intersection(planesMap.get(FrustumSides.TOP));
-        Line lowerFront = planesMap.get(FrustumSides.FRONT).intersection(planesMap.get(FrustumSides.BOTTOM));
-        Line upperBack = planesMap.get(FrustumSides.BACK).intersection(planesMap.get(FrustumSides.TOP));
-        Line lowerBack = planesMap.get(FrustumSides.BACK).intersection(planesMap.get(FrustumSides.BOTTOM));
+        Line topFront = planesMap.get(FrustumSides.FRONT).intersection(planesMap.get(FrustumSides.TOP));
+        Line bottomFront = planesMap.get(FrustumSides.FRONT).intersection(planesMap.get(FrustumSides.BOTTOM));
+        Line topBack = planesMap.get(FrustumSides.BACK).intersection(planesMap.get(FrustumSides.TOP));
+        Line bottomBack = planesMap.get(FrustumSides.BACK).intersection(planesMap.get(FrustumSides.BOTTOM));
 
-        Vector3D frontLowerLeft = planesMap.get(FrustumSides.LEFT).intersection(lowerFront);
-        Vector3D frontLowerRight = planesMap.get(FrustumSides.RIGHT).intersection(lowerFront);
-        Vector3D frontUpperLeft = planesMap.get(FrustumSides.LEFT).intersection(upperFront);
-        Vector3D frontUpperRight = planesMap.get(FrustumSides.RIGHT).intersection(upperFront);
-        Vector3D backLowerLeft = planesMap.get(FrustumSides.LEFT).intersection(lowerBack);
-        Vector3D backLowerRight = planesMap.get(FrustumSides.RIGHT).intersection(lowerBack);
-        Vector3D backUpperLeft = planesMap.get(FrustumSides.LEFT).intersection(upperBack);
-        Vector3D backUpperRight = planesMap.get(FrustumSides.RIGHT).intersection(upperBack);
+        Vector3D frontBottomLeft = planesMap.get(FrustumSides.LEFT).intersection(bottomFront);
+        Vector3D frontBottomRight = planesMap.get(FrustumSides.RIGHT).intersection(bottomFront);
+        Vector3D frontTopLeft = planesMap.get(FrustumSides.LEFT).intersection(topFront);
+        Vector3D frontTopRight = planesMap.get(FrustumSides.RIGHT).intersection(topFront);
+        Vector3D backBottomLeft = planesMap.get(FrustumSides.LEFT).intersection(bottomBack);
+        Vector3D backBottomRight = planesMap.get(FrustumSides.RIGHT).intersection(bottomBack);
+        Vector3D backTopLeft = planesMap.get(FrustumSides.LEFT).intersection(topBack);
+        Vector3D backTopRight = planesMap.get(FrustumSides.RIGHT).intersection(topBack);
 
-        // check the normals        n * (W - V)
-        return planesMap.get(FrustumSides.FRONT).getNormal().dotProduct(backLowerLeft.subtract(frontLowerLeft)) > 0 &&
-                planesMap.get(FrustumSides.BACK).getNormal().dotProduct(frontLowerLeft.subtract(backLowerLeft)) > 0 &&
-                planesMap.get(FrustumSides.LEFT).getNormal().dotProduct(backLowerRight.subtract(backLowerLeft)) > 0 &&
-                planesMap.get(FrustumSides.RIGHT).getNormal().dotProduct(backLowerLeft.subtract(backLowerRight)) > 0 &&
-                planesMap.get(FrustumSides.TOP).getNormal().dotProduct(backLowerLeft.subtract(backUpperLeft)) > 0 &&
-                planesMap.get(FrustumSides.BOTTOM).getNormal().dotProduct(backUpperLeft.subtract(frontLowerLeft)) > 0;
+
+        // check the normals:  n * (W - V) > 0  =>  n and (W - V) point towards the inside of the polyhedron
+        boolean frontInside =
+            planesMap.get(FrustumSides.FRONT).getNormal().dotProduct(backBottomLeft.subtract(frontBottomLeft)) > 0 &&
+            planesMap.get(FrustumSides.FRONT).getNormal().dotProduct(backBottomRight.subtract(frontBottomLeft)) > 0 &&
+            planesMap.get(FrustumSides.FRONT).getNormal().dotProduct(backTopLeft.subtract(frontBottomLeft)) > 0 &&
+            planesMap.get(FrustumSides.FRONT).getNormal().dotProduct(backTopRight.subtract(frontBottomLeft)) > 0;
+        boolean backInside =
+            planesMap.get(FrustumSides.BACK).getNormal().dotProduct(frontBottomLeft.subtract(backTopRight)) > 0 &&
+            planesMap.get(FrustumSides.BACK).getNormal().dotProduct(frontBottomRight.subtract(backTopRight)) > 0 &&
+            planesMap.get(FrustumSides.BACK).getNormal().dotProduct(frontTopLeft.subtract(backTopRight)) > 0 &&
+            planesMap.get(FrustumSides.BACK).getNormal().dotProduct(frontTopRight.subtract(backTopRight)) > 0;
+        boolean leftInside =
+            planesMap.get(FrustumSides.LEFT).getNormal().dotProduct(frontBottomRight.subtract(frontBottomLeft)) > 0 &&
+            planesMap.get(FrustumSides.LEFT).getNormal().dotProduct(frontTopRight.subtract(frontBottomLeft)) > 0 &&
+            planesMap.get(FrustumSides.LEFT).getNormal().dotProduct(backBottomRight.subtract(frontBottomLeft)) > 0 &&
+            planesMap.get(FrustumSides.LEFT).getNormal().dotProduct(backTopRight.subtract(frontBottomLeft)) > 0;
+        boolean rightInside =
+            planesMap.get(FrustumSides.RIGHT).getNormal().dotProduct(frontBottomLeft.subtract(backTopRight)) > 0 &&
+            planesMap.get(FrustumSides.RIGHT).getNormal().dotProduct(frontTopLeft.subtract(backTopRight)) > 0 &&
+            planesMap.get(FrustumSides.RIGHT).getNormal().dotProduct(backBottomLeft.subtract(backTopRight)) > 0 &&
+            planesMap.get(FrustumSides.RIGHT).getNormal().dotProduct(backTopLeft.subtract(backTopRight)) > 0;
+        boolean topInside =
+            planesMap.get(FrustumSides.TOP).getNormal().dotProduct(frontBottomLeft.subtract(backTopRight)) > 0 &&
+            planesMap.get(FrustumSides.TOP).getNormal().dotProduct(frontBottomRight.subtract(backTopRight)) > 0 &&
+            planesMap.get(FrustumSides.TOP).getNormal().dotProduct(backBottomLeft.subtract(backTopRight)) > 0 &&
+            planesMap.get(FrustumSides.TOP).getNormal().dotProduct(backBottomRight.subtract(backTopRight)) > 0;
+        boolean bottomInside =
+            planesMap.get(FrustumSides.BOTTOM).getNormal().dotProduct(frontTopLeft.subtract(frontBottomLeft)) > 0 &&
+            planesMap.get(FrustumSides.BOTTOM).getNormal().dotProduct(frontTopRight.subtract(frontBottomLeft)) > 0 &&
+            planesMap.get(FrustumSides.BOTTOM).getNormal().dotProduct(backTopLeft.subtract(frontBottomLeft)) > 0 &&
+            planesMap.get(FrustumSides.BOTTOM).getNormal().dotProduct(backTopRight.subtract(frontBottomLeft)) > 0;
+
+        return frontInside && backInside && leftInside && rightInside && topInside && bottomInside;
     }
 
     /**
