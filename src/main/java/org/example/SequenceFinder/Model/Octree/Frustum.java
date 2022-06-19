@@ -1,10 +1,10 @@
-package org.example.SequenceFinder.Octree;
+package org.example.SequenceFinder.Model.Octree;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Line;
 import org.apache.commons.math3.geometry.euclidean.threed.Plane;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
-import org.example.SequenceFinder.GeometricObjects.Box;
-import org.example.SequenceFinder.GeometricObjects.Point;
+import org.example.SequenceFinder.Model.GeometricObjects.Box;
+import org.example.SequenceFinder.Model.GeometricObjects.Point;
 
 import java.util.ArrayList;
 import java.util.Collections;

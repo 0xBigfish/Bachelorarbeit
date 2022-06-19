@@ -1,4 +1,4 @@
-package org.example.SequenceFinder.Octree;
+package org.example.SequenceFinder.Model.Octree;
 
 /**
  * Enum to represent the visibility states of objects in the octree.
