@@ -58,7 +58,9 @@ public class Frustum {
      * @param right  right plane
      */
     public Frustum(Plane front, Plane back, Plane left, Plane right, Plane top, Plane bottom) {
-        // the LooseOctree assumes the world is centered at the coordinate system's origin, which is (0, 0, 0).
+        // The LooseOctree's worldOrigin / worldCenter is at (0, 0, 0). As the frustum is applied to the boxes which
+        // are stored in the LooseOctree, the Frustum's worldOrigin must be at (0, 0, 0) as well. Otherwise, errors
+        // will occur.
         this.worldOrigin = new Vector3D(0, 0, 0);
 
         // use Hashtable because neither key=null nor value=null are allowed.
