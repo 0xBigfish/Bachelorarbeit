@@ -4,7 +4,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class BoxTest {
 
@@ -18,6 +21,22 @@ class BoxTest {
         }
     }
 
+    /**
+     * Assert that all expected values are port of the actual collection, and that the actual collection contains only
+     * the expected values.
+     *
+     * @param expected the expected values
+     * @param actual   the actual values
+     */
+    private void assertContainsExactly(ArrayList<Point> expected, ArrayList<Point> actual) {
+        for (Point expectedContent : expected) {
+            assertTrue(actual.contains(expectedContent));
+        }
+
+        for (Point actualContent : actual) {
+            assertTrue(expected.contains(actualContent));
+        }
+    }
 
     @Nested
     @DisplayName("given a Box((0,0,0)(1,1,1))")
@@ -34,6 +53,32 @@ class BoxTest {
         @DisplayName("then radius should be 0.5")
         void radius() {
             assertEquals(0.5, box.calcRadius());
+        }
+
+        @Test
+        @DisplayName("then the vertices should be at (0,0,0), (1,0,0), (0,1,0), (1,1,0), " +
+                "(0,0,1), (1,0,1), (0,1,1), (1,1,1)")
+        void vertices() {
+            Point frontLowerLeft = new Point(0, 0, 0);
+            Point frontLowerRight = new Point(1, 0, 0);
+            Point frontUpperLeft = new Point(0, 1, 0);
+            Point frontUpperRight = new Point(1, 1, 0);
+            Point backLowerLeft = new Point(0, 0, 1);
+            Point backLowerRight = new Point(1, 0, 1);
+            Point backUpperLeft = new Point(0, 1, 1);
+            Point backUpperRight = new Point(1, 1, 1);
+
+            ArrayList<Point> expectedVertices = new ArrayList<>();
+            expectedVertices.add(frontLowerLeft);
+            expectedVertices.add(frontLowerRight);
+            expectedVertices.add(frontUpperLeft);
+            expectedVertices.add(frontUpperRight);
+            expectedVertices.add(backLowerLeft);
+            expectedVertices.add(backLowerRight);
+            expectedVertices.add(backUpperLeft);
+            expectedVertices.add(backUpperRight);
+
+            assertContainsExactly(expectedVertices, box.getVertices());
         }
     }
 
@@ -54,6 +99,32 @@ class BoxTest {
         void radius() {
             assertEquals(3, box.calcRadius());
         }
+
+        @Test
+        @DisplayName("then the vertices should be at (-1, -2, -3), (1, -2, -3), (-1, 2, -3), (1, 2, -3) " +
+                "(-1, -2, 3), (1, -2, 3), (-1, 2, 3), (1, 2, 3)")
+        void vertices() {
+            Point frontLowerLeft = new Point(-1, -2, -3);
+            Point frontLowerRight = new Point(1, -2, -3);
+            Point frontUpperLeft = new Point(-1, 2, -3);
+            Point frontUpperRight = new Point(1, 2, -3);
+            Point backLowerLeft = new Point(-1, -2, 3);
+            Point backLowerRight = new Point(1, -2, 3);
+            Point backUpperLeft = new Point(-1, 2, 3);
+            Point backUpperRight = new Point(1, 2, 3);
+
+            ArrayList<Point> expectedVertices = new ArrayList<>();
+            expectedVertices.add(frontLowerLeft);
+            expectedVertices.add(frontLowerRight);
+            expectedVertices.add(frontUpperLeft);
+            expectedVertices.add(frontUpperRight);
+            expectedVertices.add(backLowerLeft);
+            expectedVertices.add(backLowerRight);
+            expectedVertices.add(backUpperLeft);
+            expectedVertices.add(backUpperRight);
+
+            assertContainsExactly(expectedVertices, box.getVertices());
+        }
     }
 
 
@@ -73,6 +144,32 @@ class BoxTest {
         void radius() {
             assertEquals(3, box.calcRadius());
         }
+
+        @Test
+        @DisplayName("then the vertices should be at (-1, -2, -3), (1, -2, -3), (-1, 2, -3), (1, 2, -3), " +
+                "(-1, -2, 3), (1, -2, 3), (-1, 2, 3), (1, 2, 3)")
+        void vertices() {
+            Point frontLowerLeft = new Point(-1, -2, -3);
+            Point frontLowerRight = new Point(1, -2, -3);
+            Point frontUpperLeft = new Point(-1, 2, -3);
+            Point frontUpperRight = new Point(1, 2, -3);
+            Point backLowerLeft = new Point(-1, -2, 3);
+            Point backLowerRight = new Point(1, -2, 3);
+            Point backUpperLeft = new Point(-1, 2, 3);
+            Point backUpperRight = new Point(1, 2, 3);
+
+            ArrayList<Point> expectedVertices = new ArrayList<>();
+            expectedVertices.add(frontLowerLeft);
+            expectedVertices.add(frontLowerRight);
+            expectedVertices.add(frontUpperLeft);
+            expectedVertices.add(frontUpperRight);
+            expectedVertices.add(backLowerLeft);
+            expectedVertices.add(backLowerRight);
+            expectedVertices.add(backUpperLeft);
+            expectedVertices.add(backUpperRight);
+
+            assertContainsExactly(expectedVertices, box.getVertices());
+        }
     }
 
 
@@ -91,6 +188,32 @@ class BoxTest {
         @DisplayName("then the radius should be 1.25")
         void radius() {
             assertEquals(1.25, box.calcRadius());
+        }
+
+        @Test
+        @DisplayName("then the vertices should be at (-1, -2, -3), (-0.5, -2, -3), (-1, -0.5, -3), (-0.5, -0.5, -3), " +
+                "(-1, -2, -0.5), (-0.5, -2, -0.5), (-1, -0.5, -0.5), (-0.5, -0.5, -0.5)")
+        void vertices() {
+            Point frontLowerLeft = new Point(-1, -2, -3);
+            Point frontLowerRight = new Point(-0.5, -2, -3);
+            Point frontUpperLeft = new Point(-1, -0.5, -3);
+            Point frontUpperRight = new Point(-0.5, -0.5, -3);
+            Point backLowerLeft = new Point(-1, -2, -0.5);
+            Point backLowerRight = new Point(-0.5, -2, -0.5);
+            Point backUpperLeft = new Point(-1, -0.5, -0.5);
+            Point backUpperRight = new Point(-0.5, -0.5, -0.5);
+
+            ArrayList<Point> expectedVertices = new ArrayList<>();
+            expectedVertices.add(frontLowerLeft);
+            expectedVertices.add(frontLowerRight);
+            expectedVertices.add(frontUpperLeft);
+            expectedVertices.add(frontUpperRight);
+            expectedVertices.add(backLowerLeft);
+            expectedVertices.add(backLowerRight);
+            expectedVertices.add(backUpperLeft);
+            expectedVertices.add(backUpperRight);
+
+            assertContainsExactly(expectedVertices, box.getVertices());
         }
     }
 
@@ -112,6 +235,35 @@ class BoxTest {
         void calcRadius() {
             assertEquals(874.2288, box.calcRadius());
         }
+
+        // given  a box Box(0.1948, 1834.356, -91.5)(5.5, 85.8984, 0.0000000000001)
+        @Test
+        @DisplayName("then the vertices should be at (0.1948, 1834.356, -91.5), (5.5, 1834.356, -91.5), " +
+                "(0.1948, 85.8984, -91.5), (5.5, 85.8984, -91.5), (0.1948, 1834.356, 0.0000000000001) " +
+                "(5.5, 1834.356, 0.0000000000001), (0.1948, 85.8984, 0.0000000000001) " +
+                "(5.5, 85.8984, 0.0000000000001)")
+        void vertices() {
+            Point frontLowerLeft = new Point(0.1948, 1834.356, -91.5);
+            Point frontLowerRight = new Point(5.5, 1834.356, -91.5);
+            Point frontUpperLeft = new Point(0.1948, 85.8984, -91.5);
+            Point frontUpperRight = new Point(5.5, 85.8984, -91.5);
+            Point backLowerLeft = new Point(0.1948, 1834.356, 0.0000000000001);
+            Point backLowerRight = new Point(5.5, 1834.356, 0.0000000000001);
+            Point backUpperLeft = new Point(0.1948, 85.8984, 0.0000000000001);
+            Point backUpperRight = new Point(5.5, 85.8984, 0.0000000000001);
+
+            ArrayList<Point> expectedVertices = new ArrayList<>();
+            expectedVertices.add(frontLowerLeft);
+            expectedVertices.add(frontLowerRight);
+            expectedVertices.add(frontUpperLeft);
+            expectedVertices.add(frontUpperRight);
+            expectedVertices.add(backLowerLeft);
+            expectedVertices.add(backLowerRight);
+            expectedVertices.add(backUpperLeft);
+            expectedVertices.add(backUpperRight);
+
+            assertContainsExactly(expectedVertices, box.getVertices());
+        }
     }
 
 
@@ -130,6 +282,33 @@ class BoxTest {
         @DisplayName("then the radius should be 1.85")
         void radius() {
             assertEquals(1.85, box.calcRadius());
+        }
+
+        // ((-2.3, 2.5, 1.3), (1.0, -1.2, -0.66))
+        @Test
+        @DisplayName("then the vertices should be at (-2.3, 2.5, 1.3), (1.0, 2.5, 1.3), (-2.3, -1.2, 1.3), " +
+                "(1.0, -1.2, 1.3), (-2.3, 2.5, -0.66), (1.0, 2.5, -0.66), (-2.3, -1.2, -0.66), (1.0, -1.2, -0.66)")
+        void vertices() {
+            Point frontLowerLeft = new Point(-2.3, 2.5, 1.3);
+            Point frontLowerRight = new Point(1.0, 2.5, 1.3);
+            Point frontUpperLeft = new Point(-2.3, -1.2, 1.3);
+            Point frontUpperRight = new Point(1.0, -1.2, 1.3);
+            Point backLowerLeft = new Point(-2.3, 2.5, -0.66);
+            Point backLowerRight = new Point(1.0, 2.5, -0.66);
+            Point backUpperLeft = new Point(-2.3, -1.2, -0.66);
+            Point backUpperRight = new Point(1.0, -1.2, -0.66);
+
+            ArrayList<Point> expectedVertices = new ArrayList<>();
+            expectedVertices.add(frontLowerLeft);
+            expectedVertices.add(frontLowerRight);
+            expectedVertices.add(frontUpperLeft);
+            expectedVertices.add(frontUpperRight);
+            expectedVertices.add(backLowerLeft);
+            expectedVertices.add(backLowerRight);
+            expectedVertices.add(backUpperLeft);
+            expectedVertices.add(backUpperRight);
+
+            assertContainsExactly(expectedVertices, box.getVertices());
         }
     }
 
