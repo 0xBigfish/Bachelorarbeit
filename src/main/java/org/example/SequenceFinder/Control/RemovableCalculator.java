@@ -1,7 +1,7 @@
 package org.example.SequenceFinder.Control;
 
 import org.example.SequenceFinder.Model.GeometricObjects.Box;
-import org.example.SequenceFinder.Model.Graph;
+import org.example.SequenceFinder.Model.Graph.Graph;
 import org.example.SequenceFinder.Model.Octree.Frustum;
 import org.example.SequenceFinder.Model.Octree.LooseOctree;
 import org.example.SequenceFinder.Model.Octree.Visibility;

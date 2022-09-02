@@ -1,4 +1,4 @@
-package org.example.SequenceFinder.Model;
+package org.example.SequenceFinder.Model.Graph;
 
 import org.example.SequenceFinder.Model.GeometricObjects.Box;
 import org.example.SequenceFinder.OperatingDirection;

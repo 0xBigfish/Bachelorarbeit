@@ -2,7 +2,7 @@ package org.example.SequenceFinder.Control;
 
 import org.example.SequenceFinder.Control.Cost.CostFunction;
 import org.example.SequenceFinder.Model.GeometricObjects.Box;
-import org.example.SequenceFinder.Model.Graph;
+import org.example.SequenceFinder.Model.Graph.Graph;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
