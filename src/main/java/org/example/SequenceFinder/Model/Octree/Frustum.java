@@ -6,8 +6,8 @@ import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.example.SequenceFinder.Model.GeometricObjects.Box;
 import org.example.SequenceFinder.Model.GeometricObjects.Point;
 
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -223,15 +223,15 @@ public class Frustum {
      * @return the p vertex of the box
      */
     private Vector3D calcPVertex(Box box, Plane plane) {
-        ArrayList<Point> vertices = box.getVertices();
+        HashMap<Box.BoxVertex, Point> vertices = box.getVertices();
         Vector3D normal = plane.getNormal();
         double d = plane.getOffset(worldOrigin);
 
-        // get a start value to compare against
-        Point pVertex = vertices.remove(0);
+        // get any start value to compare against
+        Point pVertex = vertices.remove(Box.BoxVertex.FRONT_BOTTOM_LEFT);
         double distanceAlongNormal = normal.dotProduct(new Vector3D(pVertex.x, pVertex.y, pVertex.z)) + d;
 
-        for (Point vertex : vertices) {
+        for (Point vertex : vertices.values()) {
             // if the current vertex is further ALONG the plane's normal than the current pVertex, the pVertex
             // is updated
             if (normal.dotProduct(new Vector3D(vertex.x, vertex.y, vertex.z)) + d > distanceAlongNormal) {
@@ -257,15 +257,15 @@ public class Frustum {
      * @return the n vertex of the box
      */
     private Vector3D calcNVertex(Box box, Plane plane) {
-        ArrayList<Point> vertices = box.getVertices();
+        HashMap<Box.BoxVertex, Point> vertices = box.getVertices();
         Vector3D normal = plane.getNormal();
         double d = plane.getOffset(worldOrigin);
 
         // get a start value to compare against
-        Point nVertex = vertices.remove(0);
+        Point nVertex = vertices.remove(Box.BoxVertex.FRONT_BOTTOM_LEFT);
         double distanceAlongNormal = normal.dotProduct(new Vector3D(nVertex.x, nVertex.y, nVertex.z)) + d;
 
-        for (Point vertex : vertices) {
+        for (Point vertex : vertices.values()) {
             // if the current vertex is further AGAINST the plane's normal than the current nVertex, the nVertex
             // is updated
             if (normal.dotProduct(new Vector3D(vertex.x, vertex.y, vertex.z)) + d < distanceAlongNormal) {

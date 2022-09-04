@@ -1,14 +1,36 @@
 package org.example.SequenceFinder.Model.GeometricObjects;
 
+import org.apache.commons.math3.geometry.euclidean.threed.Plane;
+import org.example.SequenceFinder.OperatingDirection;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
+import java.util.HashMap;
+
+import static org.example.SequenceFinder.Model.GeometricObjects.Box.BoxVertex.*;
 
 //TODO: rename to AABBox (axis aligned bounding box) and write test to ensure it is axis aligned
+
+
 /**
  * A box-shaped object described by two vertices.
  */
 public abstract class Box {
+
+    /**
+     * Enum for the vertices of the box
+     */
+    public enum BoxVertex {
+        FRONT_BOTTOM_LEFT,
+        FRONT_BOTTOM_RIGHT,
+        FRONT_TOP_LEFT,
+        FRONT_TOP_RIGHT,
+        BACK_BOTTOM_LEFT,
+        BACK_BOTTOM_RIGHT,
+        BACK_TOP_LEFT,
+        BACK_TOP_RIGHT
+    }
+
 
     Point vertexA;
     Point vertexB;
@@ -20,6 +42,15 @@ public abstract class Box {
     public Box(Point vertA, Point vertB) {
         this.vertexA = vertA;
         this.vertexB = vertB;
+
+        if (vertA.x >= vertB.x ||
+                vertA.y >= vertB.y ||
+                vertA.z >= vertB.z) {
+            throw new IllegalArgumentException("Vertex A (bottom left corner) must be smaller than vertex B (upper " +
+                    "right corner) \n" +
+                    "Vertex A: " + vertA + "\n" +
+                    "Vertex B: " + vertB);
+        }
     }
 
     /**
@@ -63,26 +94,25 @@ public abstract class Box {
      *
      * @return the corner vertices of this box
      */
-    public ArrayList<Point> getVertices() {
-        new Point(vertexA.x + vertexB.x, vertexA.y + vertexB.y, vertexA.z + vertexB.z);
+    public HashMap<BoxVertex, Point> getVertices() {
         Point frontLowerLeft = vertexA;
         Point frontLowerRight = new Point(vertexB.x, vertexA.y, vertexA.z);
-        Point frontUpperLeft = new Point(vertexA.x, vertexB.y, vertexA.z);
-        Point frontUpperRight = new Point(vertexB.x, vertexB.y, vertexA.z);
-        Point backLowerLeft = new Point(vertexA.x, vertexA.y, vertexB.z);
-        Point backLowerRight = new Point(vertexB.x, vertexA.y, vertexB.z);
+        Point frontUpperLeft = new Point(vertexA.x, vertexA.y, vertexB.z);
+        Point frontUpperRight = new Point(vertexB.x, vertexA.y, vertexB.z);
+        Point backLowerLeft = new Point(vertexA.x, vertexB.y, vertexA.z);
+        Point backLowerRight = new Point(vertexB.x, vertexB.y, vertexA.z);
         Point backUpperLeft = new Point(vertexA.x, vertexB.y, vertexB.z);
         Point backUpperRight = vertexB;
 
-        ArrayList<Point> vertices = new ArrayList<>();
-        vertices.add(frontLowerLeft);
-        vertices.add(frontLowerRight);
-        vertices.add(frontUpperLeft);
-        vertices.add(frontUpperRight);
-        vertices.add(backLowerLeft);
-        vertices.add(backLowerRight);
-        vertices.add(backUpperLeft);
-        vertices.add(backUpperRight);
+        HashMap<BoxVertex, Point> vertices = new HashMap<>();
+        vertices.put(FRONT_BOTTOM_LEFT, frontLowerLeft);
+        vertices.put(FRONT_BOTTOM_RIGHT, frontLowerRight);
+        vertices.put(FRONT_TOP_LEFT, frontUpperLeft);
+        vertices.put(FRONT_TOP_RIGHT, frontUpperRight);
+        vertices.put(BACK_BOTTOM_LEFT, backLowerLeft);
+        vertices.put(BACK_BOTTOM_RIGHT, backLowerRight);
+        vertices.put(BACK_TOP_LEFT, backUpperLeft);
+        vertices.put(BACK_TOP_RIGHT, backUpperRight);
 
         return vertices;
     }

@@ -1509,8 +1509,8 @@ public class LooseOctreeTest {
                 @DisplayName("Box((1, 2, 3), (3, 2, 1)) should be inserted at [3][6][6][6]")
                 void box123321() {
                     // center at (2, 2, 2), dimensions: 2x2x2, radius: 1.0
-                    Point pointA = new Point(1, 2, 3);
-                    Point pointB = new Point(3, 2, 1);
+                    Point pointA = new Point(1, 1.5, 1);
+                    Point pointB = new Point(3, 2.5, 3);
 
                     box = new ConcreteBox(pointA, pointB);
                     nodeContent.add(box);
@@ -1541,8 +1541,8 @@ public class LooseOctreeTest {
                 @DisplayName("Box((2, -2, 1), (-1, 3, -3)) should be inserted at [1][1][1][0]")
                 void box2Neg21Neg13Neg3() {
                     // center at (0.5, 0.5, -1), dimensions: 3x5x4, radius: 2.5
-                    Point pointA = new Point(2, -2, 1);
-                    Point pointB = new Point(-1, 3, -3);
+                    Point pointA = new Point(-1, -2, -3);
+                    Point pointB = new Point(2, 3, 1);
 
                     box = new ConcreteBox(pointA, pointB);
                     nodeContent.add(box);
@@ -1556,8 +1556,8 @@ public class LooseOctreeTest {
                 @DisplayName("Box((-2.3, 2.5, 1.3), (1.0, -1.2, -0.66)) should be inserted at [2][1][2][2]")
                 void boxNeg23251310Neg12Neg066() {
                     // center at (-0.65, 0.6, 0.32), dimensions: 3.3 x 3.7 x 1.96, radius: 1.85
-                    Point pointA = new Point(-2.3, 2.5, 1.3);
-                    Point pointB = new Point(1.0, -1.2, -0.66);
+                    Point pointA = new Point(-2.3, -1.2, -0.66);
+                    Point pointB = new Point(1.0, 2.5, 1.3);
 
                     box = new ConcreteBox(pointA, pointB);
                     nodeContent.add(box);
@@ -1596,12 +1596,12 @@ public class LooseOctreeTest {
                 void twoBoxesOneNode() {
                     // Hint: The boxes do not touch
                     // center at (1.0, 0.6, 0.32), dimensions: 1.0 x 1.0 x 1.0, radius: 0.5
-                    Point pointA1 = new Point(0.5, 2.5, 1.3);
-                    Point pointB1 = new Point(1.5, 1.5, 0.3);
+                    Point pointA1 = new Point(0.5, 1.5, 0.3);
+                    Point pointB1 = new Point(1.5, 2.5, 1.3);
 
                     // center at (1.98, 0.6, 0.32), dimensions: 1.0 x 1.0 x 1.0, radius: 0.5
-                    Point pointA2 = new Point(1.51, 2.5, 1.3);
-                    Point pointB2 = new Point(2.45, 1.5, 0.3);
+                    Point pointA2 = new Point(1.51, 1.5, 0.3);
+                    Point pointB2 = new Point(2.45, 2.5, 1.3);
 
                     // radius 0.5 => depth = 3
                     // center (1.0, 2.0, 0.8) => indices x: 5, y: 6, z: 4
@@ -1624,12 +1624,12 @@ public class LooseOctreeTest {
                 @DisplayName("Insert two boxes which have the very same position")
                 void twoBoxesSamePosition() {
                     // center at (-0.65, 0.6, 0.32), dimensions: 3.3 x 3.7 x 1.96, radius: 1.85
-                    Point pointA1 = new Point(-2.3, 2.5, 1.3);
-                    Point pointB1 = new Point(1.0, -1.2, -0.66);
+                    Point pointA1 = new Point(-2.3, -1.2, -0.66);
+                    Point pointB1 = new Point(1.0, 2.5, 1.3);
 
                     // center at (-0.65, 0.6, 0.32), dimensions: 3.3 x 3.7 x 1.96, radius: 1.85
-                    Point pointA2 = new Point(-2.3, 2.5, 1.3);
-                    Point pointB2 = new Point(1.0, -1.2, -0.66);
+                    Point pointA2 = new Point(-2.3, -1.2, -0.66);
+                    Point pointB2 = new Point(1.0, 2.5, 1.3);
 
                     box = new ConcreteBox(pointA1, pointB1);
                     box2 = new ConcreteBox(pointA2, pointB2);
@@ -1650,12 +1650,12 @@ public class LooseOctreeTest {
                 @DisplayName("Insert two boxes, same depth, each at a different node")
                 void twoBoxesSameDepthDifferentNodes() {
                     // center at (0.14485, 2.6, -2.0811), dimensions: 0.0237 x 2.2 x 0.2822, radius: 1.1
-                    Point pointA1 = new Point(0.133, 3.7, -2.2222);
-                    Point pointB1 = new Point(0.1567, 1.5, -1.94);
+                    Point pointA1 = new Point(0.133, 1.5, -2.2222);
+                    Point pointB1 = new Point(0.1567, 3.7, -1.94);
 
                     // center at (2.0583, 1.7005, 0.16), dimensions: 0.7834 x 3.399 x 0.32, radius: 1.6995
-                    Point pointA2 = new Point(1.6666, 0.001, 1.3);
-                    Point pointB2 = new Point(2.45, 3.4, 0.98);
+                    Point pointA2 = new Point(1.6666, 0.001, 0.98);
+                    Point pointB2 = new Point(2.45, 3.4, 1.3);
 
                     // radius 1.1 => depth = 2
                     // center (0.14485, 2.6, -2.0811) => indices x: 2, y: 3, z: 0
@@ -1708,8 +1708,8 @@ public class LooseOctreeTest {
                     Point pointB1 = new Point(-1.0, 1.0, 2.0);
 
                     // center at (3.5, 2.5, 1.5), dimensions: 1.0 x 1.0 x 1.0, radius: 0.5
-                    Point pointA2 = new Point(4.0, 3.0, 2.0);
-                    Point pointB2 = new Point(3.0, 2.0, 1.0);
+                    Point pointA2 = new Point(3.0, 2.0, 1.0);
+                    Point pointB2 = new Point(4.0, 3.0, 2.0);
 
                     // radius 1.5 => depth = 2
                     // center (-2.5, -0.5, 0.5) => indices x: 0, y: 1, z: 2
