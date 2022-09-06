@@ -229,13 +229,15 @@ public class Frustum {
 
         // get any start value to compare against
         Point pVertex = vertices.remove(Box.BoxVertex.FRONT_BOTTOM_LEFT);
-        double distanceAlongNormal = normal.dotProduct(new Vector3D(pVertex.x, pVertex.y, pVertex.z)) + d;
+        double bestDistAlongNormal = normal.dotProduct(new Vector3D(pVertex.x, pVertex.y, pVertex.z)) + d;
 
         for (Point vertex : vertices.values()) {
             // if the current vertex is further ALONG the plane's normal than the current pVertex, the pVertex
             // is updated
-            if (normal.dotProduct(new Vector3D(vertex.x, vertex.y, vertex.z)) + d > distanceAlongNormal) {
+            double vertexDistAlongNormal = normal.dotProduct(new Vector3D(vertex.x, vertex.y, vertex.z)) + d;
+            if (vertexDistAlongNormal > bestDistAlongNormal) {
                 pVertex = vertex;
+                bestDistAlongNormal = vertexDistAlongNormal;
             }
         }
 
@@ -263,13 +265,15 @@ public class Frustum {
 
         // get a start value to compare against
         Point nVertex = vertices.remove(Box.BoxVertex.FRONT_BOTTOM_LEFT);
-        double distanceAlongNormal = normal.dotProduct(new Vector3D(nVertex.x, nVertex.y, nVertex.z)) + d;
+        double bestDistAlongNormal = normal.dotProduct(new Vector3D(nVertex.x, nVertex.y, nVertex.z)) + d;
 
         for (Point vertex : vertices.values()) {
             // if the current vertex is further AGAINST the plane's normal than the current nVertex, the nVertex
             // is updated
-            if (normal.dotProduct(new Vector3D(vertex.x, vertex.y, vertex.z)) + d < distanceAlongNormal) {
+            double vertexDistAlongNormal = normal.dotProduct(new Vector3D(vertex.x, vertex.y, vertex.z)) + d;
+            if (vertexDistAlongNormal < bestDistAlongNormal) {
                 nVertex = vertex;
+                bestDistAlongNormal = vertexDistAlongNormal;
             }
         }
 
