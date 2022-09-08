@@ -10,8 +10,7 @@ import org.junit.jupiter.api.Test;
 import java.util.HashMap;
 
 import static org.example.SequenceFinder.Model.GeometricObjects.AABB.BoxVertex.*;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 class AABBTest {
 
@@ -36,6 +35,20 @@ class AABBTest {
     @DisplayName("given a AABB((0,0,0)(1,1,1))")
     class AABB000111 {
         AABB box = new ConcreteAABB(new Point(0, 0, 0), new Point(1, 1, 1));
+
+        @Test
+        @DisplayName("then the AABB should be equal to another AABB with the same vertices")
+        void equals() {
+            AABB otherBox = new ConcreteAABB(new Point(0, 0, 0), new Point(1, 1, 1));
+            assertEquals(box, otherBox);
+        }
+
+        @Test
+        @DisplayName("then the AABB should be unequal to AABB((1,1,1), (2,2,2))")
+        void unequal() {
+            AABB otherBox = new ConcreteAABB(new Point(1, 1, 1), new Point(2, 2, 2));
+            assertNotEquals(box, otherBox);
+        }
 
         @Test
         @DisplayName("then the center should be at (0.5, 0.5, 0.5)")
@@ -141,6 +154,20 @@ class AABBTest {
         AABB box = new ConcreteAABB(new Point(-1, -2, -3), new Point(1, 2, 3));
 
         @Test
+        @DisplayName("then the AABB should be equal to another AABB with the same vertices")
+        void equals() {
+            AABB otherBox = new ConcreteAABB(new Point(-1, -2, -3), new Point(1, 2, 3));
+            assertEquals(box, otherBox);
+        }
+
+        @Test
+        @DisplayName("then the AABB should be unequal to AABB((1,2,3), (4,5,6))")
+        void unequal() {
+            AABB otherBox = new ConcreteAABB(new Point(1, 2, 3), new Point(4, 5, 6));
+            assertNotEquals(box, otherBox);
+        }
+
+        @Test
         @DisplayName("then the center should be at (0, 0, 0)")
         void center() {
             assertEquals(new Point(0, 0, 0), box.calcCenter());
@@ -242,6 +269,20 @@ class AABBTest {
     @DisplayName("given a AABB(-1,-2,-3)(-0.5,-0.5,-0.5)")
     class AABBNeg1Neg2Neg3Neg05Neg05Neg05 {
         AABB box = new ConcreteAABB(new Point(-1, -2, -3), new Point(-0.5, -0.5, -0.5));
+
+        @Test
+        @DisplayName("then the AABB should be equal to another AABB with the same vertices")
+        void equals() {
+            AABB otherBox = new ConcreteAABB(new Point(-1, -2, -3), new Point(-0.5, -0.5, -0.5));
+            assertEquals(box, otherBox);
+        }
+
+        @Test
+        @DisplayName("then the AABB should be unequal to AABB((-1,-2,-3), (0.5,0.5,0.5))")
+        void unequal() {
+            AABB otherBox = new ConcreteAABB(new Point(-1, -2, -3), new Point(0.5, 0.5, 0.5));
+            assertNotEquals(box, otherBox);
+        }
 
         @Test
         @DisplayName("then the center should be at (-0.75, -1.25, -1.75)")
@@ -346,6 +387,21 @@ class AABBTest {
     class AABB019481834356Neg915558589840 {
         AABB box = new ConcreteAABB(new Point(0.1948, 85.8984, -91.5),
                 new Point(5.5, 1834.356, 0.0000000000001));
+
+        @Test
+        @DisplayName("then the AABB should be equal to another AABB with the same vertices")
+        void equals() {
+            AABB otherBox = new ConcreteAABB(new Point(0.1948, 85.8984, -91.5),
+                    new Point(5.5, 1834.356, 0.0000000000001));
+            assertEquals(box, otherBox);
+        }
+
+        @Test
+        @DisplayName("then the AABB should be unequal to AABB((-1,-2,-3), (0.5,0.5,0.5))")
+        void unequal() {
+            AABB otherBox = new ConcreteAABB(new Point(-1, -2, -3), new Point(0.5, 0.5, 0.5));
+            assertNotEquals(box, otherBox);
+        }
 
         @Test
         @DisplayName("then the center should be at (2.8474, 960.1272, -45.75)")
@@ -461,6 +517,22 @@ class AABBTest {
         AABB box = new ConcreteAABB(new Point(-2.3, -1.2, -0.66), new Point(1.0, 2.5, 1.3));
 
         @Test
+        @DisplayName("then the AABB should be equal to another AABB with the same vertices")
+        void equals() {
+            AABB otherBox = new ConcreteAABB(new Point(-2.3, -1.2, -0.66), new Point(1.0, 2.5, 1.3));
+
+            assertEquals(box, otherBox);
+        }
+
+        @Test
+        @DisplayName("then the AABB should be unequal to AABB((-2.4, -1.3, -0.67), (1.0, 2.5, 1.3))")
+        void unequal() {
+            AABB otherBox = new ConcreteAABB(new Point(-2.4, -1.3, -0.67), new Point(1.0, 2.5, 1.3));
+
+            assertNotEquals(box, otherBox);
+        }
+
+        @Test
         @DisplayName("then the center should be at (-0.65, 0.65, 0.32)")
         void center() {
             assertEquals(new Point(-0.65, 0.65, 0.32), box.calcCenter());
@@ -562,6 +634,22 @@ class AABBTest {
     @DisplayName("given a AABB((1.6666, 0.001, 0.98), (2.45, 3.4, 1.3))")
     class AABB1666600011324534098 {
         AABB box = new ConcreteAABB(new Point(1.6666, 0.001, 0.98), new Point(2.45, 3.4, 1.3));
+
+        @Test
+        @DisplayName("then the AABB should be equal to another AABB with the same vertices")
+        void equals() {
+            AABB otherBox = new ConcreteAABB(new Point(1.6666, 0.001, 0.98), new Point(2.45, 3.4, 1.3));
+
+            assertEquals(box, otherBox);
+        }
+
+        @Test
+        @DisplayName("then the AABB should be unequal to AABB((1.6667, 0.001, 0.98), (2.45, 3.4, 1.3))")
+        void unequal() {
+            AABB otherBox = new ConcreteAABB(new Point(1.6667, 0.001, 0.98), new Point(2.45, 3.4, 1.3));
+
+            assertNotEquals(box, otherBox);
+        }
 
         @Test
         @DisplayName("then the center should be at (2.0583, 1.7005, 1.14)")

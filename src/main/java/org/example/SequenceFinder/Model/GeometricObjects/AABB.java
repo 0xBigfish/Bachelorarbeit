@@ -156,6 +156,16 @@ public class AABB {
                 '}';
     }
 
+    @Override
+    public boolean equals(Object other) {
+        if (other instanceof AABB) {
+            AABB otherAABB = (AABB) other;
+            return vertexA.equals(otherAABB.vertexA) && vertexB.equals(otherAABB.vertexB);
+        } else {
+            return false;
+        }
+    }
+
     /**
      * Round values to prevent float point precision errors. <br> Example: (-2.3 + 1.0) = -0.65 but the calculated
      * result is -0.6499999999999999 <br>
