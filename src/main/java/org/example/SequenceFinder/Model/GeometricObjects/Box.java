@@ -1,6 +1,7 @@
 package org.example.SequenceFinder.Model.GeometricObjects;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Plane;
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import org.example.SequenceFinder.OperatingDirection;
 
 import java.math.BigDecimal;
@@ -118,8 +119,48 @@ public abstract class Box {
     }
 
     /**
-     * Round values to prevent float point precision errors. <br>
-     * Example: (-2.3 + 1.0) = -0.65 but the calculated result is -0.6499999999999999 <br>
+     * Get the plane of the box whose normal vector is pointing towards the given operating direction
+     *
+     * @param opDir the operating direction
+     * @return the plane of the box whose normal vector is pointing towards the given operating direction
+     */
+    public Plane getSide(OperatingDirection opDir) {
+        // tolerance below which points on the plane are considered identical
+        double tolerance = 1e-10;
+
+        HashMap<BoxVertex, Point> vertices = getVertices();
+        switch (opDir) {
+            case FRONT:
+                return new Plane(vertices.get(FRONT_TOP_RIGHT).toVector3D(), new Vector3D(0, -1, 0), tolerance);
+
+            case BACK:
+                return new Plane(vertices.get(BACK_TOP_RIGHT).toVector3D(), new Vector3D(0, 1, 0), tolerance);
+
+            case LEFT:
+                return new Plane(vertices.get(BACK_TOP_LEFT).toVector3D(), new Vector3D(-1, 0, 0), tolerance);
+
+            case RIGHT:
+                return new Plane(vertices.get(BACK_TOP_RIGHT).toVector3D(), new Vector3D(1, 0, 0), tolerance);
+
+            case TOP:
+                return new Plane(vertices.get(FRONT_TOP_LEFT).toVector3D(), new Vector3D(0, 0, 1), tolerance);
+
+            default:
+                throw new RuntimeException("Unknown operating direction: " + opDir);
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "Box{" +
+                "vertexA=" + vertexA + ", " +
+                "vertexB=" + vertexB +
+                '}';
+    }
+
+    /**
+     * Round values to prevent float point precision errors. <br> Example: (-2.3 + 1.0) = -0.65 but the calculated
+     * result is -0.6499999999999999 <br>
      * <br>
      * Code from https://www.baeldung.com/java-round-decimal-number
      *
