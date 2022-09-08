@@ -2,7 +2,7 @@ package org.example.SequenceFinder.Model.Octree;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Plane;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
-import org.example.SequenceFinder.Model.GeometricObjects.Box;
+import org.example.SequenceFinder.Model.GeometricObjects.AABB;
 import org.example.SequenceFinder.Model.GeometricObjects.Point;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,14 +20,14 @@ class FrustumTest {
      */
     static double TOLERANCE = 10E-09;
     Frustum frustum;
-    Box box;
+    AABB box;
 
 
     /**
-     * Concrete implementation of the abstract {@linkplain Box} class
+     * Concrete implementation of the abstract {@linkplain AABB} class
      */
-    private static class ConcreteBox extends Box {
-        public ConcreteBox(Point vertA, Point vertB) {
+    private static class ConcreteAABB extends AABB {
+        public ConcreteAABB(Point vertA, Point vertB) {
             super(vertA, vertB);
         }
     }
@@ -61,11 +61,11 @@ class FrustumTest {
 
             @Nested
             @DisplayName("when a box is completely inside the frustum")
-            class BoxInsideFrustum {
+            class AABBInsideFrustum {
 
                 @BeforeEach
                 void setup() {
-                    box = new ConcreteBox(new Point(2, -1, -0.5), new Point(3, 1, 0.5));
+                    box = new ConcreteAABB(new Point(2, -1, -0.5), new Point(3, 1, 0.5));
                 }
 
                 @Test
@@ -78,12 +78,12 @@ class FrustumTest {
 
             @Nested
             @DisplayName("when a box is outside the frustum")
-            class BoxOutsideFrustum {
+            class AABBOutsideFrustum {
 
                 @BeforeEach
                 void setup() {
                     // behind every plane except the top plane
-                    box = new ConcreteBox(new Point(-1, 2.5, -1.5), new Point(-0.5, 3, -1.25));
+                    box = new ConcreteAABB(new Point(-1, 2.5, -1.5), new Point(-0.5, 3, -1.25));
                 }
 
                 @Test
@@ -96,12 +96,12 @@ class FrustumTest {
 
             @Nested
             @DisplayName("when a box intersects the frustum")
-            class BoxIntersectsFrustum {
+            class AABBIntersectsFrustum {
 
                 @BeforeEach
                 void setup() {
                     // intersects only the right plane
-                    box = new ConcreteBox(new Point(-1, -4, 0), new Point(1, -0.5, 1.5));
+                    box = new ConcreteAABB(new Point(-1, -4, 0), new Point(1, -0.5, 1.5));
                 }
 
                 @Test
@@ -114,12 +114,12 @@ class FrustumTest {
 
             @Nested
             @DisplayName("when a box's side lays in a frustum plane but intersects no other planes")
-            class BoxSideLaysInAPlane {
+            class AABBSideLaysInAPlane {
 
                 @BeforeEach
                 void setup() {
                     // half the box's vertices lay on the back plane but intersect no other planes
-                    box = new ConcreteBox(new Point(0, -1, 0), new Point(1, 1, 1));
+                    box = new ConcreteAABB(new Point(0, -1, 0), new Point(1, 1, 1));
                 }
 
                 @Test
@@ -133,12 +133,12 @@ class FrustumTest {
 
             @Nested
             @DisplayName("when a box intersects two frustum planes")
-            class BoxIntersectsTwoPlanes {
+            class AABBIntersectsTwoPlanes {
 
                 @BeforeEach
                 void setup() {
                     // intersects the left plane and the back plane in the back-left corner
-                    box = new ConcreteBox(new Point(8, 8, 0), new Point(12, 12, 1));
+                    box = new ConcreteAABB(new Point(8, 8, 0), new Point(12, 12, 1));
                 }
 
                 @Test
@@ -151,11 +151,11 @@ class FrustumTest {
 
             @Nested
             @DisplayName("when the frustum is completely inside the box")
-            class FrustumInBox {
+            class FrustumInAABB {
 
                 @BeforeEach
                 void setup() {
-                    box = new ConcreteBox(new Point(-5, -15, -2), new Point(15, 5, 3));
+                    box = new ConcreteAABB(new Point(-5, -15, -2), new Point(15, 5, 3));
                 }
 
                 @Test
@@ -191,11 +191,11 @@ class FrustumTest {
 
             @Nested
             @DisplayName("when a box is completely inside the frustum")
-            class BoxInsideFrustum {
+            class AABBInsideFrustum {
 
                 @BeforeEach
                 void setup() {
-                    box = new ConcreteBox(new Point(2, -1, 1), new Point(3, 1.5, 1.5));
+                    box = new ConcreteAABB(new Point(2, -1, 1), new Point(3, 1.5, 1.5));
                 }
 
                 @Test
@@ -208,12 +208,12 @@ class FrustumTest {
 
             @Nested
             @DisplayName("when a box is outside the frustum")
-            class BoxOutsideFrustum {
+            class AABBOutsideFrustum {
 
                 @BeforeEach
                 void setup() {
                     // behind every plane except the top plane
-                    box = new ConcreteBox(new Point(-2, 2.5, -3), new Point(-1, 4, 0));
+                    box = new ConcreteAABB(new Point(-2, 2.5, -3), new Point(-1, 4, 0));
                 }
 
                 @Test
@@ -226,12 +226,12 @@ class FrustumTest {
 
             @Nested
             @DisplayName("when a box intersects the frustum")
-            class BoxIntersectsFrustum {
+            class AABBIntersectsFrustum {
 
                 @BeforeEach
                 void setup() {
                     // intersects only the right plane
-                    box = new ConcreteBox(new Point(2, -3, 1), new Point(3, -1.5, 2));
+                    box = new ConcreteAABB(new Point(2, -3, 1), new Point(3, -1.5, 2));
                 }
 
                 @Test
@@ -244,12 +244,12 @@ class FrustumTest {
 
             @Nested
             @DisplayName("when a box's side lays in a frustum plane but intersects no other planes")
-            class BoxSideLaysInAPlane {
+            class AABBSideLaysInAPlane {
 
                 @BeforeEach
                 void setup() {
                     // half the box's vertices lay on the left plane but intersect no other planes
-                    box = new ConcreteBox(new Point(1, 2, 0), new Point(2, 3, 1));
+                    box = new ConcreteAABB(new Point(1, 2, 0), new Point(2, 3, 1));
                 }
 
                 @Test
@@ -262,12 +262,12 @@ class FrustumTest {
 
             @Nested
             @DisplayName("when a box intersects two frustum planes")
-            class BoxIntersectsTwoPlanes {
+            class AABBIntersectsTwoPlanes {
 
                 @BeforeEach
                 void setup() {
                     // intersects the left plane and the back plane in the back-left corner
-                    box = new ConcreteBox(new Point(-0.5, -3, 1), new Point(0.5, -1, 1.1));
+                    box = new ConcreteAABB(new Point(-0.5, -3, 1), new Point(0.5, -1, 1.1));
                 }
 
                 @Test
@@ -280,11 +280,11 @@ class FrustumTest {
 
             @Nested
             @DisplayName("when the frustum is completely inside the box")
-            class FrustumInBox {
+            class FrustumInAABB {
 
                 @BeforeEach
                 void setup() {
-                    box = new ConcreteBox(new Point(-2, -3, -2), new Point(5, 3, 4));
+                    box = new ConcreteAABB(new Point(-2, -3, -2), new Point(5, 3, 4));
                 }
 
                 @Test
@@ -325,11 +325,11 @@ class FrustumTest {
 
             @Nested
             @DisplayName("when a box is completely inside the frustum")
-            class BoxInsideFrustum {
+            class AABBInsideFrustum {
 
                 @BeforeEach
                 void setup() {
-                    box = new ConcreteBox(new Point(-1, 2, -0.5), new Point(1, 3, 0.5));
+                    box = new ConcreteAABB(new Point(-1, 2, -0.5), new Point(1, 3, 0.5));
                 }
 
                 @Test
@@ -342,12 +342,12 @@ class FrustumTest {
 
             @Nested
             @DisplayName("when a box is outside the frustum")
-            class BoxOutsideFrustum {
+            class AABBOutsideFrustum {
 
                 @BeforeEach
                 void setup() {
                     // behind every plane except the top plane
-                    box = new ConcreteBox(new Point(2.5, -1, -1.5), new Point(3, -0.5, -1.25));
+                    box = new ConcreteAABB(new Point(2.5, -1, -1.5), new Point(3, -0.5, -1.25));
                 }
 
                 @Test
@@ -360,12 +360,12 @@ class FrustumTest {
 
             @Nested
             @DisplayName("when a box intersects the frustum")
-            class BoxIntersectsFrustum {
+            class AABBIntersectsFrustum {
 
                 @BeforeEach
                 void setup() {
                     // intersects only the right plane
-                    box = new ConcreteBox(new Point(-4, -1, 0), new Point(-0.5, 1, 1.5));
+                    box = new ConcreteAABB(new Point(-4, -1, 0), new Point(-0.5, 1, 1.5));
                 }
 
                 @Test
@@ -378,12 +378,12 @@ class FrustumTest {
 
             @Nested
             @DisplayName("when a box's side lays in a frustum plane but intersects no other planes")
-            class BoxSideLaysInAPlane {
+            class AABBSideLaysInAPlane {
 
                 @BeforeEach
                 void setup() {
                     // half the box's vertices lay on the back plane but intersect no other planes
-                    box = new ConcreteBox(new Point(-1, 0, 0), new Point(1, 1, 1));
+                    box = new ConcreteAABB(new Point(-1, 0, 0), new Point(1, 1, 1));
                 }
 
                 @Test
@@ -397,12 +397,12 @@ class FrustumTest {
 
             @Nested
             @DisplayName("when a box intersects two frustum planes")
-            class BoxIntersectsTwoPlanes {
+            class AABBIntersectsTwoPlanes {
 
                 @BeforeEach
                 void setup() {
                     // intersects the left plane and the back plane in the back-left corner
-                    box = new ConcreteBox(new Point(8, 8, 0), new Point(12, 12, 1));
+                    box = new ConcreteAABB(new Point(8, 8, 0), new Point(12, 12, 1));
                 }
 
                 @Test
@@ -415,11 +415,11 @@ class FrustumTest {
 
             @Nested
             @DisplayName("when the frustum is completely inside the box")
-            class FrustumInBox {
+            class FrustumInAABB {
 
                 @BeforeEach
                 void setup() {
-                    box = new ConcreteBox(new Point(-15, -5, -2), new Point(5, 15, 3));
+                    box = new ConcreteAABB(new Point(-15, -5, -2), new Point(5, 15, 3));
                 }
 
                 @Test
@@ -455,11 +455,11 @@ class FrustumTest {
 
             @Nested
             @DisplayName("when a box is completely inside the frustum")
-            class BoxInsideFrustum {
+            class AABBInsideFrustum {
 
                 @BeforeEach
                 void setup() {
-                    box = new ConcreteBox(new Point(-1, 2, 1), new Point(1.5, 3, 1.5));
+                    box = new ConcreteAABB(new Point(-1, 2, 1), new Point(1.5, 3, 1.5));
                 }
 
                 @Test
@@ -472,12 +472,12 @@ class FrustumTest {
 
             @Nested
             @DisplayName("when a box is outside the frustum")
-            class BoxOutsideFrustum {
+            class AABBOutsideFrustum {
 
                 @BeforeEach
                 void setup() {
                     // behind every plane except the top plane
-                    box = new ConcreteBox(new Point(2.5, -2, -3), new Point(4, -1, 0));
+                    box = new ConcreteAABB(new Point(2.5, -2, -3), new Point(4, -1, 0));
                 }
 
                 @Test
@@ -490,12 +490,12 @@ class FrustumTest {
 
             @Nested
             @DisplayName("when a box intersects the frustum")
-            class BoxIntersectsFrustum {
+            class AABBIntersectsFrustum {
 
                 @BeforeEach
                 void setup() {
                     // intersects only the right plane
-                    box = new ConcreteBox(new Point(-3, 2, 1), new Point(-1.5, 3, 2));
+                    box = new ConcreteAABB(new Point(-3, 2, 1), new Point(-1.5, 3, 2));
                 }
 
                 @Test
@@ -508,12 +508,12 @@ class FrustumTest {
 
             @Nested
             @DisplayName("when a box's side lays in a frustum plane but intersects no other planes")
-            class BoxSideLaysInAPlane {
+            class AABBSideLaysInAPlane {
 
                 @BeforeEach
                 void setup() {
                     // half the box's vertices lay on the left plane but intersect no other planes
-                    box = new ConcreteBox(new Point(2, 1, 0), new Point(3, 2, 1));
+                    box = new ConcreteAABB(new Point(2, 1, 0), new Point(3, 2, 1));
                 }
 
                 @Test
@@ -526,12 +526,12 @@ class FrustumTest {
 
             @Nested
             @DisplayName("when a box intersects two frustum planes")
-            class BoxIntersectsTwoPlanes {
+            class AABBIntersectsTwoPlanes {
 
                 @BeforeEach
                 void setup() {
                     // intersects the left plane and the back plane in the back-left corner
-                    box = new ConcreteBox(new Point(-3, -0.5, 1), new Point(-1, 0.5, 1.1));
+                    box = new ConcreteAABB(new Point(-3, -0.5, 1), new Point(-1, 0.5, 1.1));
                 }
 
                 @Test
@@ -544,11 +544,11 @@ class FrustumTest {
 
             @Nested
             @DisplayName("when the frustum is completely inside the box")
-            class FrustumInBox {
+            class FrustumInAABB {
 
                 @BeforeEach
                 void setup() {
-                    box = new ConcreteBox(new Point(-3, -2, -2), new Point(3, 5, 4));
+                    box = new ConcreteAABB(new Point(-3, -2, -2), new Point(3, 5, 4));
                 }
 
                 @Test
@@ -589,11 +589,11 @@ class FrustumTest {
 
             @Nested
             @DisplayName("when a box is completely inside the frustum")
-            class BoxInsideFrustum {
+            class AABBInsideFrustum {
 
                 @BeforeEach
                 void setup() {
-                    box = new ConcreteBox(new Point(-1, -0.5, 2), new Point(1, 0.5, 3));
+                    box = new ConcreteAABB(new Point(-1, -0.5, 2), new Point(1, 0.5, 3));
                 }
 
                 @Test
@@ -606,12 +606,12 @@ class FrustumTest {
 
             @Nested
             @DisplayName("when a box is outside the frustum")
-            class BoxOutsideFrustum {
+            class AABBOutsideFrustum {
 
                 @BeforeEach
                 void setup() {
                     // behind every plane except the top plane
-                    box = new ConcreteBox(new Point(2.5, -1.5, -1), new Point(3, -1.25, -0.5));
+                    box = new ConcreteAABB(new Point(2.5, -1.5, -1), new Point(3, -1.25, -0.5));
                 }
 
                 @Test
@@ -624,12 +624,12 @@ class FrustumTest {
 
             @Nested
             @DisplayName("when a box intersects the frustum")
-            class BoxIntersectsFrustum {
+            class AABBIntersectsFrustum {
 
                 @BeforeEach
                 void setup() {
                     // intersects only the right plane
-                    box = new ConcreteBox(new Point(-4, 0, -1), new Point(-0.5, 1.5, 1));
+                    box = new ConcreteAABB(new Point(-4, 0, -1), new Point(-0.5, 1.5, 1));
                 }
 
                 @Test
@@ -642,12 +642,12 @@ class FrustumTest {
 
             @Nested
             @DisplayName("when a box's side lays in a frustum plane but intersects no other planes")
-            class BoxSideLaysInAPlane {
+            class AABBSideLaysInAPlane {
 
                 @BeforeEach
                 void setup() {
                     // half the box's vertices lay on the back plane but intersect no other planes
-                    box = new ConcreteBox(new Point(-1, 0, 0), new Point(1, 1, 1));
+                    box = new ConcreteAABB(new Point(-1, 0, 0), new Point(1, 1, 1));
                 }
 
                 @Test
@@ -661,12 +661,12 @@ class FrustumTest {
 
             @Nested
             @DisplayName("when a box intersects two frustum planes")
-            class BoxIntersectsTwoPlanes {
+            class AABBIntersectsTwoPlanes {
 
                 @BeforeEach
                 void setup() {
                     // intersects the left plane and the back plane in the back-left corner
-                    box = new ConcreteBox(new Point(8, 0, 8), new Point(12, 1, 12));
+                    box = new ConcreteAABB(new Point(8, 0, 8), new Point(12, 1, 12));
                 }
 
                 @Test
@@ -679,11 +679,11 @@ class FrustumTest {
 
             @Nested
             @DisplayName("when the frustum is completely inside the box")
-            class FrustumInBox {
+            class FrustumInAABB {
 
                 @BeforeEach
                 void setup() {
-                    box = new ConcreteBox(new Point(-15, -2, -5), new Point(5, 3, 15));
+                    box = new ConcreteAABB(new Point(-15, -2, -5), new Point(5, 3, 15));
                 }
 
                 @Test
@@ -719,11 +719,11 @@ class FrustumTest {
 
             @Nested
             @DisplayName("when a box is completely inside the frustum")
-            class BoxInsideFrustum {
+            class AABBInsideFrustum {
 
                 @BeforeEach
                 void setup() {
-                    box = new ConcreteBox(new Point(-1, 1, 2), new Point(1.5, 1.5, 3));
+                    box = new ConcreteAABB(new Point(-1, 1, 2), new Point(1.5, 1.5, 3));
                 }
 
                 @Test
@@ -736,12 +736,12 @@ class FrustumTest {
 
             @Nested
             @DisplayName("when a box is outside the frustum")
-            class BoxOutsideFrustum {
+            class AABBOutsideFrustum {
 
                 @BeforeEach
                 void setup() {
                     // behind every plane except the top plane
-                    box = new ConcreteBox(new Point(2.5, -3, -2), new Point(4, 0, -1));
+                    box = new ConcreteAABB(new Point(2.5, -3, -2), new Point(4, 0, -1));
                 }
 
                 @Test
@@ -754,12 +754,12 @@ class FrustumTest {
 
             @Nested
             @DisplayName("when a box intersects the frustum")
-            class BoxIntersectsFrustum {
+            class AABBIntersectsFrustum {
 
                 @BeforeEach
                 void setup() {
                     // intersects only the right plane
-                    box = new ConcreteBox(new Point(-3, 1, 2), new Point(-1.5, 2, 3));
+                    box = new ConcreteAABB(new Point(-3, 1, 2), new Point(-1.5, 2, 3));
                 }
 
                 @Test
@@ -772,12 +772,12 @@ class FrustumTest {
 
             @Nested
             @DisplayName("when a box's side lays in a frustum plane but intersects no other planes")
-            class BoxSideLaysInAPlane {
+            class AABBSideLaysInAPlane {
 
                 @BeforeEach
                 void setup() {
                     // half the box's vertices lay on the left plane but intersect no other planes
-                    box = new ConcreteBox(new Point(2, 0, 1), new Point(3, 1, 2));
+                    box = new ConcreteAABB(new Point(2, 0, 1), new Point(3, 1, 2));
                 }
 
                 @Test
@@ -790,12 +790,12 @@ class FrustumTest {
 
             @Nested
             @DisplayName("when a box intersects two frustum planes")
-            class BoxIntersectsTwoPlanes {
+            class AABBIntersectsTwoPlanes {
 
                 @BeforeEach
                 void setup() {
                     // intersects the left plane and the back plane in the back-left corner
-                    box = new ConcreteBox(new Point(-3, 1, -0.5), new Point(-1, 2, 0.5));
+                    box = new ConcreteAABB(new Point(-3, 1, -0.5), new Point(-1, 2, 0.5));
                 }
 
                 @Test
@@ -808,11 +808,11 @@ class FrustumTest {
 
             @Nested
             @DisplayName("when the frustum is completely inside the box")
-            class FrustumInBox {
+            class FrustumInAABB {
 
                 @BeforeEach
                 void setup() {
-                    box = new ConcreteBox(new Point(-3, -2, -2), new Point(3, 4, 5));
+                    box = new ConcreteAABB(new Point(-3, -2, -2), new Point(3, 4, 5));
                 }
 
                 @Test

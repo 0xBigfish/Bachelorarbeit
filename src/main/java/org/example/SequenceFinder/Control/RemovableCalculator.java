@@ -1,6 +1,7 @@
 package org.example.SequenceFinder.Control;
 
-import org.example.SequenceFinder.Model.GeometricObjects.Box;
+import org.apache.commons.math3.geometry.euclidean.threed.Plane;
+import org.example.SequenceFinder.Model.GeometricObjects.AABB;
 import org.example.SequenceFinder.Model.Graph.Graph;
 import org.example.SequenceFinder.Model.Octree.Frustum;
 import org.example.SequenceFinder.Model.Octree.LooseOctree;
@@ -16,7 +17,7 @@ import java.util.Collection;
  *
  * @see Graph
  */
-public class RemovableCalculator<T extends Box> {
+public class RemovableCalculator<T extends AABB> {
 
     /**
      * the octree where the boxes are stored
@@ -65,7 +66,7 @@ public class RemovableCalculator<T extends Box> {
      * </ul>
      *
      * @param opDirsCanAlternate whether the operating direction can alternate. This means that is allowed to remove a
-     *                           Box from one direction, and the next Box from another direction, i.e. remove BoxA from
+     *                           box from one direction, and the next box from another direction, i.e. remove BoxA from
      *                           the left direction and then remove BoxB from the right direction.
      * @return a merged graph as described above
      */
@@ -80,12 +81,16 @@ public class RemovableCalculator<T extends Box> {
      * For example: when the oparting direction is 'left', a frustum is created from the left side of the box pointing
      * towards the left direction.
      *
-     * @param box   the box for which the frustum will be created
+     * @param aabb  the aabb for which the frustum will be created
      * @param opDir the operating direction
-     * @return a frustum pointing from the box towards the operating direction
+     * @return a frustum pointing from the aabb towards the operating direction
      */
-    private Frustum createFrustum(Box box, OperatingDirection opDir) {
-        // to be implemented
+    private Frustum createFrustum(AABB aabb, OperatingDirection opDir) {
+        // the back of the frustum is the side of the aabb that is facing towards the operating direction
+        Plane back = aabb.getSide(opDir);
+
+        // FIXME: wrong, just to have an working example
+        // Plane front = octree.
         return null;
     }
 

@@ -8,15 +8,13 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashMap;
 
-import static org.example.SequenceFinder.Model.GeometricObjects.Box.BoxVertex.*;
-
-//TODO: rename to AABBox (axis aligned bounding box) and write test to ensure it is axis aligned
-
+import static org.example.SequenceFinder.Model.GeometricObjects.AABB.BoxVertex.*;
 
 /**
- * A box-shaped object described by two vertices.
+ * An axis-aligned bounding box (AABB) is a box-shaped object described by two vertices, where the box is aligned with
+ * each coordinate axis.
  */
-public abstract class Box {
+public class AABB {
 
     /**
      * Enum for the vertices of the box
@@ -40,7 +38,7 @@ public abstract class Box {
      */
     int decimalPlaces = 5;
 
-    public Box(Point vertA, Point vertB) {
+    public AABB(Point vertA, Point vertB) {
         this.vertexA = vertA;
         this.vertexB = vertB;
 
@@ -55,7 +53,7 @@ public abstract class Box {
     }
 
     /**
-     * Calculate the center of this Box
+     * Calculate the center of this AABB
      *
      * @return the center of the box rounded to 5 decimals
      */
@@ -152,7 +150,7 @@ public abstract class Box {
 
     @Override
     public String toString() {
-        return "Box{" +
+        return "AABB{" +
                 "vertexA=" + vertexA + ", " +
                 "vertexB=" + vertexB +
                 '}';

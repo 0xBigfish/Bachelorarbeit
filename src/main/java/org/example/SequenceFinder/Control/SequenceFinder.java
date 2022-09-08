@@ -1,7 +1,7 @@
 package org.example.SequenceFinder.Control;
 
 import org.example.SequenceFinder.Control.Cost.CostFunction;
-import org.example.SequenceFinder.Model.GeometricObjects.Box;
+import org.example.SequenceFinder.Model.GeometricObjects.AABB;
 import org.example.SequenceFinder.Model.Graph.Graph;
 import org.example.SequenceFinder.Model.Octree.LooseOctree;
 import org.example.SequenceFinder.OperatingDirection;
@@ -23,7 +23,7 @@ import java.util.List;
  *
  * @see CostFunction
  */
-public class SequenceFinder<T extends Box> {
+public class SequenceFinder<T extends AABB> {
 
     /**
      * The max depth of the loose octree

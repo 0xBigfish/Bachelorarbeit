@@ -1,6 +1,6 @@
 package org.example.SequenceFinder.Model.Octree;
 
-import org.example.SequenceFinder.Model.GeometricObjects.Box;
+import org.example.SequenceFinder.Model.GeometricObjects.AABB;
 import org.example.SequenceFinder.Model.GeometricObjects.Point;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -34,7 +34,7 @@ public class LooseOctreeTest {
     @DisplayName("given a LooseOctree with maxDepth = 3 and worldSize = 8")
     class MaxDepth3WorldSize8 {
 
-        LooseOctree<Box> looseOctree;
+        LooseOctree<AABB> looseOctree;
 
         int worldSize = 8;
         int maxDepth = 3;
@@ -50,11 +50,11 @@ public class LooseOctreeTest {
          * @param nodes the nodes at the given height
          * @return the total number of nodes over all dimensions
          */
-        int countTotalNodes(OctreeNode<Box>[][][] nodes) {
+        int countTotalNodes(OctreeNode<AABB>[][][] nodes) {
             int counter = 0;
-            for (OctreeNode<Box>[][] x : nodes) {
-                for (OctreeNode<Box>[] y : x) {
-                    for (OctreeNode<Box> ignored : y) {
+            for (OctreeNode<AABB>[][] x : nodes) {
+                for (OctreeNode<AABB>[] y : x) {
+                    for (OctreeNode<AABB> ignored : y) {
                         counter++;
                     }
                 }
@@ -68,16 +68,16 @@ public class LooseOctreeTest {
          * @param nodes the nodes of the loose octree
          * @return true when all three dimensions are equally sized, false otherwise
          */
-        boolean equallySizedDimensions(OctreeNode<Box>[][][] nodes) {
+        boolean equallySizedDimensions(OctreeNode<AABB>[][][] nodes) {
             // all dimensions must be equally sized, doesn't matter which one is chosen to be compared against.
             // here the x dimension is chosen.
             int referenceDimension = nodes.length;
 
-            for (OctreeNode<Box>[][] y : nodes) {
+            for (OctreeNode<AABB>[][] y : nodes) {
                 if (y.length != referenceDimension) {
                     return false;
                 }
-                for (OctreeNode<Box>[] z : y) {
+                for (OctreeNode<AABB>[] z : y) {
                     if (z.length != referenceDimension) {
                         return false;
                     }
@@ -87,15 +87,15 @@ public class LooseOctreeTest {
         }
 
         /**
-         * Add the given box to the octree and assert that it has been added. Also assert that the box only contains
-         * the expected content
+         * Add the given box to the octree and assert that it has been added. Also assert that the box only contains the
+         * expected content
          *
          * @param boxToAdd                         the box that will be added to the LooseOctree
          * @param nodeWhereItShouldHaveBeenAddedTo the node in the octree where the box should have been added to
          * @param expectedContent                  the expected content of the specified node
          */
-        void addBoxAndAssertBoxAddedToOctree(Box boxToAdd, OctreeNode<Box> nodeWhereItShouldHaveBeenAddedTo,
-                                             HashSet<Box> expectedContent) {
+        void addBoxAndAssertBoxAddedToOctree(AABB boxToAdd, OctreeNode<AABB> nodeWhereItShouldHaveBeenAddedTo,
+                                             HashSet<AABB> expectedContent) {
             assertAll(
                     () -> assertTrue(looseOctree.insertObject(boxToAdd)),
                     () -> assertEquals(expectedContent, nodeWhereItShouldHaveBeenAddedTo.getContent())
@@ -562,7 +562,7 @@ public class LooseOctreeTest {
                 @DisplayName("calcIndex tests")
                 class CalcIndexTests {
                     @Mock
-                    Box boxMock;
+                    AABB boxMock;
 
                     @BeforeEach
                     void setup() {
@@ -606,7 +606,7 @@ public class LooseOctreeTest {
                 @DisplayName("calcIndex tests")
                 class CalcIndexTests {
                     @Mock
-                    Box boxMock;
+                    AABB boxMock;
 
                     @BeforeEach
                     void setup() {
@@ -650,7 +650,7 @@ public class LooseOctreeTest {
                 @DisplayName("calcIndex tests")
                 class CalcIndexTests {
                     @Mock
-                    Box boxMock;
+                    AABB boxMock;
 
                     @BeforeEach
                     void setup() {
@@ -848,7 +848,7 @@ public class LooseOctreeTest {
                 @DisplayName("calcIndex tests")
                 class CalcIndexTests {
                     @Mock
-                    Box boxMock;
+                    AABB boxMock;
 
                     @BeforeEach
                     void setup() {
@@ -1023,7 +1023,7 @@ public class LooseOctreeTest {
                 @DisplayName("calcIndex tests")
                 class CalcIndexTests {
                     @Mock
-                    Box boxMock;
+                    AABB boxMock;
 
                     @BeforeEach
                     void setup() {
@@ -1157,7 +1157,7 @@ public class LooseOctreeTest {
                 @DisplayName("calcIndex tests")
                 class CalcIndexTests {
                     @Mock
-                    Box boxMock;
+                    AABB boxMock;
 
                     @BeforeEach
                     void setup() {
@@ -1268,7 +1268,7 @@ public class LooseOctreeTest {
                 @DisplayName("calcIndex tests")
                 class CalcIndexTests {
                     @Mock
-                    Box boxMock;
+                    AABB boxMock;
 
                     @BeforeEach
                     void setup() {
@@ -1374,7 +1374,7 @@ public class LooseOctreeTest {
                 @DisplayName("calcIndex tests")
                 class CalcIndexTests {
                     @Mock
-                    Box boxMock;
+                    AABB boxMock;
 
                     @BeforeEach
                     void setup() {
@@ -1458,7 +1458,7 @@ public class LooseOctreeTest {
                 @DisplayName("calcIndex tests")
                 class CalcIndexTests {
                     @Mock
-                    Box boxMock;
+                    AABB boxMock;
 
                     @BeforeEach
                     void setup() {
@@ -1487,32 +1487,32 @@ public class LooseOctreeTest {
         class InsertionTests {
 
             /**
-             * Concrete implementation of the abstract {@linkplain Box} class
+             * Concrete implementation of the abstract {@linkplain AABB} class
              */
-            class ConcreteBox extends Box {
-                ConcreteBox(Point vertA, Point vertB) {
+            class ConcreteAABB extends AABB {
+                ConcreteAABB(Point vertA, Point vertB) {
                     super(vertA, vertB);
                 }
             }
 
 
-            Box box;
+            AABB box;
 
 
             @Nested
-            @DisplayName("One Box")
-            class OneBoxTests {
+            @DisplayName("One AABB")
+            class OneAABBTests {
 
-                HashSet<Box> nodeContent = new HashSet<>();
+                HashSet<AABB> nodeContent = new HashSet<>();
 
                 @Test
-                @DisplayName("Box((1, 2, 3), (3, 2, 1)) should be inserted at [3][6][6][6]")
+                @DisplayName("AABB((1, 2, 3), (3, 2, 1)) should be inserted at [3][6][6][6]")
                 void box123321() {
                     // center at (2, 2, 2), dimensions: 2x2x2, radius: 1.0
                     Point pointA = new Point(1, 1.5, 1);
                     Point pointB = new Point(3, 2.5, 3);
 
-                    box = new ConcreteBox(pointA, pointB);
+                    box = new ConcreteAABB(pointA, pointB);
                     nodeContent.add(box);
 
                     // radius 1.0  => depth = 3
@@ -1524,13 +1524,13 @@ public class LooseOctreeTest {
                  * The object is not fully enclosed in the world
                  */
                 @Test
-                @DisplayName("Box((1, 2, 3)(4, 5, 6)) should throw an exception")
+                @DisplayName("AABB((1, 2, 3)(4, 5, 6)) should throw an exception")
                 void box123456() {
                     // center at (2.5, 3.5, 4.5), dimensions: 3x3x3, radius: 1.5
                     Point pointA = new Point(1, 2, 3);
                     Point pointB = new Point(4, 5, 6);
 
-                    box = new ConcreteBox(pointA, pointB);
+                    box = new ConcreteAABB(pointA, pointB);
 
                     // radius 1.5  => depth = 2
                     // center (2.5, 3.5, 4.5) => indices x: 6, y: error, z: error
@@ -1538,13 +1538,13 @@ public class LooseOctreeTest {
                 }
 
                 @Test
-                @DisplayName("Box((2, -2, 1), (-1, 3, -3)) should be inserted at [1][1][1][0]")
+                @DisplayName("AABB((2, -2, 1), (-1, 3, -3)) should be inserted at [1][1][1][0]")
                 void box2Neg21Neg13Neg3() {
                     // center at (0.5, 0.5, -1), dimensions: 3x5x4, radius: 2.5
                     Point pointA = new Point(-1, -2, -3);
                     Point pointB = new Point(2, 3, 1);
 
-                    box = new ConcreteBox(pointA, pointB);
+                    box = new ConcreteAABB(pointA, pointB);
                     nodeContent.add(box);
 
                     // radius 2.5  => depth = 1
@@ -1553,13 +1553,13 @@ public class LooseOctreeTest {
                 }
 
                 @Test
-                @DisplayName("Box((-2.3, 2.5, 1.3), (1.0, -1.2, -0.66)) should be inserted at [2][1][2][2]")
+                @DisplayName("AABB((-2.3, 2.5, 1.3), (1.0, -1.2, -0.66)) should be inserted at [2][1][2][2]")
                 void boxNeg23251310Neg12Neg066() {
                     // center at (-0.65, 0.6, 0.32), dimensions: 3.3 x 3.7 x 1.96, radius: 1.85
                     Point pointA = new Point(-2.3, -1.2, -0.66);
                     Point pointB = new Point(1.0, 2.5, 1.3);
 
-                    box = new ConcreteBox(pointA, pointB);
+                    box = new ConcreteAABB(pointA, pointB);
                     nodeContent.add(box);
 
                     // radius 1.85  => depth = 2
@@ -1568,13 +1568,13 @@ public class LooseOctreeTest {
                 }
 
                 @Test
-                @DisplayName("Box(1.65,-3.4,-0.7)(2.99,3.0,0.00000001) should throw an exception")
+                @DisplayName("AABB(1.65,-3.4,-0.7)(2.99,3.0,0.00000001) should throw an exception")
                 void box165Neg34Neg072993000000001() {
                     // center at (2.32, 0.2, -0.35), dimensions: 4.64 x 6.4 x 0.69999999, radius: 3.2
                     Point pointA = new Point(1.65, -3.4, -0.7);
                     Point pointB = new Point(2.99, 3.0, 0.00000001);
 
-                    box = new ConcreteBox(pointA, pointB);
+                    box = new ConcreteAABB(pointA, pointB);
 
                     // radius 3.2  => depth = 1
                     // center (2.32, 0.2, -0.35) => indices x: error, y: 1, z: 0
@@ -1587,9 +1587,9 @@ public class LooseOctreeTest {
             @DisplayName("Two Boxes")
             class TwoBoxesTests {
 
-                Box box2;
-                HashSet<Box> contentNode1 = new HashSet<>();
-                HashSet<Box> contentNode2 = new HashSet<>();
+                AABB box2;
+                HashSet<AABB> contentNode1 = new HashSet<>();
+                HashSet<AABB> contentNode2 = new HashSet<>();
 
                 @Test
                 @DisplayName("Insert two boxes in the same node")
@@ -1605,10 +1605,10 @@ public class LooseOctreeTest {
 
                     // radius 0.5 => depth = 3
                     // center (1.0, 2.0, 0.8) => indices x: 5, y: 6, z: 4
-                    box = new ConcreteBox(pointA1, pointB1);
+                    box = new ConcreteAABB(pointA1, pointB1);
                     // radius 0.5  => depth = 3
                     // center (1.98, 2.0, 0.8) => indices x: 5, y: 6, z: 4
-                    box2 = new ConcreteBox(pointA2, pointB2);
+                    box2 = new ConcreteAABB(pointA2, pointB2);
 
                     contentNode1.add(box);
                     contentNode2.add(box);
@@ -1631,8 +1631,8 @@ public class LooseOctreeTest {
                     Point pointA2 = new Point(-2.3, -1.2, -0.66);
                     Point pointB2 = new Point(1.0, 2.5, 1.3);
 
-                    box = new ConcreteBox(pointA1, pointB1);
-                    box2 = new ConcreteBox(pointA2, pointB2);
+                    box = new ConcreteAABB(pointA1, pointB1);
+                    box2 = new ConcreteAABB(pointA2, pointB2);
 
                     contentNode1.add(box);
                     contentNode2.add(box);
@@ -1659,10 +1659,10 @@ public class LooseOctreeTest {
 
                     // radius 1.1 => depth = 2
                     // center (0.14485, 2.6, -2.0811) => indices x: 2, y: 3, z: 0
-                    box = new ConcreteBox(pointA1, pointB1);
+                    box = new ConcreteAABB(pointA1, pointB1);
                     // radius 1.6995  => depth = 2
                     // center (2.0583, 1.7005, 0.16) => indices x: 3, y: 2, z: 2
-                    box2 = new ConcreteBox(pointA2, pointB2);
+                    box2 = new ConcreteAABB(pointA2, pointB2);
 
                     contentNode1.add(box);
                     contentNode2.add(box2);
@@ -1686,10 +1686,10 @@ public class LooseOctreeTest {
 
                     // radius 1.5 => depth = 2
                     // center (-2.5, -0.5, 0.5) => indices x: 0, y: 1, z: 2
-                    box = new ConcreteBox(pointA1, pointB1);
+                    box = new ConcreteAABB(pointA1, pointB1);
                     // radius 0.5  => depth = 3
                     // center (-3.5, -2.5, -1.5) => indices x: 0, y: 1, z: 2
-                    box2 = new ConcreteBox(pointA2, pointB2);
+                    box2 = new ConcreteAABB(pointA2, pointB2);
 
                     contentNode1.add(box);
                     contentNode2.add(box2);
@@ -1713,10 +1713,10 @@ public class LooseOctreeTest {
 
                     // radius 1.5 => depth = 2
                     // center (-2.5, -0.5, 0.5) => indices x: 0, y: 1, z: 2
-                    box = new ConcreteBox(pointA1, pointB1);
+                    box = new ConcreteAABB(pointA1, pointB1);
                     // radius 0.5  => depth = 3
                     // center (3.5, 2.5, 1.5) => indices x: 7 y: 6, z: 5
-                    box2 = new ConcreteBox(pointA2, pointB2);
+                    box2 = new ConcreteAABB(pointA2, pointB2);
 
                     contentNode1.add(box);
                     contentNode2.add(box2);

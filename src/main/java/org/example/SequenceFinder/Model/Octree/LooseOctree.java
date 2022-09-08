@@ -1,6 +1,6 @@
 package org.example.SequenceFinder.Model.Octree;
 
-import org.example.SequenceFinder.Model.GeometricObjects.Box;
+import org.example.SequenceFinder.Model.GeometricObjects.AABB;
 import org.example.SequenceFinder.Model.GeometricObjects.Point;
 
 /**
@@ -14,9 +14,9 @@ import org.example.SequenceFinder.Model.GeometricObjects.Point;
  * (ISBN 1-58450-049-2). <br>
  * A first introduction can be found on his website: http://www.tulrich.com/geekstuff/partitioning.html
  *
- * @param <T> a box shaped object.
+ * @param <T> a box shaped object which is aligned with the coordinate axes.
  */
-public class LooseOctree<T extends Box> {
+public class LooseOctree<T extends AABB> {
 
     /**
      * the maximum depth of the octree
@@ -24,16 +24,17 @@ public class LooseOctree<T extends Box> {
     private final int maxDepth;
 
     /**
-     * array holding all objects in the octree. <br>
-     * The first dimension represents depth, the second, third dimension and fourth
-     * represent the x,y,z index in the tree. <br>
-     * <br>
+     * array holding all objects in the octree.
+     * <p>
+     * The first dimension represents depth, the second, third dimension and fourth represent the x,y,z index in the
+     * tree.
+     * <p>
      * There should be no item(s) at depth 0, as items are inserted based on their radius and position. Nodes are only
      * places at depth 0 if their radius is larger than worldSize / 2, but then the object would be bigger than the
      * entire world, which is a paradox.
      */
     // protected to enable test class access to this field
-    protected OctreeNode<Box>[][][][] nodes;
+    protected OctreeNode<AABB>[][][][] nodes;
 
     /**
      * size of the world. Large enough to fit every object into it. Should be a multiple of 2
@@ -61,7 +62,7 @@ public class LooseOctree<T extends Box> {
      * @param maxDepth  the maximum depth of the LooseOctree
      * @param worldSize the size of the world, must be big enough to including all objects.
      */
-    // suppresses unchecked assigned from OctreeNode to OctreeNode<Box>.
+    // suppresses unchecked assigned from OctreeNode to OctreeNode<AABB>.
     // No problem because the array is only used internally
     @SuppressWarnings("unchecked")
     public LooseOctree(int maxDepth, int worldSize) {

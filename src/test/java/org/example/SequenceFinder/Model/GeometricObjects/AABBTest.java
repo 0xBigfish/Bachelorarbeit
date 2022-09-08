@@ -9,13 +9,13 @@ import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 
-import static org.example.SequenceFinder.Model.GeometricObjects.Box.BoxVertex.*;
+import static org.example.SequenceFinder.Model.GeometricObjects.AABB.BoxVertex.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class BoxTest {
+class AABBTest {
 
-    HashMap<Box.BoxVertex, Point> expectedVertices = new HashMap<>();
+    HashMap<AABB.BoxVertex, Point> expectedVertices = new HashMap<>();
     /**
      * The tolerance below which points on a plane are considered identical
      */
@@ -23,19 +23,19 @@ class BoxTest {
 
 
     /**
-     * Concrete Box Implementation. <br> Used to test the abstract Box class
+     * Concrete AABB Implementation. <br> Used to test the abstract AABB class
      */
-    static class ConcreteBox extends Box {
-        public ConcreteBox(Point vertA, Point vertB) {
+    static class ConcreteAABB extends AABB {
+        public ConcreteAABB(Point vertA, Point vertB) {
             super(vertA, vertB);
         }
     }
 
 
     @Nested
-    @DisplayName("given a Box((0,0,0)(1,1,1))")
-    class Box000111 {
-        Box box = new ConcreteBox(new Point(0, 0, 0), new Point(1, 1, 1));
+    @DisplayName("given a AABB((0,0,0)(1,1,1))")
+    class AABB000111 {
+        AABB box = new ConcreteAABB(new Point(0, 0, 0), new Point(1, 1, 1));
 
         @Test
         @DisplayName("then the center should be at (0.5, 0.5, 0.5)")
@@ -136,9 +136,9 @@ class BoxTest {
 
 
     @Nested
-    @DisplayName("given a Box(-1, -2, -3)(1, 2, 3)")
-    class BoxNeg1Neg2Neg3123 {
-        Box box = new ConcreteBox(new Point(-1, -2, -3), new Point(1, 2, 3));
+    @DisplayName("given a AABB(-1, -2, -3)(1, 2, 3)")
+    class AABBNeg1Neg2Neg3123 {
+        AABB box = new ConcreteAABB(new Point(-1, -2, -3), new Point(1, 2, 3));
 
         @Test
         @DisplayName("then the center should be at (0, 0, 0)")
@@ -239,9 +239,9 @@ class BoxTest {
 
 
     @Nested
-    @DisplayName("given a Box(-1,-2,-3)(-0.5,-0.5,-0.5)")
-    class BoxNeg1Neg2Neg3Neg05Neg05Neg05 {
-        Box box = new ConcreteBox(new Point(-1, -2, -3), new Point(-0.5, -0.5, -0.5));
+    @DisplayName("given a AABB(-1,-2,-3)(-0.5,-0.5,-0.5)")
+    class AABBNeg1Neg2Neg3Neg05Neg05Neg05 {
+        AABB box = new ConcreteAABB(new Point(-1, -2, -3), new Point(-0.5, -0.5, -0.5));
 
         @Test
         @DisplayName("then the center should be at (-0.75, -1.25, -1.75)")
@@ -342,9 +342,9 @@ class BoxTest {
 
 
     @Nested
-    @DisplayName("given a Box(0.1948, 85.8984, -91.5)(5.5, 1834.356, 0.0000000000001)")
-    class Box019481834356Neg915558589840 {
-        Box box = new ConcreteBox(new Point(0.1948, 85.8984, -91.5),
+    @DisplayName("given a AABB(0.1948, 85.8984, -91.5)(5.5, 1834.356, 0.0000000000001)")
+    class AABB019481834356Neg915558589840 {
+        AABB box = new ConcreteAABB(new Point(0.1948, 85.8984, -91.5),
                 new Point(5.5, 1834.356, 0.0000000000001));
 
         @Test
@@ -359,7 +359,6 @@ class BoxTest {
             assertEquals(874.2288, box.calcRadius());
         }
 
-        // given  a box Box(0.1948, 1834.356, -91.5)(5.5, 85.8984, 0.0000000000001)
         @Test
         @DisplayName("then the vertices should be at (0.1948, 85.8984, -91.5), (5.5, 85.8984, -91.5), " +
                 "(0.1948, 1834.356, -91.5), (5.5, 1834.356, -91.5), (0.1948, 85.8984, 0.0000000000001) " +
@@ -457,9 +456,9 @@ class BoxTest {
 
 
     @Nested
-    @DisplayName("given a Box((-2.3, -1.2, -0.66), (1.0, 2.5, 1.3))")
-    class BoxNeg23251310Neg12Neg066 {
-        Box box = new ConcreteBox(new Point(-2.3, -1.2, -0.66), new Point(1.0, 2.5, 1.3));
+    @DisplayName("given a AABB((-2.3, -1.2, -0.66), (1.0, 2.5, 1.3))")
+    class AABBNeg23251310Neg12Neg066 {
+        AABB box = new ConcreteAABB(new Point(-2.3, -1.2, -0.66), new Point(1.0, 2.5, 1.3));
 
         @Test
         @DisplayName("then the center should be at (-0.65, 0.65, 0.32)")
@@ -560,9 +559,9 @@ class BoxTest {
 
 
     @Nested
-    @DisplayName("given a Box((1.6666, 0.001, 0.98), (2.45, 3.4, 1.3))")
-    class Box1666600011324534098 {
-        Box box = new ConcreteBox(new Point(1.6666, 0.001, 0.98), new Point(2.45, 3.4, 1.3));
+    @DisplayName("given a AABB((1.6666, 0.001, 0.98), (2.45, 3.4, 1.3))")
+    class AABB1666600011324534098 {
+        AABB box = new ConcreteAABB(new Point(1.6666, 0.001, 0.98), new Point(2.45, 3.4, 1.3));
 
         @Test
         @DisplayName("then the center should be at (2.0583, 1.7005, 1.14)")
