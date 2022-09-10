@@ -1,5 +1,7 @@
 package org.example.SequenceFinder.Model.Octree;
 
+import org.example.SequenceFinder.Model.GeometricObjects.AABB;
+
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -14,12 +16,16 @@ import java.util.HashSet;
 class OctreeNode<T> {
 
     private final HashSet<T> content;
+    private final AABB boundingBox;
+    private final HashSet<OctreeNode<T>> children;
 
     /**
      * Create a new OctreeNode
      */
-    OctreeNode() {
+    OctreeNode(AABB boundingBox) {
         this.content = new HashSet<>();
+        this.boundingBox = boundingBox;
+        this.children = new HashSet<>();
     }
 
     /**
@@ -40,6 +46,23 @@ class OctreeNode<T> {
         this.content.addAll(toBeInserted);
     }
 
+    /**
+     * Add the given child to this node
+     *
+     * @param child the child
+     */
+    private void addChild(OctreeNode<T> child) {
+        this.children.add(child);
+    }
+
+    /**
+     * Set the parent of this node.
+     *
+     * @param parent the parent
+     */
+    void setParent(OctreeNode<T> parent) {
+        parent.addChild(this);
+    }
 
     /**
      * Return the content of this OctreeNode
@@ -48,5 +71,9 @@ class OctreeNode<T> {
      */
     HashSet<T> getContent() {
         return content;
+    }
+
+    AABB getAABB() {
+        return boundingBox;
     }
 }

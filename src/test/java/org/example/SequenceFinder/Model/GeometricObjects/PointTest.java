@@ -34,6 +34,12 @@ class PointTest {
         void equalItself() {
             assertEquals(new Point(1, 2, 3), point);
         }
+
+        @Test
+        @DisplayName("when adding another Point (1,2,3) then the result should be (2,4,6)")
+        void add() {
+            assertEquals(new Point(2, 4, 6), point.add(new Point(1, 2, 3)));
+        }
     }
 
 
@@ -56,6 +62,13 @@ class PointTest {
         @DisplayName("then the Point should be equal to another Point (0.1848, 1238135423, -0.01)")
         void equalItself() {
             assertEquals(new Point(0.184828472, 1238135423, -0.01), point);
+        }
+
+        @Test
+        @DisplayName("when adding another Point (0.33, 1.23, 0) then the result should be " +
+                "(0.5148, 1238135424.23, -0.01)")
+        void add() {
+            assertEquals(new Point(0.514828472, 1238135424.23, -0.01), point.add(new Point(0.33, 1.23, 0)));
         }
     }
 }

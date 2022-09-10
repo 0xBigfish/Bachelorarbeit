@@ -40,7 +40,17 @@ public class Point {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return "(" + x + ", " + y + ", " + z + ")";
+    }
+
+    /**
+     * Add the given Point to this Point
+     *
+     * @param otherPoint the other point
+     * @return the resulting Point
+     */
+    public Point add(Point otherPoint) {
+        return new Point(this.x + otherPoint.x, this.y + otherPoint.y, this.z + otherPoint.z);
     }
 }

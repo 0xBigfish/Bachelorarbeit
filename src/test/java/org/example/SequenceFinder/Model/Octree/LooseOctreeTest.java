@@ -23,9 +23,8 @@ public class LooseOctreeTest {
 
     /**
      * looseness value of the loose Octree. Some formulas need k=2, otherwise the mathematical transformation wouldn't
-     * work and these formulas would be different.<br>
-     * According to Thatcher Ulrich in "Game Programming Gems (2000), Loose Octrees" a value of k=2 is a good balance
-     * between loose but not too loose.
+     * work and these formulas would be different.<br> According to Thatcher Ulrich in "Game Programming Gems (2000),
+     * Loose Octrees" a value of k=2 is a good balance between loose but not too loose.
      */
     double k = 2;
 
@@ -135,6 +134,204 @@ public class LooseOctreeTest {
             );
         }
 
+        @Nested
+        @DisplayName("bounding cube tests")
+        class BoundingCubeTests {
+
+            int depth;
+
+
+            @Nested
+            @DisplayName("given depth of 0")
+            class Depth0 {
+                @BeforeEach
+                void setup() {
+                    depth = 0;
+                }
+
+                @Test
+                @DisplayName("then the loose bounding cube of the root should be from (-8,-8,-8) to (8,8,8)")
+                void boundingCube() {
+                    AABB boundingCube = new AABB(new Point(-8, -8, -8), new Point(8, 8, 8));
+
+                    assertEquals(boundingCube, looseOctree.nodes[depth][0][0][0].getAABB());
+                }
+            }
+
+
+            @Nested
+            @DisplayName("given depth of 1")
+            class Depth1 {
+
+                @BeforeEach
+                void setup() {
+                    depth = 1;
+                }
+
+                @Test
+                @DisplayName("then the spacing to the next node should be 4")
+                void spacing() {
+                    Point centerFrontBotLeft = looseOctree.nodes[depth][0][0][0].getAABB().calcCenter();
+                    Point centerFrontTopLeft = looseOctree.nodes[depth][0][0][1].getAABB().calcCenter();
+
+                    assertAll(
+                            () -> assertEquals(0, centerFrontTopLeft.x - centerFrontBotLeft.x),
+                            () -> assertEquals(0, centerFrontTopLeft.y - centerFrontBotLeft.y),
+                            () -> assertEquals(4, centerFrontTopLeft.z - centerFrontBotLeft.z)
+                    );
+                }
+
+                @Test
+                @DisplayName("then the loose bounding cube of node[1][0][0][0] should be from (-6,-6,-6) to (2,2,2)")
+                void boundingCube1_0_0_0() {
+                    AABB boundingCube = new AABB(new Point(-6, -6, -6), new Point(2, 2, 2));
+
+                    assertEquals(boundingCube, looseOctree.nodes[depth][0][0][0].getAABB());
+                }
+
+                @Test
+                @DisplayName("then the loose bounding cube of node[1][0][0][1] should be from (-6,-6,-2) to (2,2,6)")
+                void boundingCube1_0_0_1() {
+                    AABB boundingCube = new AABB(new Point(-6, -6, -2), new Point(2, 2, 6));
+
+                    assertEquals(boundingCube, looseOctree.nodes[depth][0][0][1].getAABB());
+                }
+
+                @Test
+                @DisplayName("then the loose bounding cube of node[1][0][1][0] should be from (-6,-2,-6) to (2,6,2)")
+                void boundingCube1_0_1_0() {
+                    AABB boundingCube = new AABB(new Point(-6, -2, -6), new Point(2, 6, 2));
+
+                    assertEquals(boundingCube, looseOctree.nodes[depth][0][1][0].getAABB());
+                }
+
+                @Test
+                @DisplayName("then the loose bounding cube of node[1][0][1][1] should be from (-6,-2,-2) to (2,6,6)")
+                void boundingCube1_0_1_1() {
+                    AABB boundingCube = new AABB(new Point(-6, -2, -2), new Point(2, 6, 6));
+
+                    assertEquals(boundingCube, looseOctree.nodes[depth][0][1][1].getAABB());
+                }
+
+                @Test
+                @DisplayName("then the loose bounding cube of node[1][1][0][0] should be from (-2,-6,-6) to (6,2,2)")
+                void boundingCube1_1_0_0() {
+                    AABB boundingCube = new AABB(new Point(-2, -6, -6), new Point(6, 2, 2));
+
+                    assertEquals(boundingCube, looseOctree.nodes[depth][1][0][0].getAABB());
+                }
+
+                @Test
+                @DisplayName("then the loose bounding cube of node[1][1][0][1] should be from (-2,-6,-2) to (6,2,6)")
+                void boundingCube1_1_0_1() {
+                    AABB boundingCube = new AABB(new Point(-2, -6, -2), new Point(6, 2, 6));
+
+                    assertEquals(boundingCube, looseOctree.nodes[depth][1][0][1].getAABB());
+                }
+
+                @Test
+                @DisplayName("then the bounding cube of node[1][1][1][0] should be from (-2,-2,-6) to (6,6,2)")
+                void boundingCube1_1_1_0() {
+                    AABB boundingCube = new AABB(new Point(-2, -2, -6), new Point(6, 6, 2));
+
+                    assertEquals(boundingCube, looseOctree.nodes[depth][1][1][0].getAABB());
+                }
+
+                @Test
+                @DisplayName("then the bounding cube of node[1][1][1][1] should be from (-2,-2,-2) to (6,6,6)")
+                void boundingCube1_1_1_1() {
+                    AABB boundingCube = new AABB(new Point(-2, -2, -2), new Point(6, 6, 6));
+
+                    assertEquals(boundingCube, looseOctree.nodes[depth][1][1][1].getAABB());
+                }
+            }
+
+
+            @Nested
+            @DisplayName("given depth of 2")
+            class Depth2 {
+                @BeforeEach
+                void setup() {
+                    depth = 2;
+                }
+
+                @Test
+                @DisplayName("then the spacing should be 2")
+                void spacing() {
+                    Point centerFrontBotLeft = looseOctree.nodes[depth][0][0][0].getAABB().calcCenter();
+                    Point centerFrontTopLeft = looseOctree.nodes[depth][0][0][1].getAABB().calcCenter();
+
+                    assertAll(
+                            () -> assertEquals(0, centerFrontTopLeft.x - centerFrontBotLeft.x),
+                            () -> assertEquals(0, centerFrontTopLeft.y - centerFrontBotLeft.y),
+                            () -> assertEquals(2, centerFrontTopLeft.z - centerFrontBotLeft.z)
+                    );
+                }
+
+                @Test
+                @DisplayName("then the loose bounding cube of node[2][0][0][0] should be from (-5,-5,-5) to (-1,-1,-1)")
+                void boundingCube2_0_0_0() {
+                    AABB boundingCube = new AABB(new Point(-5, -5, -5), new Point(-1, -1, -1));
+
+                    assertEquals(boundingCube, looseOctree.nodes[depth][0][0][0].getAABB());
+                }
+
+                @Test
+                @DisplayName("then the loose bounding cube of node[2][0][0][1] should be from (-5,-5,-3) to (-1,-1,1)")
+                void boundingCube2_0_0_1() {
+                    AABB boundingCube = new AABB(new Point(-5, -5, -3), new Point(-1, -1, 1));
+
+                    assertEquals(boundingCube, looseOctree.nodes[depth][0][0][1].getAABB());
+                }
+
+                @Test
+                @DisplayName("then the loose bounding cube of node[2][0][0][2] should be from (-5,-5,-1) to (-1,-1,3)")
+                void boundingCube2_0_0_2() {
+                    AABB boundingCube = new AABB(new Point(-5, -5, -1), new Point(-1, -1, 3));
+
+                    assertEquals(boundingCube, looseOctree.nodes[depth][0][0][2].getAABB());
+                }
+
+                @Test
+                @DisplayName("then the loose bounding cube of node[2][0][0][3] should be from (-5,-5,1) to (-1,-1,5)")
+                void boundingCube2_0_0_3() {
+                    AABB boundingCube = new AABB(new Point(-5, -5, 1), new Point(-1, -1, 5));
+
+                    assertEquals(boundingCube, looseOctree.nodes[depth][0][0][3].getAABB());
+                }
+
+                @Test
+                @DisplayName("then the loose bounding cube of node[2][1][1][1] should be from (-3,-3,-3) to (1,1,1)")
+                void boundingCube2_1_1_1() {
+                    AABB boundingCube = new AABB(new Point(-3, -3, -3), new Point(1, 1, 1));
+
+                    assertEquals(boundingCube, looseOctree.nodes[depth][1][1][1].getAABB());
+                }
+
+                @Test
+                @DisplayName("then the loose bounding cube of node[2][2][2][2] should be from (-1,-1,-1) to (3,3,3)")
+                void boundingCube2_2_2_2() {
+                    AABB boundingCube = new AABB(new Point(-1, -1, -1), new Point(3, 3, 3));
+
+                    assertEquals(boundingCube, looseOctree.nodes[depth][2][2][2].getAABB());
+                }
+
+                @Test
+                @DisplayName("then the loose bounding cube of node [2][3][3][3] should be from (1,1,1) to (5,5,5)")
+                void boundingCube2_3_3_3() {
+                    AABB boundingCube = new AABB(new Point(1, 1, 1), new Point(5, 5, 5));
+
+                    assertEquals(boundingCube, looseOctree.nodes[depth][3][3][3].getAABB());
+                }
+            }
+        }
+
+        @Test
+        @DisplayName("then the loose AABB of the world should be AABB((-8,-8,-8), (8,8,8))")
+        void worldBox() {
+            assertEquals(new AABB(new Point(-8, -8, -8), new Point(8, 8, 8)), looseOctree.getWorldAABB());
+        }
+
 
         @Nested
         @DisplayName("tests based on depth")
@@ -198,24 +395,21 @@ public class LooseOctreeTest {
                 @DisplayName("accessing nodes array tests")
                 class ArrayNodesTests {
 
-
-                    /**
-                     * The root node is imaginary. There could only be an object in the root if its radius was larger
-                     * than worldSize / 2, which would mean the object is bigger than the entire world, which is a
-                     * paradox.
-                     */
                     @Test
-                    @DisplayName("then there should be no nodes")
+                    @DisplayName("then there should only be the root node")
                     void thenThereShouldNoNodes() {
-                        assertEquals(0, looseOctree.nodes[givenDepth].length);
+                        assertEquals(1, looseOctree.nodes[givenDepth].length);
                     }
 
                     @Test
-                    @DisplayName("then an IndexOutOfBoundsException should be thrown when trying to access any node")
-                    void thenAnIndexOutOfBoundsExceptionShouldBeThrown() {
-                        // call any method on the array as assertThrows needs a void or consumer, not a
-                        // concrete value.
-                        // index 1 is out of bounds
+                    @DisplayName("then there should be exactly 1 node per dimension")
+                    void thenThereShouldBeExactly1NodePerDimension() {
+                        assertNumberOfNodesPerDimension(givenDepth, 1);
+                    }
+
+                    @Test
+                    @DisplayName("then there should be an array out of bounds when accessing the 2nd element")
+                    void thenThereShouldBeAnArrayOutOfBoundsWhenAccessingThe2ndElement() {
                         assertAll(
                                 () -> assertThrows(IndexOutOfBoundsException.class,
                                         () -> looseOctree.nodes[givenDepth][0][0][1].insertObject(null)),

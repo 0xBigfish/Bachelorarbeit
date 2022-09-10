@@ -34,7 +34,7 @@ public class LooseOctree<T extends AABB> {
      * entire world, which is a paradox.
      */
     // protected to enable test class access to this field
-    protected OctreeNode<AABB>[][][][] nodes;
+    protected OctreeNode<T>[][][][] nodes;
 
     /**
      * size of the world. Large enough to fit every object into it. Should be a multiple of 2
@@ -71,27 +71,85 @@ public class LooseOctree<T extends AABB> {
         this.worldSize = worldSize;
 
         // init array to be able to overwrite the values in the for loop
-        // use maxDepth + 1 because only the imaginary root node is at level 0 and maxDepth describes the number of
+        // use maxDepth + 1 because the root node is at level 0 and maxDepth describes the number of
         // edges to the deepest node(s)
         // --- ignore unchecked warning because the array is only used inside this class ---
-        nodes = new OctreeNode[maxDepth + 1][0][0][0];
+        nodes = new OctreeNode[maxDepth + 1][1][1][1];
+
+        // create the root node.
+        // The root node will never store any object, because for an object to be stored in the root it needs to be
+        // larger than worldSize / 2, which is a paradox, because then object is not fully enclosed within the world.
+        double looseWorldSize = boundingCubeLength(0);
+        AABB rootAABB = new AABB(
+                new Point(-looseWorldSize / 2, -looseWorldSize / 2, -looseWorldSize / 2),
+                new Point(looseWorldSize / 2, looseWorldSize / 2, looseWorldSize / 2));
+        nodes[0][0][0][0] = new OctreeNode<>(rootAABB);
 
         // init the array correctly to hold only the maximum allowed number of nodes per depth:
         //  depth=1 => 2 nodes per Dimension and 8 total, depth=2 => 4 nodes per dimension and 16 total, ...
-        for (int i = 1; i <= maxDepth; i++) {
-            int numOfNodesPerDim = (int) Math.pow(2, i);
+        for (int depth = 1; depth <= maxDepth; depth++) {
+            int numOfNodesPerDim = (int) Math.pow(2, depth);
             // --- ignore unchecked warning because the array is only used inside this class ---
-            nodes[i] = new OctreeNode[numOfNodesPerDim][numOfNodesPerDim][numOfNodesPerDim];
+            nodes[depth] = new OctreeNode[numOfNodesPerDim][numOfNodesPerDim][numOfNodesPerDim];
 
             // each node is bound to a OctreeNode which saves the node's content
             for (int x = 0; x < numOfNodesPerDim; x++) {
                 for (int y = 0; y < numOfNodesPerDim; y++) {
                     for (int z = 0; z < numOfNodesPerDim; z++) {
-                        nodes[i][x][y][z] = new OctreeNode<>();
+                        OctreeNode<T> parentNode = nodes[depth - 1][x / 2][y / 2][z / 2];
+                        Point parentAABBCenter = parentNode.getAABB().calcCenter();
+
+
+                        AABB nodeBoundingBox = calcNodeAABB(depth, x, y, z, parentAABBCenter);
+                        nodes[depth][x][y][z] = new OctreeNode<>(nodeBoundingBox);
+
+                        // add an edge from the parent to the newly generated node
+                        nodes[depth][x][y][z].setParent(parentNode);
                     }
                 }
             }
         }
+    }
+
+    /**
+     * Generate the axis-aligned bounding box of the node based on the given parameters
+     *
+     * @param depth            the depth of the node
+     * @param x                the x index of the node in the nodes array
+     * @param y                the y index of the node in the nodes array
+     * @param z                the z index of the node in the nodes array
+     * @param parentAABBCenter the center of the parent node
+     * @return the axis-aligned bounding box of {@code nodes[height][x][y][z]}
+     */
+    private AABB calcNodeAABB(int depth, int x, int y, int z, Point parentAABBCenter) {
+        double cubeLength = boundingCubeLength(depth);
+        double cubeCenterSpacing = boundingCubeSpacing(depth);
+
+        // the parent gets split up in eight new nodes, two per dimension, whose center is the parent's
+        //  center plus or minus half the boundingCubeSpacing(depth)
+        double nodeCenterX;
+        if (x % 2 == 0) {
+            nodeCenterX = parentAABBCenter.x - cubeCenterSpacing / 2;
+        } else {
+            nodeCenterX = parentAABBCenter.x + cubeCenterSpacing / 2;
+        }
+        double nodeCenterY;
+        if (y % 2 == 0) {
+            nodeCenterY = parentAABBCenter.y - cubeCenterSpacing / 2;
+        } else {
+            nodeCenterY = parentAABBCenter.y + cubeCenterSpacing / 2;
+        }
+        double nodeCenterZ;
+        if (z % 2 == 0) {
+            nodeCenterZ = parentAABBCenter.z - cubeCenterSpacing / 2;
+        } else {
+            nodeCenterZ = parentAABBCenter.z + cubeCenterSpacing / 2;
+        }
+        Point nodeCenter = new Point(nodeCenterX, nodeCenterY, nodeCenterZ);
+
+        Point vertA = nodeCenter.add(new Point(-cubeLength / 2, -cubeLength / 2, -cubeLength / 2));
+        Point vertB = nodeCenter.add(new Point(cubeLength / 2, cubeLength / 2, cubeLength / 2));
+        return new AABB(vertA, vertB);
     }
 
     /**
@@ -120,9 +178,9 @@ public class LooseOctree<T extends AABB> {
     public int boundingCubeSpacing(int depth) {
         if (depth <= 0) {
             throw new IllegalArgumentException("Depth was: " + depth + "\n" +
-                    "Depth must be larger than 0. There only is the imaginary root node at" +
+                    "Depth must be larger than 0. There only is the root node at" +
                     "depth 0, which has no spacing to other nodes, as there are none. \n" +
-                    "Depths below 0 make no sense as the highest node (the imaginary root node) lies at depth 0.");
+                    "Depths below 0 make no sense as the highest node (the root node) lies at depth 0.");
         }
 
         if (depth > maxDepth) {
@@ -210,6 +268,15 @@ public class LooseOctree<T extends AABB> {
 
         // check if insertion was successful
         return this.nodes[depth][(int) index.x][(int) index.y][(int) index.z].getContent().contains(objectToInsert);
+    }
+
+    /**
+     * Return the axis-aligned bounding box (AABB) of the root node, which represents the whole world
+     *
+     * @return the root node's bounding box
+     */
+    public AABB getWorldAABB() {
+        return this.nodes[0][0][0][0].getAABB();
     }
 
     /**
