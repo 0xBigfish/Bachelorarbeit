@@ -3,9 +3,11 @@ package org.example.SequenceFinder.Control;
 import org.example.SequenceFinder.Control.Cost.CostFunction;
 import org.example.SequenceFinder.Model.GeometricObjects.AABB;
 import org.example.SequenceFinder.Model.Graph.Graph;
+import org.example.SequenceFinder.OperatingDirection;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
+import java.util.Map;
 
 /**
  * Controller to find the optimum sequence to build the stack of boxes, using a Branch And Bound algorithm. <br>
@@ -24,7 +26,7 @@ import java.util.LinkedHashSet;
  */
 public class BranchAndBound<T extends AABB> {
 
-    Graph<T> graph;
+    Map<OperatingDirection, Graph<T>> graphsMap;
     CostAssigner<T> costAssigner;
 
     /**
@@ -40,10 +42,11 @@ public class BranchAndBound<T extends AABB> {
      * Fourth, the paths, that were traversed down to a leaf, are compared based on their cost. The path with the lowest
      * cost is the global optimum.
      *
-     * @param graph the graph defines the order in which the boxes can be removed
+     * @param graphsMap the map of graphs, one graph for each operating direction that is allowed. The graphs define the
+     *                  order in which the boxes can be removed
      */
-    public BranchAndBound(Graph<T> graph, Collection<CostFunction<T>> costFunctions) {
-        this.graph = graph;
+    public BranchAndBound(Map<OperatingDirection, Graph<T>> graphsMap, Collection<CostFunction<T>> costFunctions) {
+        this.graphsMap = graphsMap;
         this.costAssigner = new CostAssigner<>(costFunctions);
     }
 

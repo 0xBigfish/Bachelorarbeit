@@ -117,35 +117,52 @@ public class AABB {
     }
 
     /**
-     * Get the plane of the box whose normal vector is pointing towards the given operating direction
+     * Get the plane of the box which is facing towards the given operating direction. The normal vector of this face
+     * points either towards the operating direction and therefore outside the box, or away from the operating direction
+     * and inside the box.
      *
-     * @param opDir the operating direction
-     * @return the plane of the box whose normal vector is pointing towards the given operating direction
+     * @param opDir              the operating direction
+     * @param normalPointsInside if true, the normal vector of the plane will point towards the inside of the box,
+     *                           therefore in the opposite direction of the given operating direction. If false, the
+     *                           vector will point to the operating direction and therefore outside the box.
+     * @return the face (plane) of the box facing towards the given operating direction. The normal of this plane either
+     * points towards the operating direction or away from it, depending on {@code normalPointsInside}
      */
-    public Plane getSide(OperatingDirection opDir) {
+    public Plane getSide(OperatingDirection opDir, boolean normalPointsInside) {
         // tolerance below which points on the plane are considered identical
         double tolerance = 1e-10;
 
         HashMap<BoxVertex, Point> vertices = getVertices();
+        Plane plane;
+
+        // normals are pointing towards the corresponding operating direction
         switch (opDir) {
             case FRONT:
-                return new Plane(vertices.get(FRONT_TOP_RIGHT).toVector3D(), new Vector3D(0, -1, 0), tolerance);
-
+                plane = new Plane(vertices.get(FRONT_TOP_RIGHT).toVector3D(), new Vector3D(0, -1, 0), tolerance);
+                break;
             case BACK:
-                return new Plane(vertices.get(BACK_TOP_RIGHT).toVector3D(), new Vector3D(0, 1, 0), tolerance);
-
+                plane = new Plane(vertices.get(BACK_TOP_RIGHT).toVector3D(), new Vector3D(0, 1, 0), tolerance);
+                break;
             case LEFT:
-                return new Plane(vertices.get(BACK_TOP_LEFT).toVector3D(), new Vector3D(-1, 0, 0), tolerance);
-
+                plane = new Plane(vertices.get(BACK_TOP_LEFT).toVector3D(), new Vector3D(-1, 0, 0), tolerance);
+                break;
             case RIGHT:
-                return new Plane(vertices.get(BACK_TOP_RIGHT).toVector3D(), new Vector3D(1, 0, 0), tolerance);
-
+                plane = new Plane(vertices.get(FRONT_BOTTOM_RIGHT).toVector3D(), new Vector3D(1, 0, 0), tolerance);
+                break;
             case TOP:
-                return new Plane(vertices.get(FRONT_TOP_LEFT).toVector3D(), new Vector3D(0, 0, 1), tolerance);
-
+                plane = new Plane(vertices.get(FRONT_TOP_LEFT).toVector3D(), new Vector3D(0, 0, 1), tolerance);
+                break;
+            case BOTTOM:
+                plane = new Plane(vertices.get(FRONT_BOTTOM_LEFT).toVector3D(), new Vector3D(0, 0, -1), tolerance);
+                break;
             default:
                 throw new RuntimeException("Unknown operating direction: " + opDir);
         }
+
+        if (normalPointsInside) {
+            plane.revertSelf();
+        }
+        return plane;
     }
 
     @Override

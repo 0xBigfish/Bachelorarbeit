@@ -289,8 +289,17 @@ public class LooseOctree<T extends AABB> {
      * @param f the frustum
      * @return the objects that fully or partially lay within the frustum
      */
-    public Collection<T> cullContent(Frustum f) {
+    public Collection<T> cullAgainst(Frustum f) {
         return nodes[0][0][0][0].cullFrustum(f, new HashSet<>());
+    }
+
+    /**
+     * Return all objects that are stored in the octree
+     *
+     * @return all objects that are stored in the octree
+     */
+    public Collection<T> getAllObjects() {
+        return nodes[0][0][0][0].getSubtreeContent();
     }
 
     /**

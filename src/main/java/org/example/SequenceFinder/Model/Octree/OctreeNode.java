@@ -124,7 +124,7 @@ class OctreeNode<T extends AABB> {
      *
      * @return the content of the whole subtree of this node (including the content of this node)
      */
-    private Collection<T> getSubtreeContent() {
+    Collection<T> getSubtreeContent() {
         Collection<T> subtreeContent = new HashSet<>(content);
 
         if (children.isEmpty()) {
