@@ -5,13 +5,13 @@ import org.example.SequenceFinder.Model.GeometricObjects.AABB;
 import org.example.SequenceFinder.Model.Graph.Graph;
 import org.example.SequenceFinder.Model.Octree.Frustum;
 import org.example.SequenceFinder.Model.Octree.LooseOctree;
-import org.example.SequenceFinder.Model.Octree.Visibility;
 import org.example.SequenceFinder.OperatingDirection;
 
 import java.util.Collection;
 
 /**
- * Controller to calculate which Boxes are removable in the stack of boxes. <br>
+ * Controller to calculate which Boxes are removable in the stack of boxes.
+ * <p>
  * It creates a single or multiple Graphs using frustum culling, where nodes with no incoming edges represent the
  * removable Boxes.
  *
@@ -29,7 +29,8 @@ public class RemovableCalculator<T extends AABB> {
     Collection<OperatingDirection> opDirs;
 
     /**
-     * Controller to calculate which Boxes are removable in the stack of boxes. <br>
+     * Controller to calculate which Boxes are removable in the stack of boxes.
+     * <p>
      * It creates a single or multiple Graphs using frustum culling, where nodes with no incoming edges represent the
      * removable Boxes.
      *
@@ -38,6 +39,9 @@ public class RemovableCalculator<T extends AABB> {
     public RemovableCalculator(LooseOctree<T> octree, Collection<OperatingDirection> operatingDirections) {
         this.octree = octree;
         this.opDirs = operatingDirections;
+        if (operatingDirections.isEmpty()) {
+            throw new IllegalArgumentException("The RemovableCalculator needs at least one OperatingDirection!");
+        }
     }
 
     /**
@@ -60,7 +64,7 @@ public class RemovableCalculator<T extends AABB> {
      *     node that can be removed, therefore all nodes that have no incoming edges.<br>
      *     <b>The resulting graph does not allow alternating operating directions</b></li>
      *
-     *     <li>...merging each node which their corresponding node in the other graphs, but remembering which edge came
+     *     <li>...merging each node with their corresponding node in the other graphs, but remembering which edge came
      *     from which graph. <br>
      *     <b>The resulting graph does allow alternating operating directions</b></li>
      * </ul>
@@ -76,10 +80,11 @@ public class RemovableCalculator<T extends AABB> {
     }
 
     /**
-     * Creates a new  frustum from the box in direction of the operating direction. The frustum is used to perform
-     * frustum culling onto the octree and calculate which Box are in front or above the given box<br>
-     * For example: when the oparting direction is 'left', a frustum is created from the left side of the box pointing
-     * towards the left direction.
+     * Creates a new  frustum from the aabb in direction of the operating direction.
+     * <p>
+     * The frustum is used to perform frustum culling onto the octree and calculate which AABB are in front or above the
+     * given aabb<br> For example: when the operating direction is 'left', a frustum is created from the left side of
+     * the aabb pointing towards the left direction.
      *
      * @param aabb  the aabb for which the frustum will be created
      * @param opDir the operating direction
@@ -89,22 +94,26 @@ public class RemovableCalculator<T extends AABB> {
         // the back of the frustum is the side of the aabb that is facing towards the operating direction
         Plane back = aabb.getSide(opDir);
 
-        // FIXME: wrong, just to have an working example
-        // Plane front = octree.
-        return null;
+        // the front of the frustum is the border of the world
+        // FIXME: normal is pointing in the wrong direction?
+        Plane front = octree.getWorldAABB().getSide(opDir.getOpposite());
+
+        Plane left = aabb.getSide(opDir.getLeft());
+        Plane right = aabb.getSide(opDir.getRight());
+        Plane top = aabb.getSide(opDir.getTop());
+        Plane bottom = aabb.getSide(opDir.getBottom());
+
+        return new Frustum(front, back, left, right, top, bottom);
     }
 
-    //TODO: check if the return value is correct
 
     /**
-     * Calculates the collection of Boxes that lie in the frustum, and therefore need to be removed, before the Box,
-     * that lies at the very tip of the frustum, can be removed.
+     * Calculates the collection of Boxes that lie in the frustum. They need to be removed before the AABB, that lies at
+     * the very tip of the frustum, can be removed.
      *
-     * @param f the frustum
-     * @param v the visibility
+     * @param frustum the frustum
      */
-    private Collection<Box> cullFrustum(Frustum f, Visibility v) {
-        // to be implemented
-        return null;
+    private Collection<T> frustumCulling(Frustum frustum) {
+        return octree.cullContent(frustum);
     }
 }

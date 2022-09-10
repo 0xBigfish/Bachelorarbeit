@@ -3,16 +3,19 @@ package org.example.SequenceFinder.Model.Octree;
 import org.example.SequenceFinder.Model.GeometricObjects.AABB;
 import org.example.SequenceFinder.Model.GeometricObjects.Point;
 
+import java.util.Collection;
+import java.util.HashSet;
+
 /**
  * A Loose Octree, with a maximum depth, to store each object based on its position in the world. Used to improve
- * performance of frustum culling <br>
+ * performance of frustum culling
+ * <p>
  * The tree's coordinate system is centered at (0, 0, 0) and expands to (worldSize/2) and -(worldSize/2) in all
- * dimensions <br>
- * <br>
- * The tree implementation is based on <i>Thatcher Ulrich</i>'s article about Loose Octrees in <i>Game Programming
- * Gems </i>(2000)
- * (ISBN 1-58450-049-2). <br>
- * A first introduction can be found on his website: http://www.tulrich.com/geekstuff/partitioning.html
+ * dimensions.
+ * <p>
+ * The tree implementation is based on <i>Thatcher Ulrich</i>'s article about Loose Octrees in <i>Game Programming Gems
+ * </i>(2000) (ISBN 1-58450-049-2). <br> A first introduction can be found on his website:
+ * http://www.tulrich.com/geekstuff/partitioning.html
  *
  * @param <T> a box shaped object which is aligned with the coordinate axes.
  */
@@ -23,6 +26,21 @@ public class LooseOctree<T extends AABB> {
      */
     private final int maxDepth;
 
+    /**
+     * size of the world. Large enough to fit every object into it. Should be a multiple of 2
+     */
+    private final int worldSize;
+
+    /**
+     * factor used to make the Octree loose. A value of > 1 loosens the tree.
+     * <p>
+     * According to Thatcher Ulrich in "Game Programming Gems (2000), Loose Octrees" a value of k=2 is a good balance
+     * between loose but not too loose.
+     * <p>
+     * The factor of 2 is also necessary for the mathematical derivation of the insertion formula, which enables
+     * insertion in O(1)
+     */
+    private final double k = 2;
     /**
      * array holding all objects in the octree.
      * <p>
@@ -37,27 +55,11 @@ public class LooseOctree<T extends AABB> {
     protected OctreeNode<T>[][][][] nodes;
 
     /**
-     * size of the world. Large enough to fit every object into it. Should be a multiple of 2
-     */
-    private final int worldSize;
-
-    /**
-     * factor used to make the Octree loose. A value of > 1 loosens the tree. <br>
-     * <br>
-     * According to Thatcher Ulrich in "Game Programming Gems (2000), Loose Octrees" a value of k=2 is a good balance
-     * between loose but not too loose. <br>
-     * <br>
-     * The factor of 2 is also necessary for the mathematical derivation of the insertion formula, which
-     * enables insertion in O(1)
-     */
-    private final double k = 2;
-
-    /**
      * Create a Loose Octree, with a maximum depth, to store each object based on its position in the world. Used to
-     * improve performance of frustum culling <br>
+     * improve performance of frustum culling
+     * <p>
      * The tree's coordinate system is centered at (0, 0, 0) and expands to (worldSize/2) and -(worldSize/2) in all
-     * dimensions <br>
-     * <br>
+     * dimensions.
      *
      * @param maxDepth  the maximum depth of the LooseOctree
      * @param worldSize the size of the world, must be big enough to including all objects.
@@ -192,8 +194,8 @@ public class LooseOctree<T extends AABB> {
     }
 
     /**
-     * Calculates at which depth in the object will fit in the tree, based on the object's radius <br>
-     * <br>
+     * Calculates at which depth in the object will fit in the tree, based on the object's radius
+     * <p>
      * A given level in the octree can accommodate any abject whose radius is less than or equal to 1/4 of the bounding
      * cube edge length, regardless of its position. Any object with a radius <= 1/8 of the bounding cube edge length
      * should go in the next deeper level in the tree.
@@ -217,7 +219,8 @@ public class LooseOctree<T extends AABB> {
     }
 
     /**
-     * Calculates the x,y,z indices of an object at which it will be stored in the octree. <br>
+     * Calculates the x,y,z indices of an object at which it will be stored in the octree.
+     * <p>
      * The calculation assumes the world is centered at the coordinate system origin.
      *
      * @param t the object
@@ -249,9 +252,10 @@ public class LooseOctree<T extends AABB> {
     }
 
     /**
-     * Inserts an object into the octree. <br>
-     * The insertion assumes the world is centered at the coordinate system origin. <br>
-     * <br>
+     * Inserts an object into the octree.
+     * <p>
+     * The insertion assumes the world is centered at the coordinate system origin.
+     * <p>
      * Note: this procedure is not ideal, as it does not find the tightest possible containing node for all cases. To
      * find the tightest possible containing node, the child nodes of the calculated node must be checked whether the
      * object fits into one of them or not.
@@ -277,6 +281,16 @@ public class LooseOctree<T extends AABB> {
      */
     public AABB getWorldAABB() {
         return this.nodes[0][0][0][0].getAABB();
+    }
+
+    /**
+     * Cull all objects against the frustum and return the objects that fully or partially lay within the frustum
+     *
+     * @param f the frustum
+     * @return the objects that fully or partially lay within the frustum
+     */
+    public Collection<T> cullContent(Frustum f) {
+        return nodes[0][0][0][0].cullFrustum(f, new HashSet<>());
     }
 
     /**
