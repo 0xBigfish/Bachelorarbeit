@@ -39,8 +39,8 @@ class GraphNodeTest {
         @DisplayName("then both nodes should have no incoming edges")
         void noIncoming() {
             assertAll(
-                    () -> assertEquals(0, node1.getCopyOfIncomingNodes().size()),
-                    () -> assertEquals(0, node2.getCopyOfIncomingNodes().size())
+                    () -> assertFalse(node1.hasIncomingEdges()),
+                    () -> assertFalse(node2.hasIncomingEdges())
             );
         }
 
@@ -48,8 +48,8 @@ class GraphNodeTest {
         @DisplayName("then both nodes should have no outgoing edges")
         void noOutgoing() {
             assertAll(
-                    () -> assertEquals(0, node1.getCopyOfOutgoingNodes().size()),
-                    () -> assertEquals(0, node2.getCopyOfOutgoingNodes().size())
+                    () -> assertFalse(node1.hasOutgoingEdges()),
+                    () -> assertFalse(node2.hasOutgoingEdges())
             );
         }
 
@@ -64,7 +64,7 @@ class GraphNodeTest {
             @Test
             @DisplayName("then node1 should have no incoming edges")
             void node1NoIncoming() {
-                assertEquals(0, node1.getCopyOfIncomingNodes().size());
+                assertFalse(node1.hasIncomingEdges());
             }
 
             @Test
@@ -94,7 +94,7 @@ class GraphNodeTest {
             @Test
             @DisplayName("then node2 should have no outgoing edges")
             void node2NoOutgoing() {
-                assertEquals(0, node2.getCopyOfOutgoingNodes().size());
+                assertFalse(node2.hasOutgoingEdges());
             }
 
             @Test
@@ -124,8 +124,8 @@ class GraphNodeTest {
                 @DisplayName("then node1 should have no incoming and outgoing edges")
                 void node1NoIncomingNoOutgoing() {
                     assertAll(
-                            () -> assertEquals(0, node1.getCopyOfIncomingNodes().size()),
-                            () -> assertEquals(0, node1.getCopyOfOutgoingNodes().size())
+                            () -> assertFalse(node1.hasIncomingEdges()),
+                            () -> assertFalse(node1.hasOutgoingEdges())
                     );
                 }
 
@@ -133,8 +133,8 @@ class GraphNodeTest {
                 @DisplayName("then node2 should have no incoming and outgoing edges")
                 void node2NoIncomingNoOutgoing() {
                     assertAll(
-                            () -> assertEquals(0, node2.getCopyOfIncomingNodes().size()),
-                            () -> assertEquals(0, node2.getCopyOfOutgoingNodes().size())
+                            () -> assertFalse(node2.hasIncomingEdges()),
+                            () -> assertFalse(node2.hasOutgoingEdges())
                     );
                 }
             }
@@ -164,8 +164,8 @@ class GraphNodeTest {
                 @DisplayName("then node1 should have no incoming and outgoing edges")
                 void node1NoIncomingNoOutgoing() {
                     assertAll(
-                            () -> assertEquals(0, node1.getCopyOfIncomingNodes().size()),
-                            () -> assertEquals(0, node1.getCopyOfOutgoingNodes().size())
+                            () -> assertFalse(node1.hasIncomingEdges()),
+                            () -> assertFalse(node1.hasOutgoingEdges())
                     );
                 }
 
@@ -173,8 +173,8 @@ class GraphNodeTest {
                 @DisplayName("then node2 should have no incoming and outgoing edges")
                 void node2NoIncomingNoOutgoing() {
                     assertAll(
-                            () -> assertEquals(0, node2.getCopyOfIncomingNodes().size()),
-                            () -> assertEquals(0, node2.getCopyOfOutgoingNodes().size())
+                            () -> assertFalse(node2.hasIncomingEdges()),
+                            () -> assertFalse(node2.hasOutgoingEdges())
                     );
                 }
             }
@@ -192,25 +192,25 @@ class GraphNodeTest {
                 @Test
                 @DisplayName("then node1 should have no incoming edges")
                 void node1NoIncoming() {
-                    assertEquals(0, node1.getCopyOfIncomingNodes().size());
+                    assertFalse(node1.hasIncomingEdges());
                 }
 
                 @Test
                 @DisplayName("then node1 should have no outgoing edges")
                 void node1NoOutgoing() {
-                    assertEquals(0, node1.getCopyOfOutgoingNodes().size());
+                    assertFalse(node1.hasOutgoingEdges());
                 }
 
                 @Test
                 @DisplayName("then node2 should have no incoming edges")
                 void node2NoIncoming() {
-                    assertEquals(0, node2.getCopyOfIncomingNodes().size());
+                    assertFalse(node2.hasIncomingEdges());
                 }
 
                 @Test
                 @DisplayName("then node2 should have no outgoing edges")
                 void node2NoOutgoing() {
-                    assertEquals(0, node2.getCopyOfOutgoingNodes().size());
+                    assertFalse(node2.hasOutgoingEdges());
                 }
 
                 @Test
@@ -245,13 +245,13 @@ class GraphNodeTest {
             @Test
             @DisplayName("then node1 should have no outgoing edges")
             void node1NoOutgoing() {
-                assertEquals(0, node1.getCopyOfOutgoingNodes().size());
+                assertFalse(node1.hasOutgoingEdges());
             }
 
             @Test
             @DisplayName("then node2 should have no incoming edges")
             void node2NoIncoming() {
-                assertEquals(0, node2.getCopyOfIncomingNodes().size());
+                assertFalse(node2.hasIncomingEdges());
             }
 
             @Test
@@ -293,8 +293,8 @@ class GraphNodeTest {
                 @DisplayName("then node1 should have no incoming and outgoing edges")
                 void node1NoIncomingNoOutgoing() {
                     assertAll(
-                            () -> assertEquals(0, node1.getCopyOfIncomingNodes().size()),
-                            () -> assertEquals(0, node1.getCopyOfOutgoingNodes().size())
+                            () -> assertFalse(node1.hasIncomingEdges()),
+                            () -> assertFalse(node1.hasOutgoingEdges())
                     );
                 }
 
@@ -302,8 +302,8 @@ class GraphNodeTest {
                 @DisplayName("then node2 should have no incoming and outgoing edges")
                 void node2NoIncomingNoOutgoing() {
                     assertAll(
-                            () -> assertEquals(0, node2.getCopyOfIncomingNodes().size()),
-                            () -> assertEquals(0, node2.getCopyOfOutgoingNodes().size())
+                            () -> assertFalse(node2.hasIncomingEdges()),
+                            () -> assertFalse(node2.hasOutgoingEdges())
                     );
                 }
             }
@@ -330,8 +330,8 @@ class GraphNodeTest {
                 @DisplayName("then node1 should have no incoming and outgoing edges")
                 void node1NoIncomingNoOutgoing() {
                     assertAll(
-                            () -> assertEquals(0, node1.getCopyOfIncomingNodes().size()),
-                            () -> assertEquals(0, node1.getCopyOfOutgoingNodes().size())
+                            () -> assertFalse(node1.hasIncomingEdges()),
+                            () -> assertFalse(node1.hasOutgoingEdges())
                     );
                 }
 
@@ -339,8 +339,8 @@ class GraphNodeTest {
                 @DisplayName("then node2 should have no incoming and outgoing edges")
                 void node2NoIncomingNoOutgoing() {
                     assertAll(
-                            () -> assertEquals(0, node2.getCopyOfIncomingNodes().size()),
-                            () -> assertEquals(0, node2.getCopyOfOutgoingNodes().size())
+                            () -> assertFalse(node2.hasIncomingEdges()),
+                            () -> assertFalse(node2.hasOutgoingEdges())
                     );
                 }
             }
@@ -358,25 +358,25 @@ class GraphNodeTest {
                 @Test
                 @DisplayName("then node1 should have no incoming edges")
                 void node1NoIncoming() {
-                    assertEquals(0, node1.getCopyOfIncomingNodes().size());
+                    assertFalse(node1.hasIncomingEdges());
                 }
 
                 @Test
                 @DisplayName("then node1 should have no outgoing edges")
                 void node1NoOutgoing() {
-                    assertEquals(0, node1.getCopyOfOutgoingNodes().size());
+                    assertFalse(node1.hasOutgoingEdges());
                 }
 
                 @Test
                 @DisplayName("then node2 should have no incoming edges")
                 void node2NoIncoming() {
-                    assertEquals(0, node2.getCopyOfIncomingNodes().size());
+                    assertFalse(node2.hasIncomingEdges());
                 }
 
                 @Test
                 @DisplayName("then node2 should have no outgoing edges")
                 void node2NoOutgoing() {
-                    assertEquals(0, node2.getCopyOfOutgoingNodes().size());
+                    assertFalse(node2.hasOutgoingEdges());
                 }
 
                 @Test

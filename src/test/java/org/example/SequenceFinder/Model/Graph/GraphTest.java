@@ -154,13 +154,13 @@ class GraphTest {
                     @Test
                     @DisplayName("then the second node has no outgoing edges")
                     void secondNodeNoOutgoing() {
-                        assertTrue(secondNode.getCopyOfOutgoingNodes().isEmpty());
+                        assertFalse(secondNode.hasOutgoingEdges());
                     }
 
                     @Test
                     @DisplayName("then the first node has no incoming edges")
                     void firstNodeNoIncoming() {
-                        assertTrue(firstNode.getCopyOfIncomingNodes().isEmpty());
+                        assertFalse(firstNode.hasIncomingEdges());
                     }
 
                     @Test
@@ -218,13 +218,13 @@ class GraphTest {
                         @Test
                         @DisplayName("then the second node has no incoming edges")
                         void secondNodeNoIncoming() {
-                            assertTrue(secondNode.getCopyOfIncomingNodes().isEmpty());
+                            assertFalse(secondNode.hasIncomingEdges());
                         }
 
                         @Test
                         @DisplayName("then the second node has no outgoing edges")
                         void secondNodeNoOutgoing() {
-                            assertTrue(secondNode.getCopyOfOutgoingNodes().isEmpty());
+                            assertFalse(secondNode.hasOutgoingEdges());
                         }
                     }
                 }
@@ -270,7 +270,7 @@ class GraphTest {
                     @Test
                     @DisplayName("then the first node has no outgoing edges")
                     void firstNodeNoOutgoing() {
-                        assertTrue(firstNode.getCopyOfOutgoingNodes().isEmpty());
+                        assertFalse(firstNode.hasOutgoingEdges());
                     }
 
                     @Test
@@ -285,7 +285,7 @@ class GraphTest {
                     @Test
                     @DisplayName("then the second node has no incoming edge from the first node")
                     void secondNodeNoIncoming() {
-                        assertTrue(secondNode.getCopyOfIncomingNodes().isEmpty());
+                        assertFalse(secondNode.hasIncomingEdges());
                     }
 
                     @Test
@@ -334,13 +334,13 @@ class GraphTest {
                         @Test
                         @DisplayName("then the first node has no incoming edges")
                         void firstNodeNoIncoming() {
-                            assertTrue(firstNode.getCopyOfIncomingNodes().isEmpty());
+                            assertFalse(firstNode.hasIncomingEdges());
                         }
 
                         @Test
                         @DisplayName("then the first node has no outgoing edges")
                         void firstNodeNoOutgoing() {
-                            assertTrue(firstNode.getCopyOfOutgoingNodes().isEmpty());
+                            assertFalse(firstNode.hasOutgoingEdges());
                         }
                     }
                 }

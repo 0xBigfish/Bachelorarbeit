@@ -43,7 +43,7 @@ public class GraphNode<T> {
 
         for (GraphNode<T> node : this.outgoingNodes) {
             node.removeIncomingNode(this);
-            if (node.getCopyOfIncomingNodes().isEmpty()) {
+            if (!node.hasIncomingEdges()) {
                 removableNodes.add(node);
             }
         }
@@ -98,6 +98,24 @@ public class GraphNode<T> {
     }
 
     /**
+     * Check if this node has incoming edges
+     *
+     * @return true if this node has incoming edges
+     */
+    boolean hasIncomingEdges() {
+        return !this.incomingNodes.isEmpty();
+    }
+
+    /**
+     * Check if this node has outgoing edges
+     *
+     * @return true if this node has outgoing edges
+     */
+    boolean hasOutgoingEdges() {
+        return !this.outgoingNodes.isEmpty();
+    }
+
+    /**
      * Add a node to the list of nodes which have an outgoing edge to this node
      *
      * @param from a node that has an edge, that is incoming to this node
@@ -146,8 +164,8 @@ public class GraphNode<T> {
 
         return "GraphNode{" +
                 "content=" + content + ", " +
-                "#incomingNodes=" + incomingNodes.size() + ", " +
-                "#outgoingNodes=" + outgoingNodes.size() +
+                "#incomingEdges=" + incomingNodes.size() + ", " +
+                "#outgoingdges=" + outgoingNodes.size() +
                 "}";
     }
 
