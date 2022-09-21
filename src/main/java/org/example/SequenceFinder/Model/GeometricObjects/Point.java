@@ -1,5 +1,7 @@
 package org.example.SequenceFinder.Model.GeometricObjects;
 
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+
 /**
  * A single Point in a 3D space.
  */
@@ -13,6 +15,15 @@ public class Point {
         this.x = x;
         this.y = y;
         this.z = z;
+    }
+
+    /**
+     * Convert the Point to a Vector3D
+     *
+     * @return the Point as a Vector3D
+     */
+    public Vector3D toVector3D() {
+        return new Vector3D(x, y, z);
     }
 
     @Override
@@ -29,7 +40,17 @@ public class Point {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return "(" + x + ", " + y + ", " + z + ")";
+    }
+
+    /**
+     * Add the given Point to this Point
+     *
+     * @param otherPoint the other point
+     * @return the resulting Point
+     */
+    public Point add(Point otherPoint) {
+        return new Point(this.x + otherPoint.x, this.y + otherPoint.y, this.z + otherPoint.z);
     }
 }

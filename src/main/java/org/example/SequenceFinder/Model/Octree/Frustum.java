@@ -3,11 +3,11 @@ package org.example.SequenceFinder.Model.Octree;
 import org.apache.commons.math3.geometry.euclidean.threed.Line;
 import org.apache.commons.math3.geometry.euclidean.threed.Plane;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
-import org.example.SequenceFinder.Model.GeometricObjects.Box;
+import org.example.SequenceFinder.Model.GeometricObjects.AABB;
 import org.example.SequenceFinder.Model.GeometricObjects.Point;
 
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -160,7 +160,7 @@ public class Frustum {
      * @param b the given box
      * @return the {@linkplain Visibility} of the given box
      */
-    public Visibility calcVisibility(Box b) {
+    public Visibility calcVisibility(AABB b) {
         boolean intersects = false;
 
         for (Plane p : planesMap.values()) {
@@ -210,32 +210,34 @@ public class Frustum {
     }
 
     /**
-     * Calculates the positive (aka maximum) vertex of the given box. <br>
-     * <br>
-     * The p vertex is the corner of the box, that is the furthest along the plane's normal's direction. <br>
-     * If the p vertex is behind the plane, the whole box is behind the plane. <br>
-     * <br>
+     * Calculates the positive (aka maximum) vertex of the given AABB.
+     * <p>
+     * The p vertex is the corner of the AABB, that is the furthest along the plane's normal's direction. If the p
+     * vertex is behind the plane, the whole AABB is behind the plane.
+     * <p>
      * See https://www.lighthouse3d.com/tutorials/view-frustum-culling/geometric-approach-testing-boxes-ii/ for a
      * visualization
      *
-     * @param box   the given box
+     * @param aabb  the given AABB
      * @param plane the plane
-     * @return the p vertex of the box
+     * @return the p vertex of the AABB
      */
-    private Vector3D calcPVertex(Box box, Plane plane) {
-        ArrayList<Point> vertices = box.getVertices();
+    private Vector3D calcPVertex(AABB aabb, Plane plane) {
+        HashMap<AABB.BoxVertex, Point> vertices = aabb.getVertices();
         Vector3D normal = plane.getNormal();
         double d = plane.getOffset(worldOrigin);
 
-        // get a start value to compare against
-        Point pVertex = vertices.remove(0);
-        double distanceAlongNormal = normal.dotProduct(new Vector3D(pVertex.x, pVertex.y, pVertex.z)) + d;
+        // get any start value to compare against
+        Point pVertex = vertices.remove(AABB.BoxVertex.FRONT_BOTTOM_LEFT);
+        double bestDistAlongNormal = normal.dotProduct(new Vector3D(pVertex.x, pVertex.y, pVertex.z)) + d;
 
-        for (Point vertex : vertices) {
+        for (Point vertex : vertices.values()) {
             // if the current vertex is further ALONG the plane's normal than the current pVertex, the pVertex
             // is updated
-            if (normal.dotProduct(new Vector3D(vertex.x, vertex.y, vertex.z)) + d > distanceAlongNormal) {
+            double vertexDistAlongNormal = normal.dotProduct(new Vector3D(vertex.x, vertex.y, vertex.z)) + d;
+            if (vertexDistAlongNormal > bestDistAlongNormal) {
                 pVertex = vertex;
+                bestDistAlongNormal = vertexDistAlongNormal;
             }
         }
 
@@ -243,33 +245,35 @@ public class Frustum {
     }
 
     /**
-     * Calculates the negative (aka minimum) vertex of the given box. <br>
-     * <br>
-     * The n vertex is the corner of the box, that is the furthest against the plane's normal's direction. <br>
-     * If the p vertex is not behind the plane, the n vertex needs to be tested to decide whether the object is fully
-     * or partly within the frustum. <br>
-     * <br>
+     * Calculates the negative (aka minimum) vertex of the given AABB.
+     * <p>
+     * The n vertex is the corner of the AABB, that is the furthest against the plane's normal's direction. If the p
+     * vertex is not behind the plane, the n vertex needs to be tested to decide whether the object is fully or partly
+     * within the frustum.
+     * <p>
      * See https://www.lighthouse3d.com/tutorials/view-frustum-culling/geometric-approach-testing-boxes-ii/ for a
      * visualization
      *
-     * @param box   the given box
+     * @param aabb  the given AABB
      * @param plane the plane
-     * @return the n vertex of the box
+     * @return the n vertex of the AABB
      */
-    private Vector3D calcNVertex(Box box, Plane plane) {
-        ArrayList<Point> vertices = box.getVertices();
+    private Vector3D calcNVertex(AABB aabb, Plane plane) {
+        HashMap<AABB.BoxVertex, Point> vertices = aabb.getVertices();
         Vector3D normal = plane.getNormal();
         double d = plane.getOffset(worldOrigin);
 
         // get a start value to compare against
-        Point nVertex = vertices.remove(0);
-        double distanceAlongNormal = normal.dotProduct(new Vector3D(nVertex.x, nVertex.y, nVertex.z)) + d;
+        Point nVertex = vertices.remove(AABB.BoxVertex.FRONT_BOTTOM_LEFT);
+        double bestDistAlongNormal = normal.dotProduct(new Vector3D(nVertex.x, nVertex.y, nVertex.z)) + d;
 
-        for (Point vertex : vertices) {
+        for (Point vertex : vertices.values()) {
             // if the current vertex is further AGAINST the plane's normal than the current nVertex, the nVertex
             // is updated
-            if (normal.dotProduct(new Vector3D(vertex.x, vertex.y, vertex.z)) + d < distanceAlongNormal) {
+            double vertexDistAlongNormal = normal.dotProduct(new Vector3D(vertex.x, vertex.y, vertex.z)) + d;
+            if (vertexDistAlongNormal < bestDistAlongNormal) {
                 nVertex = vertex;
+                bestDistAlongNormal = vertexDistAlongNormal;
             }
         }
 

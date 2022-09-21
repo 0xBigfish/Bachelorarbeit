@@ -1,8 +1,8 @@
 package org.example.SequenceFinder.Control.Cost;
 
-import org.example.SequenceFinder.Model.GeometricObjects.Box;
+import org.example.SequenceFinder.Model.GeometricObjects.AABB;
 
-public class HeightDifference<T extends Box> implements CostFunction<T> {
+public class HeightDifference<T extends AABB> implements CostFunction<T> {
 
     private final double cost;
 

@@ -1,6 +1,6 @@
 package org.example.SequenceFinder.Model.Octree;
 
-import org.example.SequenceFinder.Model.GeometricObjects.Box;
+import org.example.SequenceFinder.Model.GeometricObjects.AABB;
 import org.example.SequenceFinder.Model.GeometricObjects.Point;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -23,9 +23,8 @@ public class LooseOctreeTest {
 
     /**
      * looseness value of the loose Octree. Some formulas need k=2, otherwise the mathematical transformation wouldn't
-     * work and these formulas would be different.<br>
-     * According to Thatcher Ulrich in "Game Programming Gems (2000), Loose Octrees" a value of k=2 is a good balance
-     * between loose but not too loose.
+     * work and these formulas would be different.<br> According to Thatcher Ulrich in "Game Programming Gems (2000),
+     * Loose Octrees" a value of k=2 is a good balance between loose but not too loose.
      */
     double k = 2;
 
@@ -34,7 +33,7 @@ public class LooseOctreeTest {
     @DisplayName("given a LooseOctree with maxDepth = 3 and worldSize = 8")
     class MaxDepth3WorldSize8 {
 
-        LooseOctree<Box> looseOctree;
+        LooseOctree<AABB> looseOctree;
 
         int worldSize = 8;
         int maxDepth = 3;
@@ -50,11 +49,11 @@ public class LooseOctreeTest {
          * @param nodes the nodes at the given height
          * @return the total number of nodes over all dimensions
          */
-        int countTotalNodes(OctreeNode<Box>[][][] nodes) {
+        int countTotalNodes(OctreeNode<AABB>[][][] nodes) {
             int counter = 0;
-            for (OctreeNode<Box>[][] x : nodes) {
-                for (OctreeNode<Box>[] y : x) {
-                    for (OctreeNode<Box> ignored : y) {
+            for (OctreeNode<AABB>[][] x : nodes) {
+                for (OctreeNode<AABB>[] y : x) {
+                    for (OctreeNode<AABB> ignored : y) {
                         counter++;
                     }
                 }
@@ -68,16 +67,16 @@ public class LooseOctreeTest {
          * @param nodes the nodes of the loose octree
          * @return true when all three dimensions are equally sized, false otherwise
          */
-        boolean equallySizedDimensions(OctreeNode<Box>[][][] nodes) {
+        boolean equallySizedDimensions(OctreeNode<AABB>[][][] nodes) {
             // all dimensions must be equally sized, doesn't matter which one is chosen to be compared against.
             // here the x dimension is chosen.
             int referenceDimension = nodes.length;
 
-            for (OctreeNode<Box>[][] y : nodes) {
+            for (OctreeNode<AABB>[][] y : nodes) {
                 if (y.length != referenceDimension) {
                     return false;
                 }
-                for (OctreeNode<Box>[] z : y) {
+                for (OctreeNode<AABB>[] z : y) {
                     if (z.length != referenceDimension) {
                         return false;
                     }
@@ -87,15 +86,15 @@ public class LooseOctreeTest {
         }
 
         /**
-         * Add the given box to the octree and assert that it has been added. Also assert that the box only contains
-         * the expected content
+         * Add the given box to the octree and assert that it has been added. Also assert that the box only contains the
+         * expected content
          *
          * @param boxToAdd                         the box that will be added to the LooseOctree
          * @param nodeWhereItShouldHaveBeenAddedTo the node in the octree where the box should have been added to
          * @param expectedContent                  the expected content of the specified node
          */
-        void addBoxAndAssertBoxAddedToOctree(Box boxToAdd, OctreeNode<Box> nodeWhereItShouldHaveBeenAddedTo,
-                                             HashSet<Box> expectedContent) {
+        void addBoxAndAssertBoxAddedToOctree(AABB boxToAdd, OctreeNode<AABB> nodeWhereItShouldHaveBeenAddedTo,
+                                             HashSet<AABB> expectedContent) {
             assertAll(
                     () -> assertTrue(looseOctree.insertObject(boxToAdd)),
                     () -> assertEquals(expectedContent, nodeWhereItShouldHaveBeenAddedTo.getContent())
@@ -133,6 +132,204 @@ public class LooseOctreeTest {
                     () -> assertEquals(result.x, result.y),
                     () -> assertEquals(result.y, result.z)
             );
+        }
+
+        @Nested
+        @DisplayName("bounding cube tests")
+        class BoundingCubeTests {
+
+            int depth;
+
+
+            @Nested
+            @DisplayName("given depth of 0")
+            class Depth0 {
+                @BeforeEach
+                void setup() {
+                    depth = 0;
+                }
+
+                @Test
+                @DisplayName("then the loose bounding cube of the root should be from (-8,-8,-8) to (8,8,8)")
+                void boundingCube() {
+                    AABB boundingCube = new AABB(new Point(-8, -8, -8), new Point(8, 8, 8));
+
+                    assertEquals(boundingCube, looseOctree.nodes[depth][0][0][0].getAABB());
+                }
+            }
+
+
+            @Nested
+            @DisplayName("given depth of 1")
+            class Depth1 {
+
+                @BeforeEach
+                void setup() {
+                    depth = 1;
+                }
+
+                @Test
+                @DisplayName("then the spacing to the next node should be 4")
+                void spacing() {
+                    Point centerFrontBotLeft = looseOctree.nodes[depth][0][0][0].getAABB().calcCenter();
+                    Point centerFrontTopLeft = looseOctree.nodes[depth][0][0][1].getAABB().calcCenter();
+
+                    assertAll(
+                            () -> assertEquals(0, centerFrontTopLeft.x - centerFrontBotLeft.x),
+                            () -> assertEquals(0, centerFrontTopLeft.y - centerFrontBotLeft.y),
+                            () -> assertEquals(4, centerFrontTopLeft.z - centerFrontBotLeft.z)
+                    );
+                }
+
+                @Test
+                @DisplayName("then the loose bounding cube of node[1][0][0][0] should be from (-6,-6,-6) to (2,2,2)")
+                void boundingCube1_0_0_0() {
+                    AABB boundingCube = new AABB(new Point(-6, -6, -6), new Point(2, 2, 2));
+
+                    assertEquals(boundingCube, looseOctree.nodes[depth][0][0][0].getAABB());
+                }
+
+                @Test
+                @DisplayName("then the loose bounding cube of node[1][0][0][1] should be from (-6,-6,-2) to (2,2,6)")
+                void boundingCube1_0_0_1() {
+                    AABB boundingCube = new AABB(new Point(-6, -6, -2), new Point(2, 2, 6));
+
+                    assertEquals(boundingCube, looseOctree.nodes[depth][0][0][1].getAABB());
+                }
+
+                @Test
+                @DisplayName("then the loose bounding cube of node[1][0][1][0] should be from (-6,-2,-6) to (2,6,2)")
+                void boundingCube1_0_1_0() {
+                    AABB boundingCube = new AABB(new Point(-6, -2, -6), new Point(2, 6, 2));
+
+                    assertEquals(boundingCube, looseOctree.nodes[depth][0][1][0].getAABB());
+                }
+
+                @Test
+                @DisplayName("then the loose bounding cube of node[1][0][1][1] should be from (-6,-2,-2) to (2,6,6)")
+                void boundingCube1_0_1_1() {
+                    AABB boundingCube = new AABB(new Point(-6, -2, -2), new Point(2, 6, 6));
+
+                    assertEquals(boundingCube, looseOctree.nodes[depth][0][1][1].getAABB());
+                }
+
+                @Test
+                @DisplayName("then the loose bounding cube of node[1][1][0][0] should be from (-2,-6,-6) to (6,2,2)")
+                void boundingCube1_1_0_0() {
+                    AABB boundingCube = new AABB(new Point(-2, -6, -6), new Point(6, 2, 2));
+
+                    assertEquals(boundingCube, looseOctree.nodes[depth][1][0][0].getAABB());
+                }
+
+                @Test
+                @DisplayName("then the loose bounding cube of node[1][1][0][1] should be from (-2,-6,-2) to (6,2,6)")
+                void boundingCube1_1_0_1() {
+                    AABB boundingCube = new AABB(new Point(-2, -6, -2), new Point(6, 2, 6));
+
+                    assertEquals(boundingCube, looseOctree.nodes[depth][1][0][1].getAABB());
+                }
+
+                @Test
+                @DisplayName("then the bounding cube of node[1][1][1][0] should be from (-2,-2,-6) to (6,6,2)")
+                void boundingCube1_1_1_0() {
+                    AABB boundingCube = new AABB(new Point(-2, -2, -6), new Point(6, 6, 2));
+
+                    assertEquals(boundingCube, looseOctree.nodes[depth][1][1][0].getAABB());
+                }
+
+                @Test
+                @DisplayName("then the bounding cube of node[1][1][1][1] should be from (-2,-2,-2) to (6,6,6)")
+                void boundingCube1_1_1_1() {
+                    AABB boundingCube = new AABB(new Point(-2, -2, -2), new Point(6, 6, 6));
+
+                    assertEquals(boundingCube, looseOctree.nodes[depth][1][1][1].getAABB());
+                }
+            }
+
+
+            @Nested
+            @DisplayName("given depth of 2")
+            class Depth2 {
+                @BeforeEach
+                void setup() {
+                    depth = 2;
+                }
+
+                @Test
+                @DisplayName("then the spacing should be 2")
+                void spacing() {
+                    Point centerFrontBotLeft = looseOctree.nodes[depth][0][0][0].getAABB().calcCenter();
+                    Point centerFrontTopLeft = looseOctree.nodes[depth][0][0][1].getAABB().calcCenter();
+
+                    assertAll(
+                            () -> assertEquals(0, centerFrontTopLeft.x - centerFrontBotLeft.x),
+                            () -> assertEquals(0, centerFrontTopLeft.y - centerFrontBotLeft.y),
+                            () -> assertEquals(2, centerFrontTopLeft.z - centerFrontBotLeft.z)
+                    );
+                }
+
+                @Test
+                @DisplayName("then the loose bounding cube of node[2][0][0][0] should be from (-5,-5,-5) to (-1,-1,-1)")
+                void boundingCube2_0_0_0() {
+                    AABB boundingCube = new AABB(new Point(-5, -5, -5), new Point(-1, -1, -1));
+
+                    assertEquals(boundingCube, looseOctree.nodes[depth][0][0][0].getAABB());
+                }
+
+                @Test
+                @DisplayName("then the loose bounding cube of node[2][0][0][1] should be from (-5,-5,-3) to (-1,-1,1)")
+                void boundingCube2_0_0_1() {
+                    AABB boundingCube = new AABB(new Point(-5, -5, -3), new Point(-1, -1, 1));
+
+                    assertEquals(boundingCube, looseOctree.nodes[depth][0][0][1].getAABB());
+                }
+
+                @Test
+                @DisplayName("then the loose bounding cube of node[2][0][0][2] should be from (-5,-5,-1) to (-1,-1,3)")
+                void boundingCube2_0_0_2() {
+                    AABB boundingCube = new AABB(new Point(-5, -5, -1), new Point(-1, -1, 3));
+
+                    assertEquals(boundingCube, looseOctree.nodes[depth][0][0][2].getAABB());
+                }
+
+                @Test
+                @DisplayName("then the loose bounding cube of node[2][0][0][3] should be from (-5,-5,1) to (-1,-1,5)")
+                void boundingCube2_0_0_3() {
+                    AABB boundingCube = new AABB(new Point(-5, -5, 1), new Point(-1, -1, 5));
+
+                    assertEquals(boundingCube, looseOctree.nodes[depth][0][0][3].getAABB());
+                }
+
+                @Test
+                @DisplayName("then the loose bounding cube of node[2][1][1][1] should be from (-3,-3,-3) to (1,1,1)")
+                void boundingCube2_1_1_1() {
+                    AABB boundingCube = new AABB(new Point(-3, -3, -3), new Point(1, 1, 1));
+
+                    assertEquals(boundingCube, looseOctree.nodes[depth][1][1][1].getAABB());
+                }
+
+                @Test
+                @DisplayName("then the loose bounding cube of node[2][2][2][2] should be from (-1,-1,-1) to (3,3,3)")
+                void boundingCube2_2_2_2() {
+                    AABB boundingCube = new AABB(new Point(-1, -1, -1), new Point(3, 3, 3));
+
+                    assertEquals(boundingCube, looseOctree.nodes[depth][2][2][2].getAABB());
+                }
+
+                @Test
+                @DisplayName("then the loose bounding cube of node [2][3][3][3] should be from (1,1,1) to (5,5,5)")
+                void boundingCube2_3_3_3() {
+                    AABB boundingCube = new AABB(new Point(1, 1, 1), new Point(5, 5, 5));
+
+                    assertEquals(boundingCube, looseOctree.nodes[depth][3][3][3].getAABB());
+                }
+            }
+        }
+
+        @Test
+        @DisplayName("then the loose AABB of the world should be AABB((-8,-8,-8), (8,8,8))")
+        void worldBox() {
+            assertEquals(new AABB(new Point(-8, -8, -8), new Point(8, 8, 8)), looseOctree.getWorldAABB());
         }
 
 
@@ -198,24 +395,21 @@ public class LooseOctreeTest {
                 @DisplayName("accessing nodes array tests")
                 class ArrayNodesTests {
 
-
-                    /**
-                     * The root node is imaginary. There could only be an object in the root if its radius was larger
-                     * than worldSize / 2, which would mean the object is bigger than the entire world, which is a
-                     * paradox.
-                     */
                     @Test
-                    @DisplayName("then there should be no nodes")
+                    @DisplayName("then there should only be the root node")
                     void thenThereShouldNoNodes() {
-                        assertEquals(0, looseOctree.nodes[givenDepth].length);
+                        assertEquals(1, looseOctree.nodes[givenDepth].length);
                     }
 
                     @Test
-                    @DisplayName("then an IndexOutOfBoundsException should be thrown when trying to access any node")
-                    void thenAnIndexOutOfBoundsExceptionShouldBeThrown() {
-                        // call any method on the array as assertThrows needs a void or consumer, not a
-                        // concrete value.
-                        // index 1 is out of bounds
+                    @DisplayName("then there should be exactly 1 node per dimension")
+                    void thenThereShouldBeExactly1NodePerDimension() {
+                        assertNumberOfNodesPerDimension(givenDepth, 1);
+                    }
+
+                    @Test
+                    @DisplayName("then there should be an array out of bounds when accessing the 2nd element")
+                    void thenThereShouldBeAnArrayOutOfBoundsWhenAccessingThe2ndElement() {
                         assertAll(
                                 () -> assertThrows(IndexOutOfBoundsException.class,
                                         () -> looseOctree.nodes[givenDepth][0][0][1].insertObject(null)),
@@ -562,7 +756,7 @@ public class LooseOctreeTest {
                 @DisplayName("calcIndex tests")
                 class CalcIndexTests {
                     @Mock
-                    Box boxMock;
+                    AABB boxMock;
 
                     @BeforeEach
                     void setup() {
@@ -606,7 +800,7 @@ public class LooseOctreeTest {
                 @DisplayName("calcIndex tests")
                 class CalcIndexTests {
                     @Mock
-                    Box boxMock;
+                    AABB boxMock;
 
                     @BeforeEach
                     void setup() {
@@ -650,7 +844,7 @@ public class LooseOctreeTest {
                 @DisplayName("calcIndex tests")
                 class CalcIndexTests {
                     @Mock
-                    Box boxMock;
+                    AABB boxMock;
 
                     @BeforeEach
                     void setup() {
@@ -848,7 +1042,7 @@ public class LooseOctreeTest {
                 @DisplayName("calcIndex tests")
                 class CalcIndexTests {
                     @Mock
-                    Box boxMock;
+                    AABB boxMock;
 
                     @BeforeEach
                     void setup() {
@@ -1023,7 +1217,7 @@ public class LooseOctreeTest {
                 @DisplayName("calcIndex tests")
                 class CalcIndexTests {
                     @Mock
-                    Box boxMock;
+                    AABB boxMock;
 
                     @BeforeEach
                     void setup() {
@@ -1157,7 +1351,7 @@ public class LooseOctreeTest {
                 @DisplayName("calcIndex tests")
                 class CalcIndexTests {
                     @Mock
-                    Box boxMock;
+                    AABB boxMock;
 
                     @BeforeEach
                     void setup() {
@@ -1268,7 +1462,7 @@ public class LooseOctreeTest {
                 @DisplayName("calcIndex tests")
                 class CalcIndexTests {
                     @Mock
-                    Box boxMock;
+                    AABB boxMock;
 
                     @BeforeEach
                     void setup() {
@@ -1374,7 +1568,7 @@ public class LooseOctreeTest {
                 @DisplayName("calcIndex tests")
                 class CalcIndexTests {
                     @Mock
-                    Box boxMock;
+                    AABB boxMock;
 
                     @BeforeEach
                     void setup() {
@@ -1458,7 +1652,7 @@ public class LooseOctreeTest {
                 @DisplayName("calcIndex tests")
                 class CalcIndexTests {
                     @Mock
-                    Box boxMock;
+                    AABB boxMock;
 
                     @BeforeEach
                     void setup() {
@@ -1487,32 +1681,32 @@ public class LooseOctreeTest {
         class InsertionTests {
 
             /**
-             * Concrete implementation of the abstract {@linkplain Box} class
+             * Concrete implementation of the abstract {@linkplain AABB} class
              */
-            class ConcreteBox extends Box {
-                ConcreteBox(Point vertA, Point vertB) {
+            class ConcreteAABB extends AABB {
+                ConcreteAABB(Point vertA, Point vertB) {
                     super(vertA, vertB);
                 }
             }
 
 
-            Box box;
+            AABB box;
 
 
             @Nested
-            @DisplayName("One Box")
-            class OneBoxTests {
+            @DisplayName("One AABB")
+            class OneAABBTests {
 
-                HashSet<Box> nodeContent = new HashSet<>();
+                HashSet<AABB> nodeContent = new HashSet<>();
 
                 @Test
-                @DisplayName("Box((1, 2, 3), (3, 2, 1)) should be inserted at [3][6][6][6]")
+                @DisplayName("AABB((1, 2, 3), (3, 2, 1)) should be inserted at [3][6][6][6]")
                 void box123321() {
                     // center at (2, 2, 2), dimensions: 2x2x2, radius: 1.0
-                    Point pointA = new Point(1, 2, 3);
-                    Point pointB = new Point(3, 2, 1);
+                    Point pointA = new Point(1, 1.5, 1);
+                    Point pointB = new Point(3, 2.5, 3);
 
-                    box = new ConcreteBox(pointA, pointB);
+                    box = new ConcreteAABB(pointA, pointB);
                     nodeContent.add(box);
 
                     // radius 1.0  => depth = 3
@@ -1524,13 +1718,13 @@ public class LooseOctreeTest {
                  * The object is not fully enclosed in the world
                  */
                 @Test
-                @DisplayName("Box((1, 2, 3)(4, 5, 6)) should throw an exception")
+                @DisplayName("AABB((1, 2, 3)(4, 5, 6)) should throw an exception")
                 void box123456() {
                     // center at (2.5, 3.5, 4.5), dimensions: 3x3x3, radius: 1.5
                     Point pointA = new Point(1, 2, 3);
                     Point pointB = new Point(4, 5, 6);
 
-                    box = new ConcreteBox(pointA, pointB);
+                    box = new ConcreteAABB(pointA, pointB);
 
                     // radius 1.5  => depth = 2
                     // center (2.5, 3.5, 4.5) => indices x: 6, y: error, z: error
@@ -1538,13 +1732,13 @@ public class LooseOctreeTest {
                 }
 
                 @Test
-                @DisplayName("Box((2, -2, 1), (-1, 3, -3)) should be inserted at [1][1][1][0]")
+                @DisplayName("AABB((2, -2, 1), (-1, 3, -3)) should be inserted at [1][1][1][0]")
                 void box2Neg21Neg13Neg3() {
                     // center at (0.5, 0.5, -1), dimensions: 3x5x4, radius: 2.5
-                    Point pointA = new Point(2, -2, 1);
-                    Point pointB = new Point(-1, 3, -3);
+                    Point pointA = new Point(-1, -2, -3);
+                    Point pointB = new Point(2, 3, 1);
 
-                    box = new ConcreteBox(pointA, pointB);
+                    box = new ConcreteAABB(pointA, pointB);
                     nodeContent.add(box);
 
                     // radius 2.5  => depth = 1
@@ -1553,13 +1747,13 @@ public class LooseOctreeTest {
                 }
 
                 @Test
-                @DisplayName("Box((-2.3, 2.5, 1.3), (1.0, -1.2, -0.66)) should be inserted at [2][1][2][2]")
+                @DisplayName("AABB((-2.3, 2.5, 1.3), (1.0, -1.2, -0.66)) should be inserted at [2][1][2][2]")
                 void boxNeg23251310Neg12Neg066() {
                     // center at (-0.65, 0.6, 0.32), dimensions: 3.3 x 3.7 x 1.96, radius: 1.85
-                    Point pointA = new Point(-2.3, 2.5, 1.3);
-                    Point pointB = new Point(1.0, -1.2, -0.66);
+                    Point pointA = new Point(-2.3, -1.2, -0.66);
+                    Point pointB = new Point(1.0, 2.5, 1.3);
 
-                    box = new ConcreteBox(pointA, pointB);
+                    box = new ConcreteAABB(pointA, pointB);
                     nodeContent.add(box);
 
                     // radius 1.85  => depth = 2
@@ -1568,13 +1762,13 @@ public class LooseOctreeTest {
                 }
 
                 @Test
-                @DisplayName("Box(1.65,-3.4,-0.7)(2.99,3.0,0.00000001) should throw an exception")
+                @DisplayName("AABB(1.65,-3.4,-0.7)(2.99,3.0,0.00000001) should throw an exception")
                 void box165Neg34Neg072993000000001() {
                     // center at (2.32, 0.2, -0.35), dimensions: 4.64 x 6.4 x 0.69999999, radius: 3.2
                     Point pointA = new Point(1.65, -3.4, -0.7);
                     Point pointB = new Point(2.99, 3.0, 0.00000001);
 
-                    box = new ConcreteBox(pointA, pointB);
+                    box = new ConcreteAABB(pointA, pointB);
 
                     // radius 3.2  => depth = 1
                     // center (2.32, 0.2, -0.35) => indices x: error, y: 1, z: 0
@@ -1587,28 +1781,28 @@ public class LooseOctreeTest {
             @DisplayName("Two Boxes")
             class TwoBoxesTests {
 
-                Box box2;
-                HashSet<Box> contentNode1 = new HashSet<>();
-                HashSet<Box> contentNode2 = new HashSet<>();
+                AABB box2;
+                HashSet<AABB> contentNode1 = new HashSet<>();
+                HashSet<AABB> contentNode2 = new HashSet<>();
 
                 @Test
                 @DisplayName("Insert two boxes in the same node")
                 void twoBoxesOneNode() {
                     // Hint: The boxes do not touch
                     // center at (1.0, 0.6, 0.32), dimensions: 1.0 x 1.0 x 1.0, radius: 0.5
-                    Point pointA1 = new Point(0.5, 2.5, 1.3);
-                    Point pointB1 = new Point(1.5, 1.5, 0.3);
+                    Point pointA1 = new Point(0.5, 1.5, 0.3);
+                    Point pointB1 = new Point(1.5, 2.5, 1.3);
 
                     // center at (1.98, 0.6, 0.32), dimensions: 1.0 x 1.0 x 1.0, radius: 0.5
-                    Point pointA2 = new Point(1.51, 2.5, 1.3);
-                    Point pointB2 = new Point(2.45, 1.5, 0.3);
+                    Point pointA2 = new Point(1.51, 1.5, 0.3);
+                    Point pointB2 = new Point(2.45, 2.5, 1.3);
 
                     // radius 0.5 => depth = 3
                     // center (1.0, 2.0, 0.8) => indices x: 5, y: 6, z: 4
-                    box = new ConcreteBox(pointA1, pointB1);
+                    box = new ConcreteAABB(pointA1, pointB1);
                     // radius 0.5  => depth = 3
                     // center (1.98, 2.0, 0.8) => indices x: 5, y: 6, z: 4
-                    box2 = new ConcreteBox(pointA2, pointB2);
+                    box2 = new ConcreteAABB(pointA2, pointB2);
 
                     contentNode1.add(box);
                     contentNode2.add(box);
@@ -1624,15 +1818,15 @@ public class LooseOctreeTest {
                 @DisplayName("Insert two boxes which have the very same position")
                 void twoBoxesSamePosition() {
                     // center at (-0.65, 0.6, 0.32), dimensions: 3.3 x 3.7 x 1.96, radius: 1.85
-                    Point pointA1 = new Point(-2.3, 2.5, 1.3);
-                    Point pointB1 = new Point(1.0, -1.2, -0.66);
+                    Point pointA1 = new Point(-2.3, -1.2, -0.66);
+                    Point pointB1 = new Point(1.0, 2.5, 1.3);
 
                     // center at (-0.65, 0.6, 0.32), dimensions: 3.3 x 3.7 x 1.96, radius: 1.85
-                    Point pointA2 = new Point(-2.3, 2.5, 1.3);
-                    Point pointB2 = new Point(1.0, -1.2, -0.66);
+                    Point pointA2 = new Point(-2.3, -1.2, -0.66);
+                    Point pointB2 = new Point(1.0, 2.5, 1.3);
 
-                    box = new ConcreteBox(pointA1, pointB1);
-                    box2 = new ConcreteBox(pointA2, pointB2);
+                    box = new ConcreteAABB(pointA1, pointB1);
+                    box2 = new ConcreteAABB(pointA2, pointB2);
 
                     contentNode1.add(box);
                     contentNode2.add(box);
@@ -1650,19 +1844,19 @@ public class LooseOctreeTest {
                 @DisplayName("Insert two boxes, same depth, each at a different node")
                 void twoBoxesSameDepthDifferentNodes() {
                     // center at (0.14485, 2.6, -2.0811), dimensions: 0.0237 x 2.2 x 0.2822, radius: 1.1
-                    Point pointA1 = new Point(0.133, 3.7, -2.2222);
-                    Point pointB1 = new Point(0.1567, 1.5, -1.94);
+                    Point pointA1 = new Point(0.133, 1.5, -2.2222);
+                    Point pointB1 = new Point(0.1567, 3.7, -1.94);
 
                     // center at (2.0583, 1.7005, 0.16), dimensions: 0.7834 x 3.399 x 0.32, radius: 1.6995
-                    Point pointA2 = new Point(1.6666, 0.001, 1.3);
-                    Point pointB2 = new Point(2.45, 3.4, 0.98);
+                    Point pointA2 = new Point(1.6666, 0.001, 0.98);
+                    Point pointB2 = new Point(2.45, 3.4, 1.3);
 
                     // radius 1.1 => depth = 2
                     // center (0.14485, 2.6, -2.0811) => indices x: 2, y: 3, z: 0
-                    box = new ConcreteBox(pointA1, pointB1);
+                    box = new ConcreteAABB(pointA1, pointB1);
                     // radius 1.6995  => depth = 2
                     // center (2.0583, 1.7005, 0.16) => indices x: 3, y: 2, z: 2
-                    box2 = new ConcreteBox(pointA2, pointB2);
+                    box2 = new ConcreteAABB(pointA2, pointB2);
 
                     contentNode1.add(box);
                     contentNode2.add(box2);
@@ -1686,10 +1880,10 @@ public class LooseOctreeTest {
 
                     // radius 1.5 => depth = 2
                     // center (-2.5, -0.5, 0.5) => indices x: 0, y: 1, z: 2
-                    box = new ConcreteBox(pointA1, pointB1);
+                    box = new ConcreteAABB(pointA1, pointB1);
                     // radius 0.5  => depth = 3
                     // center (-3.5, -2.5, -1.5) => indices x: 0, y: 1, z: 2
-                    box2 = new ConcreteBox(pointA2, pointB2);
+                    box2 = new ConcreteAABB(pointA2, pointB2);
 
                     contentNode1.add(box);
                     contentNode2.add(box2);
@@ -1708,15 +1902,15 @@ public class LooseOctreeTest {
                     Point pointB1 = new Point(-1.0, 1.0, 2.0);
 
                     // center at (3.5, 2.5, 1.5), dimensions: 1.0 x 1.0 x 1.0, radius: 0.5
-                    Point pointA2 = new Point(4.0, 3.0, 2.0);
-                    Point pointB2 = new Point(3.0, 2.0, 1.0);
+                    Point pointA2 = new Point(3.0, 2.0, 1.0);
+                    Point pointB2 = new Point(4.0, 3.0, 2.0);
 
                     // radius 1.5 => depth = 2
                     // center (-2.5, -0.5, 0.5) => indices x: 0, y: 1, z: 2
-                    box = new ConcreteBox(pointA1, pointB1);
+                    box = new ConcreteAABB(pointA1, pointB1);
                     // radius 0.5  => depth = 3
                     // center (3.5, 2.5, 1.5) => indices x: 7 y: 6, z: 5
-                    box2 = new ConcreteBox(pointA2, pointB2);
+                    box2 = new ConcreteAABB(pointA2, pointB2);
 
                     contentNode1.add(box);
                     contentNode2.add(box2);

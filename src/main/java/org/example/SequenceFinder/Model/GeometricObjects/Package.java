@@ -3,7 +3,7 @@ package org.example.SequenceFinder.Model.GeometricObjects;
 /**
  * A package in the stack that will be sequenced.
  */
-public class Package extends Box {
+public class Package extends AABB {
 
     private int id;
     private int articleNo;
