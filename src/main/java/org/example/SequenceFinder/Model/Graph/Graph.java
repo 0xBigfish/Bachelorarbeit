@@ -61,6 +61,16 @@ public class Graph<T> {
     }
 
     /**
+     * Create a new instance of the given graph
+     * @param otherGraph the given graph
+     */
+    public Graph(Graph<T> otherGraph){
+        this.operatingDirections = otherGraph.operatingDirections;
+        this.nodes = otherGraph.nodes;
+        this.removableNodes = otherGraph.removableNodes;
+    }
+
+    /**
      * Merge the set of graphs into a single graph.
      * <p>
      * Each node has multiple edges, one for each graph in the set.
