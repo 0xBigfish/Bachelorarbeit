@@ -30,18 +30,28 @@ public class BranchAndBound<T extends AABB> {
     Map<OperatingDirection, Graph<T>> graphsMap;
     CostAssigner<T> costAssigner;
 
+    int numberOfObjectsInStack;
+
+    /**
+     * The current lower bound of the tree. Gets updated everytime a full sequence is calculated.
+     */
+    double lowerTreeBound;
+
+    /**
+     * The active nodes. These nodes can potentially lead to a better sequence than the currently best.
+     */
+    Set<TreeNode> activeNodes;
+
     /**
      * Branch And Bound algorithm to find the global optimum sequence. <br>
      * <br>
      * First, the tree of all possible sequences is created based on the given {@link Graph}. The BnB assigns cost
      * on-the-fly, based on the cost function, to each traversed edge in the tree. The path with the lowest cost is the
-     * optimum.<br>
-     * Second, the tree is traversed down to a single leaf using depth-first. Hereby the BnB gets a reference value to
-     * compare against. <br>
-     * Third, the tree is traversed using breadth-first. Each path which costs get equal or higher than the reference cost
-     * are pruned, because this path can only get worse in terms of cost. <br>
-     * Fourth, the paths, that were traversed down to a leaf, are compared based on their cost. The path with the lowest
-     * cost is the global optimum.
+     * optimum.<br> Second, the tree is traversed down to a single leaf using depth-first. Hereby the BnB gets a
+     * reference value to compare against. <br> Third, the tree is traversed using breadth-first. Each path which costs
+     * get equal or higher than the reference cost are pruned, because this path can only get worse in terms of cost.
+     * <br> Fourth, the paths, that were traversed down to a leaf, are compared based on their cost. The path with the
+     * lowest cost is the global optimum.
      *
      * @param graphsMap the map of graphs, one graph for each operating direction that is allowed. The graphs define the
      *                  order in which the boxes can be removed
@@ -49,6 +59,9 @@ public class BranchAndBound<T extends AABB> {
     public BranchAndBound(Map<OperatingDirection, Graph<T>> graphsMap, Collection<CostFunction<T>> costFunctions) {
         this.graphsMap = graphsMap;
         this.costAssigner = new CostAssigner<>(costFunctions);
+
+        // each object in the stack is represented by a node in the graph
+        this.numberOfObjectsInStack = graphsMap.get(TOP).getCopyOfNodes().size();
     }
 
     /**
@@ -118,6 +131,95 @@ public class BranchAndBound<T extends AABB> {
         }
 
         return generatedChildren;
+    }
+
+
+    /**
+     * Evaluate and bound the given {@linkplain TreeNode} if the node's subtree can not yield a better solution than the
+     * currently best.
+     * <p>
+     * If the node's lower bound is >= the current upper bound of the tree, the node will be terminated. The best
+     * possible sequence of the node's subtree will not be better than the currently best sequence. Therefore, the node
+     * needs not be further examined and can be terminated.
+     *
+     * @param nodeToBeChecked the node that will be checked and possible terminated
+     */
+    private void bound(TreeNode nodeToBeChecked) {
+        List<T> nodeSequence = nodeToBeChecked.sequence;
+        nodeToBeChecked.lowerBound = lowerBound(nodeSequence);
+
+        // check if the node's subtree can potentially yield a better sequence than the currently best
+        if (nodeToBeChecked.lowerBound < lowerTreeBound) {
+
+            // if the node has a complete sequence it is a valid dismantling sequence of the stack.
+            if (nodeSequence.size() == numberOfObjectsInStack) {
+
+                // the node describes a better sequence than the currently best, otherwise it would have been terminated
+                lowerTreeBound = fitness(nodeSequence);
+                nodeToBeChecked.lowerBound = fitness(nodeSequence);
+
+                // terminate all other nodes that have a worse lower bound than the new best solution. They can not
+                // yield a better sequence than the newly calculated one.
+                activeNodes.removeIf(activeNode -> activeNode.lowerBound >= lowerTreeBound);
+
+                // Also terminate the current node as it describes a complete sequence and needs no further processing.
+                activeNodes.remove(nodeToBeChecked);
+
+            } else {
+                // make the node active for future inspections
+                activeNodes.add(nodeToBeChecked);
+            }
+
+        } else {
+            // terminate the node
+            activeNodes.remove(nodeToBeChecked);
+        }
+    }
+
+    /**
+     * Calculates the lower bound for a given (sub-)sequence
+     *
+     * @param sequence the given sequence
+     * @return the lower bound of the sequence
+     */
+    private double lowerBound(List<T> sequence) {
+        double sum = 0;
+
+        // sum up all current costs
+        int i;
+        for (i = 0; i < sequence.size() - 1; i++) {
+            sum += costAssigner.calcCost(sequence.get(i), sequence.get(i + 1));
+        }
+
+        // sum up all lower bounds of future costs
+        for (int j = i; j < numberOfObjectsInStack - 1; j++) {
+            sum += costAssigner.lowerBound();
+        }
+
+        return sum;
+    }
+
+    /**
+     * Calculate the fitness of the given sequence. May not be a subsequence.
+     * <p>
+     * The fitness-value is a value to compare sequences. A lower value is better.
+     *
+     * @param sequence a complete sequence to dismantle the stack
+     * @return the fitness value of the sequence
+     */
+    private double fitness(List<T> sequence) {
+        if (sequence.size() != numberOfObjectsInStack) {
+            throw new IllegalArgumentException("Fitness value is only defined for complete sequences, not for " +
+                    "subsequences! \n" +
+                    "sequence size: + " + sequence.size() + ", stack size: " + numberOfObjectsInStack);
+        }
+
+        double sum = 0;
+        for (int i = 0; i < numberOfObjectsInStack - 1; i++) {
+            sum += costAssigner.calcCost(sequence.get(i), sequence.get(i + 1));
+        }
+
+        return sum;
     }
 
     /**

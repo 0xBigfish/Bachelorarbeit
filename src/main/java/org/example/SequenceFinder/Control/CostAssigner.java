@@ -36,4 +36,15 @@ public class CostAssigner<T> {
                 .mapToDouble(costFunc -> costFunc.calcCost(nodeA, nodeB))
                 .sum();
     }
+
+    /**
+     * Sum up all cost functions' lower bounds
+     *
+     * @return the sum of the cost functions' lower bounds
+     */
+    public double lowerBound() {
+        return costFunctions.stream()
+                .mapToDouble(CostFunction::lowerBound)
+                .sum();
+    }
 }

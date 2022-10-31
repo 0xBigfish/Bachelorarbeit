@@ -39,4 +39,13 @@ public class ItemChange implements CostFunction<Package> {
             return 0;
         }
     }
+
+    /**
+     * {@inheritDoc}
+     * @return the minimum cost of an item change, which is 0
+     */
+    @Override
+    public double lowerBound() {
+        return 0;
+    }
 }

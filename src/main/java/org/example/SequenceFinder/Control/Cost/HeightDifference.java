@@ -28,4 +28,13 @@ public class HeightDifference<T extends AABB> implements CostFunction<T> {
     public double calcCost(T nodeA, T nodeB) {
         return cost * Math.abs(nodeA.calcCenter().z - nodeB.calcCenter().z);
     }
+
+    /**
+     * {@inheritDoc}
+     * @return the minimum of the height difference, which is 0
+     */
+    @Override
+    public double lowerBound() {
+        return 0;
+    }
 }
