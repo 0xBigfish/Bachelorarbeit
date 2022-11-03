@@ -7,7 +7,7 @@ import org.example.SequenceFinder.Model.Octree.LooseOctree;
 import org.example.SequenceFinder.OperatingDirection;
 
 import java.util.Collection;
-import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -75,8 +75,8 @@ public class SequenceFinder<T extends AABB> {
      * @param costFunctions   the cost functions which will decide the optimum sequence
      * @return the optimum sequence
      */
-    public LinkedHashSet<T> calcOptSequence(Collection<T> boxes, boolean opDirsCanChange,
-                                            Collection<CostFunction<T>> costFunctions) {
+    public List<T> calcOptSequence(Collection<T> boxes, boolean opDirsCanChange,
+                                   Collection<CostFunction<T>> costFunctions) {
         // insert the boxes into the octree
         LooseOctree<T> looseOctree = new LooseOctree<>(maxOctreeDepth, worldSize);
         OctreeController<T> octreeInserter = new OctreeController<>(looseOctree);

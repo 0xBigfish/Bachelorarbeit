@@ -27,31 +27,41 @@ import static org.example.SequenceFinder.OperatingDirection.TOP;
  */
 public class BranchAndBound<T extends AABB> {
 
-    Map<OperatingDirection, Graph<T>> graphsMap;
-    CostAssigner<T> costAssigner;
+    private final Map<OperatingDirection, Graph<T>> graphsMap;
+    private final CostAssigner<T> costAssigner;
 
-    int numberOfObjectsInStack;
+    private final int numberOfObjectsInStack;
 
     /**
      * The current lower bound of the tree. Gets updated everytime a full sequence is calculated.
      */
-    double lowerTreeBound;
+    private double lowerTreeBound;
+
+    /**
+     * The (currently) best sequence
+     */
+    private List<T> bestSolution;
 
     /**
      * The active nodes. These nodes can potentially lead to a better sequence than the currently best.
      */
-    Set<TreeNode> activeNodes;
+    private PriorityQueue<TreeNode> activeNodes;
 
     /**
      * Branch And Bound algorithm to find the global optimum sequence. <br>
      * <br>
-     * First, the tree of all possible sequences is created based on the given {@link Graph}. The BnB assigns cost
-     * on-the-fly, based on the cost function, to each traversed edge in the tree. The path with the lowest cost is the
-     * optimum.<br> Second, the tree is traversed down to a single leaf using depth-first. Hereby the BnB gets a
-     * reference value to compare against. <br> Third, the tree is traversed using breadth-first. Each path which costs
-     * get equal or higher than the reference cost are pruned, because this path can only get worse in terms of cost.
-     * <br> Fourth, the paths, that were traversed down to a leaf, are compared based on their cost. The path with the
-     * lowest cost is the global optimum.
+     * First, the tree of all possible sequences (decision tree) is created based on the given {@link Graph}. The BnB
+     * creates the tree on-the-fly and assigns cost to each traversed edge in the tree, based on the cost functions. The
+     * path from root to a leaf with the lowest cost is an optimum sequence.
+     * <p>
+     * Second, the tree is traversed down to a single leaf using a greedy depth-first approach. Hereby the BnB gets a
+     * first solution and thereby a reference value to compare against future results.
+     * <p>
+     * Third, the tree is traversed using breadth-first. Each path which costs get equal or higher than the reference
+     * cost are pruned (bound), because this path can only get worse in terms of cost.
+     * <p>
+     * Fourth, the paths, that were traversed down to a leaf, are compared based on their cost. The path with the lowest
+     * cost is the global optimum.
      *
      * @param graphsMap the map of graphs, one graph for each operating direction that is allowed. The graphs define the
      *                  order in which the boxes can be removed
@@ -59,6 +69,7 @@ public class BranchAndBound<T extends AABB> {
     public BranchAndBound(Map<OperatingDirection, Graph<T>> graphsMap, Collection<CostFunction<T>> costFunctions) {
         this.graphsMap = graphsMap;
         this.costAssigner = new CostAssigner<>(costFunctions);
+        this.bestSolution = new ArrayList<>();
 
         // each object in the stack is represented by a node in the graph
         this.numberOfObjectsInStack = graphsMap.get(TOP).getCopyOfNodes().size();
@@ -69,10 +80,32 @@ public class BranchAndBound<T extends AABB> {
      *
      * @return the optimum sequence to build the stack of boxes
      */
-    public LinkedHashSet<T> findGlobalOptimumSequence() {
-        // to be implemented
-        // return a LinkedHashSet because no duplicate entries are allowed and the sequence fixed
-        return null;
+    public List<T> findGlobalOptimumSequence() {
+        // initialize branch and bound
+        lowerTreeBound = Double.POSITIVE_INFINITY;
+        TreeNode root = new TreeNode(0, new ArrayList<>(), graphsMap);
+        TreeNode currentNode = root;
+        // sort nodes based on their lower bound (the lowest value is the head of the queue)
+        activeNodes = new PriorityQueue<>(Comparator.comparingDouble((TreeNode treeNode) -> treeNode.lowerBound));
+        activeNodes.add(root);
+
+        // while active nodes exist, a potentially better solution exists
+        while (!activeNodes.isEmpty()) {
+
+            // branch the current node
+            Collection<TreeNode> childNodes;
+            childNodes = branch(currentNode);
+
+            // bound the new nodes
+            for (TreeNode childNode : childNodes) {
+                bound(childNode);
+            }
+
+            // choose the next node for the next iteration
+            currentNode = chooseNextNode(childNodes);
+        }
+
+        return bestSolution;
     }
 
     /**
@@ -135,8 +168,8 @@ public class BranchAndBound<T extends AABB> {
 
 
     /**
-     * Evaluate and bound the given {@linkplain TreeNode} if the node's subtree can not yield a better solution than the
-     * currently best.
+     * Bound the given {@linkplain TreeNode} if the node's subtree can not yield a better solution than the currently
+     * best.
      * <p>
      * If the node's lower bound is >= the current upper bound of the tree, the node will be terminated. The best
      * possible sequence of the node's subtree will not be better than the currently best sequence. Therefore, the node
@@ -146,7 +179,6 @@ public class BranchAndBound<T extends AABB> {
      */
     private void bound(TreeNode nodeToBeChecked) {
         List<T> nodeSequence = nodeToBeChecked.sequence;
-        nodeToBeChecked.lowerBound = lowerBound(nodeSequence);
 
         // check if the node's subtree can potentially yield a better sequence than the currently best
         if (nodeToBeChecked.lowerBound < lowerTreeBound) {
@@ -157,6 +189,7 @@ public class BranchAndBound<T extends AABB> {
                 // the node describes a better sequence than the currently best, otherwise it would have been terminated
                 lowerTreeBound = fitness(nodeSequence);
                 nodeToBeChecked.lowerBound = fitness(nodeSequence);
+                bestSolution = nodeSequence;
 
                 // terminate all other nodes that have a worse lower bound than the new best solution. They can not
                 // yield a better sequence than the newly calculated one.
@@ -174,6 +207,44 @@ public class BranchAndBound<T extends AABB> {
             // terminate the node
             activeNodes.remove(nodeToBeChecked);
         }
+    }
+
+
+    /**
+     * Choose the node for the next iteration.
+     * <p>
+     * When no solution has been found yet, use a greedy approach. Hereby the newly generated child node with the lowest
+     * lower bound will be chosen. This approach is a modified <i>LIFO</i> method to find an initial solution and
+     * therefore be able to {@linkplain BranchAndBound#bound} nodes and prune the tree.
+     * <p>
+     * When a solution has already been found, the active node with the lowest lower bound will be chosen. The idea
+     * being, that this node potentially leads to a better solution.
+     *
+     * @param childNodes the child nodes generated in the current iteration
+     * @return the node that will be branched in the next iteration
+     */
+    private TreeNode chooseNextNode(Collection<TreeNode> childNodes) {
+        TreeNode currentNode;
+
+        // check if a solution has already been found
+        if (bestSolution != null) {
+
+            // choose the active node with the lowest lower bound. The idea being that this node potentially
+            // results in the sequence with the lowest (=best) fitness-value
+            currentNode = activeNodes.poll();
+        } else {
+
+            // choose the child nodes with the lowest lower bound -> greedy approach
+            double lowestLowerBound = childNodes.stream()
+                    .mapToDouble(childNode -> childNode.lowerBound)
+                    .min()
+                    .orElseThrow();
+            currentNode = childNodes.stream()
+                    .filter(childNode -> childNode.lowerBound == lowestLowerBound)
+                    .findFirst()
+                    .orElseThrow();
+        }
+        return currentNode;
     }
 
     /**
@@ -202,7 +273,7 @@ public class BranchAndBound<T extends AABB> {
     /**
      * Calculate the fitness of the given sequence. May not be a subsequence.
      * <p>
-     * The fitness-value is a value to compare sequences. A lower value is better.
+     * The fitness-value is a value to evaluate and compare sequences. A lower value is better.
      *
      * @param sequence a complete sequence to dismantle the stack
      * @return the fitness value of the sequence
@@ -243,6 +314,7 @@ public class BranchAndBound<T extends AABB> {
             this.depthInTree = depthInTree;
             this.sequence = sequence;
             this.graphs = graphs;
+            this.lowerBound = lowerBound(this.sequence);
         }
     }
 }
